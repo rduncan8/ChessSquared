@@ -1,29 +1,13 @@
 
-public class Rook implements Pieces {
+
+public class Rook implements PiecesInterface {
     ChessBoard cb = new ChessBoard();
-    int col;
     int currPos;
     
-    public Rook(int col, ChessBoard cb, int currPos){
-        this.col = col;
+    public Rook(ChessBoard cb, int currPos){
         this.cb = cb;
         this.currPos = currPos;
     }
-    
-    @Override
-    public void color() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    public boolean startPos(){
-        if(col == 1 && currPos == cb.a[0] || currPos == cb.h[0]){
-            return true;
-        }else if(col == 2 && currPos == cb.d[7] || currPos == cb.h[7]){
-            return true;
-        }else{
-            return false;
-        }
-    }    
 
     @Override
     public void move(int dir) {
@@ -47,6 +31,10 @@ public class Rook implements Pieces {
     
     public boolean canCastle(){
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    public boolean hasMoved(){
+        return true;
     }
     
 }

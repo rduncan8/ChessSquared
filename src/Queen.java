@@ -1,20 +1,14 @@
 
-public class Queen implements Pieces {
+
+public class Queen implements PiecesInterface {
     ChessBoard cb = new ChessBoard();
-    int col;
     int currPos;
     
-    public Queen(int col, ChessBoard cb, int currPos){
-        this.col = col;
+    public Queen(ChessBoard cb, int currPos){
         this.cb = cb;
         this.currPos = currPos;
     }
     
-    @Override
-    public void color() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     @Override
     public void move(int dir) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

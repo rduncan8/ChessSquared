@@ -1,7 +1,6 @@
 
-public interface Pieces {
-    
-    public void color();
+
+public interface PiecesInterface {
     
     public void move(int dir);
     

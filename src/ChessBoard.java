@@ -26,7 +26,7 @@ public class ChessBoard {
     
     public void setUp(){
         
-        a1 = new ChessBlock(new Piece(new Rook(int 0, a1, wR1)));
+        a1 = new ChessBlock(new Piece(1, a1, new Pawn(a1)));
         
         ChessBlock block[][] = {
                 {a1,a2,a3,a4,a5,a6,a7,a8},

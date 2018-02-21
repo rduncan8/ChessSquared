@@ -1,28 +1,13 @@
 
-public class King implements Pieces {
+
+public class King implements PiecesInterface {
     ChessBoard cb = new ChessBoard();
-    int col;
     int currPos;
     
-    public King(int col, ChessBoard cb, int currPos){
-        this.col = col;
+    public King(ChessBoard cb, int currPos){
         this.cb = cb;
         this.currPos = currPos;
-    }
-    
-    public void color(){
-        
-    }
-    
-    public boolean startPos(){
-        if(col == 1 && currPos == cb.e[0]){
-            return true;
-        }else if(col == 2 && currPos == cb.d[7]){
-            return true;
-        }else{
-            return false;
-        }
-    }    
+    }  
     
     public void move(int dir){
         
@@ -47,5 +32,9 @@ public class King implements Pieces {
         
         return true;
     }    
+    
+    public boolean hasMoved(){
+        return true;
+    }
     
 }
