@@ -1,12 +1,9 @@
 
 
 public class Queen implements PiecesInterface {
-    ChessBoard cb = new ChessBoard();
-    int currPos;
     
-    public Queen(ChessBoard cb, int currPos){
-        this.cb = cb;
-        this.currPos = currPos;
+    
+    public Queen(){
     }
     
     @Override

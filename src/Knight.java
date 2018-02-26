@@ -1,12 +1,8 @@
 
 
 public class Knight implements PiecesInterface {
-    ChessBoard cb = new ChessBoard();
-    int currPos;
     
-    public Knight(ChessBoard cb, int currPos){
-        this.cb = cb;
-        this.currPos = currPos;
+    public Knight(){
     }
     
     @Override

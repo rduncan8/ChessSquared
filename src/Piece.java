@@ -9,7 +9,7 @@ public class Piece {
     Rook r;
     Queen q;
     King k;
-    
+    NullPiece np;
     
     public Piece(int col, ChessBlock CurrentPos, Pawn p){
          this.col = col;
@@ -43,6 +43,11 @@ public class Piece {
          this.CurrentPos = CurrentPos;
          this.k = k;
     }    
+    
+    public ChessBlock getCurrPos(){
+        
+        return CurrPos;
+    }
 
     
 }

@@ -1,12 +1,10 @@
 
 
 public class King implements PiecesInterface {
-    ChessBoard cb = new ChessBoard();
-    int currPos;
+    ChessBlock StartingPos;
     
-    public King(ChessBoard cb, int currPos){
-        this.cb = cb;
-        this.currPos = currPos;
+    public King(ChessBlock StartingPos){
+        this.StartingPos = StartingPos;
     }  
     
     public void move(int dir){

@@ -1,12 +1,8 @@
 
 
-public class Bishop extends Piece implements PiecesInterface {
-    ChessBoard cb = new ChessBoard();
-    int currPos;
+public class Bishop implements PiecesInterface {
     
-    public Bishop(ChessBoard cb, int currPos){
-        this.cb = cb;
-        this.currPos = currPos;
+    public Bishop(){
     }
 
     @Override

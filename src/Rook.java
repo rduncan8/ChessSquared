@@ -1,12 +1,10 @@
 
 
 public class Rook implements PiecesInterface {
-    ChessBoard cb = new ChessBoard();
-    int currPos;
+    ChessBlock StartingPos;
     
-    public Rook(ChessBoard cb, int currPos){
-        this.cb = cb;
-        this.currPos = currPos;
+    public Rook(ChessBlock StartingPos){
+        this.StartingPos = StartingPos;
     }
 
     @Override

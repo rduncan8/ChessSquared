@@ -24,7 +24,7 @@ public class Pawn implements PiecesInterface {
     
     @Override
     public void moveDistance(int dis) {
-        if(startPos())
+        if( startPos())
         {
             
         }
@@ -33,7 +33,7 @@ public class Pawn implements PiecesInterface {
 
     @Override
     public boolean canAttack() {
-        if(playerBlack.pieceLocation() == currPos)
+        if()
         return true;
     }
     
