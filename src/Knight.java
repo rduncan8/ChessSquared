@@ -1,20 +1,10 @@
 
-public class Knight implements Pieces {
-    ChessBoard cb = new ChessBoard();
-    int col;
-    int currPos;
-    
-    public Knight(int col, ChessBoard cb, int currPos){
-        this.col = col;
-        this.cb = cb;
-        this.currPos = currPos;
-    }
-    
-    @Override
-    public void color() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
+public class Knight implements PiecesInterface {
+    
+    public Knight(){
+    }
+    
     @Override
     public void move(int dir) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
