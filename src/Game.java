@@ -91,7 +91,7 @@ public class Game extends Screen {
         {            
             titleFrame.setVisible(false);
             //ConnectionScreen screen = new ConnectionScreen();
-            SingleChessBoard chess = new SingleChessBoard();
+            ChessBoard chess = new ChessBoard();
         }
     }
 

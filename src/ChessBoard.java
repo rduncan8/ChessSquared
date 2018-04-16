@@ -249,7 +249,6 @@ public class ChessBoard extends Screen{
         }
         
         String squares;
-        int numCon;
         
         for (int i = 0; i < 8; i++){
             for (int j = 0; j < 8; j++){
