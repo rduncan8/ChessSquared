@@ -1,4 +1,8 @@
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+
 
 public class Pawn implements PiecesInterface {
     ChessBlock StartingPos;
@@ -7,10 +11,14 @@ public class Pawn implements PiecesInterface {
         this.StartingPos = StartingPos;
     }
     
+    public String pieceImage(){
+        return "";
+    }
+    
     public boolean startPos(){
-        if(){
+        if(true){
             return true;
-        }else if(){
+        }else if(false){
             return true;
         }else{
             return false;
@@ -18,9 +26,11 @@ public class Pawn implements PiecesInterface {
     }
     
     @Override
-    public void move(int dir) {
+    public void move(int dir)  {
         
     }
+    
+    //private String getBlockName() {}
     
     @Override
     public void moveDistance(int dis) {
@@ -33,8 +43,10 @@ public class Pawn implements PiecesInterface {
 
     @Override
     public boolean canAttack() {
-        if()
-        return true;
+        if(true)
+            return true;
+        else
+            return false;
     }
     
     @Override
