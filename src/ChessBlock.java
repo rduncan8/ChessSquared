@@ -13,10 +13,15 @@ public class ChessBlock {
         this.blockName = blockName;
     }
     
-    public ChessBlock(String blockName){
+    public ChessBlock(JButton block, String blockName){
         hasPce = false;
+        this.block = block;
         this.blockName = blockName;
     }    
+    
+    public Boolean hasPce(){
+        return hasPce;
+    }
     
     public String getPce(){
         return pce.getPieceName();

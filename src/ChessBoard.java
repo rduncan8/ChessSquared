@@ -41,7 +41,7 @@ public class ChessBoard extends Screen{
     private final JFrame frame = createFrame("Chess");
     private final JPanel gui = new JPanel(new BorderLayout(3,3));
     private final JButton[][] chessBoardSquares = new JButton[8][8];
-    private JPanel chessBoard;
+    private JPanel theChessBoard;
     private final JLabel message = new JLabel("Chess Champ is ready to play!");
     private static final String COLS = "ABCDEFGH";
     private static final String ROWS = "12345678";
@@ -67,9 +67,9 @@ public class ChessBoard extends Screen{
         tools.addSeparator();
         tools.add(message);
 
-        chessBoard = new JPanel(new GridLayout(0, 9));
-        chessBoard.setBorder(new LineBorder(Color.BLACK));
-        gui.add(chessBoard);
+        theChessBoard = new JPanel(new GridLayout(0, 9));
+        theChessBoard.setBorder(new LineBorder(Color.BLACK));
+        gui.add(theChessBoard);
         
         setUpBoard();
         setUpPieces();
@@ -78,51 +78,53 @@ public class ChessBoard extends Screen{
     public void setUpBoard(){
         
         Insets buttonMargin = new Insets(0,0,0,0);
-        for (int i = 0; i < chessBoardSquares.length; i++)
+        for (int row = 7, actRow = 0; row >= 0; row--, actRow++)
         {
-            for (int j = 0; j < chessBoardSquares[i].length; j++)
+            for (int col = 0; col < chessBoardSquares[row].length; col++)
             {
                 JButton button = new JButton();
                 button.setMargin(buttonMargin);             
-                //button.addActionListener(new ChessBoard.MovePieceListener());
+                button.addActionListener(new ChessBoard.MovePieceListener());
+                button.setActionCommand("" + Integer.toString(actRow) + 
+                                                Integer.toString(col));
                 // our chess pieces are 64x64 px in size, so we'll
                 // 'fill this in' using a transparent icon..
                 ImageIcon icon = new ImageIcon(
                         new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB));
                 button.setIcon(icon);
-                if ((j % 2 == 1 && i % 2 == 1) || (j % 2 == 0 && i % 2 == 0))
+                if ((col % 2 == 0 && row % 2 == 1) || (col % 2 == 1 && row % 2 == 0))
                 {
                     button.setBackground(Color.WHITE);
                 }
                 else
                 {
-                    button.setBackground(Color.BLACK);
+                    button.setBackground(Color.GREEN);
                 }
-                chessBoardSquares[j][i] = button;
+                chessBoardSquares[col][row] = button;
             }
         }
         
-        for (int i = 0; i < 8; i++)
+        for (int row = 0, actRow = 8; row < 8; row++, actRow--)
         {
-            for (int j = 0; j < 8; j++)
+            for (int col = 0; col < 8; col++)
             {
-                switch (j)
+                switch (col)
                 {
                     case 0:
-                        chessBoard.add(new JLabel("" + (i + 1),
+                        theChessBoard.add(new JLabel("" + (actRow),
                                 SwingConstants.CENTER));
                     default:
-                        chessBoard.add(chessBoardSquares[j][i]);
+                        theChessBoard.add(chessBoardSquares[col][row]);
                 }
             }
         }
         
-        chessBoard.add(new JLabel(""));
+        theChessBoard.add(new JLabel(""));
         
-        for (int i = 0; i < 8; i++)
+        for (int letter = 0; letter < 8; letter++)
         {
-            chessBoard.add(
-                new JLabel(COLS.substring(i, i + 1),
+            theChessBoard.add(
+                new JLabel(COLS.substring(letter, letter + 1),
                 SwingConstants.CENTER));
         }
     }
@@ -169,9 +171,9 @@ public class ChessBoard extends Screen{
         bR1 = new Rook(a8);
         bR2 = new Rook(h8);
         wQ = new Queen();
-        wK = new King(e1);
+        wK = new King(d1);
         bQ = new Queen();
-        bK = new King(e8);
+        bK = new King(d8);
         
         p1 = new Piece(1, a2, wP1);
         p2 = new Piece(1, b2, wP2);
@@ -203,14 +205,14 @@ public class ChessBoard extends Screen{
         bi4 = new Piece(2, bB1);
         q1 = new Piece(1, wQ);
         q2 = new Piece(2, bQ);
-        k1 = new Piece(1, e1, wK);
-        k2 = new Piece(2, e8, bK);
+        k1 = new Piece(1, d1, wK);
+        k2 = new Piece(2, d8, bK);
         
         a1 = new ChessBlock(r1, chessBoardSquares[0][0], "A1");
         b1 = new ChessBlock(kn1, chessBoardSquares[1][0], "B1");
         c1 = new ChessBlock(bi1, chessBoardSquares[2][0], "C1");
-        d1 = new ChessBlock(q1, chessBoardSquares[3][0], "D1");
-        e1 = new ChessBlock(k1, chessBoardSquares[4][0], "E1");
+        d1 = new ChessBlock(k1, chessBoardSquares[3][0], "D1");
+        e1 = new ChessBlock(q1, chessBoardSquares[4][0], "E1");
         f1 = new ChessBlock(bi2, chessBoardSquares[5][0], "F1");
         g1 = new ChessBlock(kn2, chessBoardSquares[6][0], "G1");
         h1 = new ChessBlock(r2, chessBoardSquares[7][0], "H1");
@@ -226,8 +228,8 @@ public class ChessBoard extends Screen{
         a8 = new ChessBlock(r3, chessBoardSquares[0][7], "A8");
         b8 = new ChessBlock(kn3, chessBoardSquares[1][7], "B8");
         c8 = new ChessBlock(bi3, chessBoardSquares[2][7], "C8");
-        d8 = new ChessBlock(q2, chessBoardSquares[3][7], "D8");
-        e8 = new ChessBlock(k2, chessBoardSquares[4][7], "E8");
+        d8 = new ChessBlock(k2, chessBoardSquares[3][7], "D8");
+        e8 = new ChessBlock(q2, chessBoardSquares[4][7], "E8");
         f8 = new ChessBlock(bi4, chessBoardSquares[5][7], "F8");
         g8 = new ChessBlock(kn4, chessBoardSquares[6][7], "G8");
         h8 = new ChessBlock(r4, chessBoardSquares[7][7], "H8");
@@ -240,725 +242,49 @@ public class ChessBoard extends Screen{
         g7 = new ChessBlock(p15, chessBoardSquares[6][6], "G7");
         h7 = new ChessBlock(p16, chessBoardSquares[7][6], "H7");
         
-        ChessBlock nullArea;
+        a3 = new ChessBlock(chessBoardSquares[0][2], "A3");
+        b3 = new ChessBlock(chessBoardSquares[1][2], "B3");
+        c3 = new ChessBlock(chessBoardSquares[2][2], "C3");
+        d3 = new ChessBlock(chessBoardSquares[3][2], "D3");
+        e3 = new ChessBlock(chessBoardSquares[4][2], "E3");
+        f3 = new ChessBlock(chessBoardSquares[5][2], "F3");
+        g3 = new ChessBlock(chessBoardSquares[6][2], "G3");
+        h3 = new ChessBlock(chessBoardSquares[7][2], "H3");
+        a4 = new ChessBlock(chessBoardSquares[0][3], "A4");
+        b4 = new ChessBlock(chessBoardSquares[1][3], "B4");
+        c4 = new ChessBlock(chessBoardSquares[2][3], "C4");
+        d4 = new ChessBlock(chessBoardSquares[3][3], "D4");
+        e4 = new ChessBlock(chessBoardSquares[4][3], "E4");
+        f4 = new ChessBlock(chessBoardSquares[5][3], "F4");
+        g4 = new ChessBlock(chessBoardSquares[6][3], "G4");
+        h4 = new ChessBlock(chessBoardSquares[7][3], "H4");
+        a5 = new ChessBlock(chessBoardSquares[0][4], "A5");
+        b5 = new ChessBlock(chessBoardSquares[1][4], "B5");
+        c5 = new ChessBlock(chessBoardSquares[2][4], "C5");
+        d5 = new ChessBlock(chessBoardSquares[3][4], "D5");
+        e5 = new ChessBlock(chessBoardSquares[4][4], "E5");
+        f5 = new ChessBlock(chessBoardSquares[5][4], "F5");
+        g5 = new ChessBlock(chessBoardSquares[6][4], "G5");
+        h5 = new ChessBlock(chessBoardSquares[7][4], "H5");
+        a6 = new ChessBlock(chessBoardSquares[0][5], "A6");
+        b6 = new ChessBlock(chessBoardSquares[1][5], "B6");
+        c6 = new ChessBlock(chessBoardSquares[2][5], "C6");
+        d6 = new ChessBlock(chessBoardSquares[3][5], "D6");
+        e6 = new ChessBlock(chessBoardSquares[4][5], "E6");
+        f6 = new ChessBlock(chessBoardSquares[5][5], "F6");
+        g6 = new ChessBlock(chessBoardSquares[6][5], "G6");
+        h6 = new ChessBlock(chessBoardSquares[7][5], "H6");
         
-        for (int i = 0; i < 8; i++){
-            for (int j = 2; j < 6; j++) {
-                block[i][j] = nullArea = new ChessBlock(COLS.substring(i, i + 1) + j);
+        
+        /*ChessBlock nullArea;
+        
+        for (int col = 0; col < 8; col++){
+            for (int row = 2; row < 6; row++) {
+                block[col][row] = nullArea = new ChessBlock(COLS.substring(col, col + 1) 
+                        + Integer.toString(row), chessBoardSquares[col][row]);
             }
-        }
+        }*/
         
-        String squares;
-        
-        for (int i = 0; i < 8; i++){
-            for (int j = 0; j < 8; j++){
-                if(chessBoardSquares[i][j].getModel().isPressed()){
-
-                    squares = Integer.toString(i) + Integer.toString(j);
-                    
-                    switch (squares){
-                        case "00":  if(a1.hasPce){
-                                        System.out.println(a1.getPce() + a1.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(a1.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "01":  if(a2.hasPce){
-                                        System.out.println(a2.getPce() + a2.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(a2.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        case "02":  if(a3.hasPce){
-                                        System.out.println(a3.getPce() + a3.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(a3.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "03":  if(a4.hasPce){
-                                        System.out.println(a4.getPce() + a4.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(a4.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        case "04":  if(a5.hasPce){
-                                        System.out.println(a5.getPce() + a5.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(a5.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "05":  if(a6.hasPce){
-                                        System.out.println(a6.getPce() + a6.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(a6.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "06":  if(a7.hasPce){
-                                        System.out.println(a7.getPce() + a7.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(a7.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "07":  if(a8.hasPce){
-                                        System.out.println(a8.getPce() + a8.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(a8.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "10":  if(b1.hasPce){
-                                        System.out.println(b1.getPce() + b1.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(b1.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "11":  if(b2.hasPce){
-                                        System.out.println(b2.getPce() + b2.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(b2.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        case "12":  if(b3.hasPce){
-                                        System.out.println(b3.getPce() + b3.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(b3.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "13":  if(b4.hasPce){
-                                        System.out.println(b4.getPce() + b4.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(b4.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "14":  if(b5.hasPce){
-                                        System.out.println(b5.getPce() + b5.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(b5.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "15":  if(b6.hasPce){
-                                        System.out.println(b6.getPce() + b6.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(b6.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "16":  if(b7.hasPce){
-                                        System.out.println(b7.getPce() + b7.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(b7.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "17":  if(b8.hasPce){
-                                        System.out.println(b8.getPce() + b8.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(b8.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "20":  if(c1.hasPce){
-                                        System.out.println(c1.getPce() + c1.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(c1.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "21":  if(c2.hasPce){
-                                        System.out.println(c2.getPce() + c2.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(c2.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "22":  if(c3.hasPce){
-                                        System.out.println(c3.getPce() + c3.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(c3.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "23":  if(c4.hasPce){
-                                        System.out.println(c4.getPce() + c4.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(c4.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "24":  if(c5.hasPce){
-                                        System.out.println(c5.getPce() + c5.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(c5.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "25":  if(c6.hasPce){
-                                        System.out.println(c6.getPce() + c6.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(c6.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "26":  if(c7.hasPce){
-                                        System.out.println(c7.getPce() + c7.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(c7.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "27":  if(c8.hasPce){
-                                        System.out.println(c8.getPce() + c8.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(c8.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "30":  if(d1.hasPce){
-                                        System.out.println(d1.getPce() + d1.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(d1.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "31":  if(d2.hasPce){
-                                        System.out.println(d2.getPce() + d2.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(d2.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        case "32":  if(d3.hasPce){
-                                        System.out.println(d3.getPce() + d3.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(d3.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "33":  if(d4.hasPce){
-                                        System.out.println(d4.getPce() + d4.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(d4.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        case "34":  if(d5.hasPce){
-                                        System.out.println(d5.getPce() + d5.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(d5.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "35":  if(d6.hasPce){
-                                        System.out.println(d6.getPce() + d6.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(d6.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        case "36":  if(d7.hasPce){
-                                        System.out.println(d7.getPce() + d7.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(d7.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "37":  if(d8.hasPce){
-                                        System.out.println(d8.getPce() + d8.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(d8.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                          
-                        case "40":  if(e1.hasPce){
-                                        System.out.println(e1.getPce() + e1.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(e1.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "41":  if(e2.hasPce){
-                                        System.out.println(e2.getPce() + e2.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(e2.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "42":  if(e3.hasPce){
-                                        System.out.println(e3.getPce() + e3.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(e3.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "43":  if(e4.hasPce){
-                                        System.out.println(e4.getPce() + e4.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(e4.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "44":  if(e5.hasPce){
-                                        System.out.println(e5.getPce() + e5.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(e5.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "45":  if(e6.hasPce){
-                                        System.out.println(e6.getPce() + e6.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(e6.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "46":  if(e7.hasPce){
-                                        System.out.println(e7.getPce() + e7.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(e7.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "47":  if(e8.hasPce){
-                                        System.out.println(e8.getPce() + e8.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(e8.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "50":  if(f1.hasPce){
-                                        System.out.println(f1.getPce() + f1.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(f1.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "51":  if(f2.hasPce){
-                                        System.out.println(f2.getPce() + f2.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(f2.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "52":  if(f3.hasPce){
-                                        System.out.println(f3.getPce() + f3.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(f3.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "53":  if(f4.hasPce){
-                                        System.out.println(f4.getPce() + f4.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(f4.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "54":  if(f5.hasPce){
-                                        System.out.println(f5.getPce() + f5.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(f5.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "55":  if(f6.hasPce){
-                                        System.out.println(f6.getPce() + f6.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(f6.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "56":  if(f7.hasPce){
-                                        System.out.println(f7.getPce() + f7.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(f7.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "57":  if(f8.hasPce){
-                                        System.out.println(f8.getPce() + f8.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(f8.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        case "60":  if(g1.hasPce){
-                                        System.out.println(g1.getPce() + g1.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(g1.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "61":  if(g2.hasPce){
-                                        System.out.println(g2.getPce() + g2.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(g2.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "62":  if(g3.hasPce){
-                                        System.out.println(g3.getPce() + g3.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(g3.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "63":  if(g4.hasPce){
-                                        System.out.println(g4.getPce() + g4.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(g4.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "64":  if(g5.hasPce){
-                                        System.out.println(g5.getPce() + g5.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(g5.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "65":  if(g6.hasPce){
-                                        System.out.println(g6.getPce() + g6.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(g6.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "66":  if(g7.hasPce){
-                                        System.out.println(g7.getPce() + g7.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(g7.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "67":  if(g8.hasPce){
-                                        System.out.println(g8.getPce() + g8.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(g8.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "70":  if(h1.hasPce){
-                                        System.out.println(h1.getPce() + h1.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(h1.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "71":  if(h2.hasPce){
-                                        System.out.println(h2.getPce() + h2.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(h2.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "72":  if(h3.hasPce){
-                                        System.out.println(h3.getPce() + h3.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(h3.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "73":  if(h4.hasPce){
-                                        System.out.println(h4.getPce() + h4.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(h4.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "74":  if(h5.hasPce){
-                                        System.out.println(h5.getPce() + h5.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(h5.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "75":  if(h6.hasPce){
-                                        System.out.println(h6.getPce() + h6.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(h6.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                            
-                        case "76":  if(h7.hasPce){
-                                        System.out.println(h7.getPce() + h7.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(h7.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                        
-                        case "77":  if(h8.hasPce){
-                                        System.out.println(h8.getPce() + h8.getBlockName());
-                                        chessBoardSquares[i][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }else{
-                                        System.out.println(h8.getBlockName());
-                                        chessBoardSquares[j][j].addActionListener
-                                                    (new MovePieceListener());
-                                    }
-                                    break;
-                                
-                    }
-                }   
-            }
-        
-        }
     }
     
     public class MovePieceListener implements ActionListener
@@ -966,7 +292,456 @@ public class ChessBoard extends Screen{
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            System.out.print(" was clicked");
+            if("00".equals(e.getActionCommand())){
+                if(a1.hasPce()){
+                    System.out.println(a1.getPce() + a1.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(a1.getBlockName() + " was clicked");
+                }
+            }else if("01".equals(e.getActionCommand())){
+                if(b1.hasPce()){
+                    System.out.println(b1.getPce() + b1.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(b1.getBlockName() + " was clicked");
+                }
+            }else if("02".equals(e.getActionCommand())){
+                if(c1.hasPce()){
+                    System.out.println(c1.getPce() + c1.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(c1.getBlockName() + " was clicked");
+                }
+            }else if("03".equals(e.getActionCommand())){
+                if(d1.hasPce()){
+                    System.out.println(d1.getPce() + d1.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(d1.getBlockName() + " was clicked");
+                }
+            }else if("04".equals(e.getActionCommand())){
+                if(e1.hasPce()){
+                    System.out.println(e1.getPce() + e1.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(e1.getBlockName() + " was clicked");
+                }
+            }else if("05".equals(e.getActionCommand())){
+                if(f1.hasPce()){
+                    System.out.println(f1.getPce() + f1.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(f1.getBlockName() + " was clicked");
+                }
+            }else if("06".equals(e.getActionCommand())){
+                if(g1.hasPce()){
+                    System.out.println(g1.getPce() + g1.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(g1.getBlockName() + " was clicked");
+                }
+            }else if("07".equals(e.getActionCommand())){
+                if(h1.hasPce()){
+                    System.out.println(h1.getPce() + h1.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(h1.getBlockName() + " was clicked");
+                }
+            }else if("10".equals(e.getActionCommand())){
+                if(a2.hasPce()){
+                    System.out.println(a2.getPce() + a2.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(a2.getBlockName() + " was clicked");
+                }
+            }else if("11".equals(e.getActionCommand())){
+                if(b2.hasPce()){
+                    System.out.println(b2.getPce() + b2.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(b2.getBlockName() + " was clicked");
+                }
+            }else if("12".equals(e.getActionCommand())){
+                if(c2.hasPce()){
+                    System.out.println(c2.getPce() + c2.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(c2.getBlockName() + " was clicked");
+                }
+            }else if("13".equals(e.getActionCommand())){
+                if(d2.hasPce()){
+                    System.out.println(d2.getPce() + d2.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(d2.getBlockName() + " was clicked");
+                }
+            }else if("14".equals(e.getActionCommand())){
+                if(e2.hasPce()){
+                    System.out.println(e2.getPce() + e2.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(e2.getBlockName() + " was clicked");
+                }
+            }else if("15".equals(e.getActionCommand())){
+                if(f2.hasPce()){
+                    System.out.println(f2.getPce() + f2.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(f2.getBlockName() + " was clicked");
+                }
+            }else if("16".equals(e.getActionCommand())){
+                if(g2.hasPce()){
+                    System.out.println(g2.getPce() + g2.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(g2.getBlockName() + " was clicked");
+                }
+            }else if("17".equals(e.getActionCommand())){
+                if(h2.hasPce()){
+                    System.out.println(h2.getPce() + h2.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(h2.getBlockName() + " was clicked");
+                }
+            }else if("20".equals(e.getActionCommand())){
+                if(a3.hasPce()){
+                    System.out.println(a3.getPce() + a3.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(a3.getBlockName() + " was clicked");
+                }
+            }else if("21".equals(e.getActionCommand())){
+                if(b3.hasPce()){
+                    System.out.println(b3.getPce() + b3.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(b3.getBlockName() + " was clicked");
+                }
+            }else if("22".equals(e.getActionCommand())){
+                if(c3.hasPce()){
+                    System.out.println(c3.getPce() + c3.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(c3.getBlockName() + " was clicked");
+                }
+            }else if("23".equals(e.getActionCommand())){
+                if(d3.hasPce()){
+                    System.out.println(d3.getPce() + d3.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(d3.getBlockName() + " was clicked");
+                }
+            }else if("24".equals(e.getActionCommand())){
+                if(e3.hasPce()){
+                    System.out.println(e3.getPce() + e3.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(e3.getBlockName() + " was clicked");
+                }
+            }else if("25".equals(e.getActionCommand())){
+                if(f3.hasPce()){
+                    System.out.println(f3.getPce() + f3.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(f3.getBlockName() + " was clicked");
+                }
+            }else if("26".equals(e.getActionCommand())){
+                if(g3.hasPce()){
+                    System.out.println(g3.getPce() + g3.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(g3.getBlockName() + " was clicked");
+                }
+            }else if("27".equals(e.getActionCommand())){
+                if(h3.hasPce()){
+                    System.out.println(h3.getPce() + h3.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(h3.getBlockName() + " was clicked");
+                }
+            }else if("30".equals(e.getActionCommand())){
+                if(a4.hasPce()){
+                    System.out.println(a4.getPce() + a4.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(a4.getBlockName() + " was clicked");
+                }
+            }else if("31".equals(e.getActionCommand())){
+                if(b4.hasPce()){
+                    System.out.println(b4.getPce() + b4.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(b4.getBlockName() + " was clicked");
+                }
+            }else if("32".equals(e.getActionCommand())){
+                if(c4.hasPce()){
+                    System.out.println(c4.getPce() + c4.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(c4.getBlockName() + " was clicked");
+                }
+            }else if("33".equals(e.getActionCommand())){
+                if(d4.hasPce()){
+                    System.out.println(d4.getPce() + d4.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(d4.getBlockName() + " was clicked");
+                }
+            }else if("34".equals(e.getActionCommand())){
+                if(e4.hasPce()){
+                    System.out.println(e4.getPce() + e4.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(e4.getBlockName() + " was clicked");
+                }
+            }else if("35".equals(e.getActionCommand())){
+                if(f4.hasPce()){
+                    System.out.println(f4.getPce() + f4.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(f4.getBlockName() + " was clicked");
+                }
+            }else if("36".equals(e.getActionCommand())){
+                if(g4.hasPce()){
+                    System.out.println(g4.getPce() + g4.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(g4.getBlockName() + " was clicked");
+                }
+            }else if("37".equals(e.getActionCommand())){
+                if(h4.hasPce()){
+                    System.out.println(h4.getPce() + h4.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(h4.getBlockName() + " was clicked");
+                }
+            }else if("40".equals(e.getActionCommand())){
+                if(a5.hasPce()){
+                    System.out.println(a5.getPce() + a5.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(a5.getBlockName() + " was clicked");
+                }
+            }else if("41".equals(e.getActionCommand())){
+                if(b5.hasPce()){
+                    System.out.println(b5.getPce() + b5.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(b5.getBlockName() + " was clicked");
+                }
+            }else if("42".equals(e.getActionCommand())){
+                if(c5.hasPce()){
+                    System.out.println(c5.getPce() + c5.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(c5.getBlockName() + " was clicked");
+                }
+            }else if("43".equals(e.getActionCommand())){
+                if(d5.hasPce()){
+                    System.out.println(d5.getPce() + d5.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(d5.getBlockName() + " was clicked");
+                }
+            }else if("44".equals(e.getActionCommand())){
+                if(e5.hasPce()){
+                    System.out.println(e5.getPce() + e5.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(e5.getBlockName() + " was clicked");
+                }
+            }else if("45".equals(e.getActionCommand())){
+                if(f5.hasPce()){
+                    System.out.println(f5.getPce() + f5.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(f5.getBlockName() + " was clicked");
+                }
+            }else if("46".equals(e.getActionCommand())){
+                if(g5.hasPce()){
+                    System.out.println(g5.getPce() + g5.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(g5.getBlockName() + " was clicked");
+                }
+            }else if("47".equals(e.getActionCommand())){
+                if(h5.hasPce()){
+                    System.out.println(h5.getPce() + h5.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(h5.getBlockName() + " was clicked");
+                }
+            }else if("50".equals(e.getActionCommand())){
+                if(a6.hasPce()){
+                    System.out.println(a6.getPce() + a6.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(a6.getBlockName() + " was clicked");
+                }
+            }else if("51".equals(e.getActionCommand())){
+                if(b6.hasPce()){
+                    System.out.println(b6.getPce() + b6.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(b6.getBlockName() + " was clicked");
+                }
+            }else if("52".equals(e.getActionCommand())){
+                if(c6.hasPce()){
+                    System.out.println(c6.getPce() + c6.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(c6.getBlockName() + " was clicked");
+                }
+            }else if("53".equals(e.getActionCommand())){
+                if(d6.hasPce()){
+                    System.out.println(d6.getPce() + d6.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(d6.getBlockName() + " was clicked");
+                }
+            }else if("54".equals(e.getActionCommand())){
+                if(e6.hasPce()){
+                    System.out.println(e6.getPce() + e6.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(e6.getBlockName() + " was clicked");
+                }
+            }else if("55".equals(e.getActionCommand())){
+                if(f6.hasPce()){
+                    System.out.println(f6.getPce() + f6.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(f6.getBlockName() + " was clicked");
+                }
+            }else if("56".equals(e.getActionCommand())){
+                if(g6.hasPce()){
+                    System.out.println(g6.getPce() + g6.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(g6.getBlockName() + " was clicked");
+                }
+            }else if("57".equals(e.getActionCommand())){
+                if(h6.hasPce()){
+                    System.out.println(h6.getPce() + h6.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(h6.getBlockName() + " was clicked");
+                }
+            }else if("60".equals(e.getActionCommand())){
+                if(a7.hasPce()){
+                    System.out.println(a7.getPce() + a7.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(a7.getBlockName() + " was clicked");
+                }
+            }else if("61".equals(e.getActionCommand())){
+                if(b7.hasPce()){
+                    System.out.println(b7.getPce() + b7.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(b7.getBlockName() + " was clicked");
+                }
+            }else if("62".equals(e.getActionCommand())){
+                if(c7.hasPce()){
+                    System.out.println(c7.getPce() + c7.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(c7.getBlockName() + " was clicked");
+                }
+            }else if("63".equals(e.getActionCommand())){
+                if(d7.hasPce()){
+                    System.out.println(d7.getPce() + d7.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(d7.getBlockName() + " was clicked");
+                }
+            }else if("64".equals(e.getActionCommand())){
+                if(e7.hasPce()){
+                    System.out.println(e7.getPce() + e7.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(e7.getBlockName() + " was clicked");
+                }
+            }else if("65".equals(e.getActionCommand())){
+                if(f7.hasPce()){
+                    System.out.println(f7.getPce() + f7.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(f7.getBlockName() + " was clicked");
+                }
+            }else if("66".equals(e.getActionCommand())){
+                if(g7.hasPce()){
+                    System.out.println(g7.getPce() + g7.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(g7.getBlockName() + " was clicked");
+                }
+            }else if("67".equals(e.getActionCommand())){
+                if(h7.hasPce()){
+                    System.out.println(h7.getPce() + h7.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(h7.getBlockName() + " was clicked");
+                }
+            }else if("70".equals(e.getActionCommand())){
+                if(a8.hasPce()){
+                    System.out.println(a8.getPce() + a8.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(a8.getBlockName() + " was clicked");
+                }
+            }else if("71".equals(e.getActionCommand())){
+                if(b8.hasPce()){
+                    System.out.println(b8.getPce() + b8.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(b8.getBlockName() + " was clicked");
+                }
+            }else if("72".equals(e.getActionCommand())){
+                if(c8.hasPce()){
+                    System.out.println(c8.getPce() + c8.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(c8.getBlockName() + " was clicked");
+                }
+            }else if("73".equals(e.getActionCommand())){
+                if(d8.hasPce()){
+                    System.out.println(d8.getPce() + d8.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(d8.getBlockName() + " was clicked");
+                }
+            }else if("74".equals(e.getActionCommand())){
+                if(e8.hasPce()){
+                    System.out.println(e8.getPce() + e8.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(e8.getBlockName() + " was clicked");
+                }
+            }else if("75".equals(e.getActionCommand())){
+                if(f8.hasPce()){
+                    System.out.println(f8.getPce() + f8.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(f8.getBlockName() + " was clicked");
+                }
+            }else if("76".equals(e.getActionCommand())){
+                if(g8.hasPce()){
+                    System.out.println(g8.getPce() + g8.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(g8.getBlockName() + " was clicked");
+                }
+            }else if("77".equals(e.getActionCommand())){
+                if(h8.hasPce()){
+                    System.out.println(h8.getPce() + h8.getBlockName() 
+                            + " was clicked.");
+                }else{
+                    System.out.println(h8.getBlockName() + " was clicked");
+                }
+            }
+            
         }
     }
     

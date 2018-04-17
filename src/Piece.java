@@ -15,39 +15,63 @@ public class Piece {
          this.col = col;
          this.CurrentPos = CurrentPos;
          this.p = p;
-         PieceName = "P";
+         if(col == 1){
+            PieceName = "wP";
+         }else{
+             PieceName = "bP";
+         }
     }
     
     public Piece(int col, Bishop b){
          this.col = col;
          this.b = b;
-         PieceName = "B";
+         if(col == 1){
+            PieceName = "wB";
+         }else{
+             PieceName = "bB";
+         }
     }
     
     public Piece(int col, Knight kn){
          this.col = col;
          this.kn = kn;
-         PieceName = "Kn";
+         if(col == 1){
+            PieceName = "wKn";
+         }else{
+             PieceName = "bKn";
+         }
     }
     
     public Piece(int col, ChessBlock CurrentPos, Rook r){
          this.col = col;
          this.CurrentPos = CurrentPos;
          this.r = r;
-         PieceName = "R";
+         if(col == 1){
+            PieceName = "wR";
+         }else{
+             PieceName = "bR";
+         }
     }    
     
     public Piece(int col, Queen q){
          this.col = col;
          this.q = q;
-         PieceName = "Q";
+         if(col == 1){
+            PieceName = "wQ";
+         }else{
+             PieceName = "bQ";
+         }
     }    
     
     public Piece(int col, ChessBlock CurrentPos, King k){
          this.col = col;
          this.CurrentPos = CurrentPos;
          this.k = k;
-         PieceName = "K";
+         if(col == 1){
+            PieceName = "wK";
+         }else{
+             PieceName = "bK";
+         }
     }    
     
     public String getPieceName(){
