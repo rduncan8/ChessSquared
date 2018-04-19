@@ -1,11 +1,11 @@
 
 
-public class playerBlack extends Player{
-    int player;
-
-    public playerBlack(int playerNum) {
-        super(playerNum);
+public class playerBlack {
+    
+    private static final int player = 2;
+    
+    public playerBlack() {
+        ChessBoard chess = new ChessBoard(player);
     }
-
     
 }

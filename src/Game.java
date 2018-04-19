@@ -25,6 +25,10 @@ public class Game extends Screen {
     
     public static void main(String[] args)
     {
+        newGame();
+    }
+    
+    public static void newGame(){
         titleFrame = createFrame("Chess²");
         
         JButton exitButton = createButton("Exit", new ExitListener());
@@ -84,21 +88,37 @@ public class Game extends Screen {
         }
     }
     
+    
+    //Make this ask if player wants to play white or black
     public static class NewGameListener implements ActionListener
     {
         @Override
         public void actionPerformed(ActionEvent e)
         {            
-            titleFrame.setVisible(false);
+            Object[] options = {"White", "Black", "Cancel"};
+            int dialogResult = JOptionPane.showOptionDialog(null, 
+                    "Do you wish to play white or Black?", 
+                    "Pick a side.", JOptionPane.YES_NO_CANCEL_OPTION, 
+                    JOptionPane.YES_NO_CANCEL_OPTION, 
+                    null, options, options[0]);
             //ConnectionScreen screen = new ConnectionScreen();
-            ChessBoard chess = new ChessBoard();
+            if(dialogResult == 0){
+                playerWhite playerOne = new playerWhite();
+                titleFrame.setVisible(false);
+            }else if(dialogResult == 1){
+                playerBlack playerTwo = new playerBlack();
+                titleFrame.setVisible(false);
+            }
+            /*for(int counter = 0, maxCounter = options.length; counter<maxCounter;
+                    counter++){
+                if(options[counter].equals(0)){
+                   ChessBoard chess = new ChessBoard(); 
+                   titleFrame.setVisible(false);
+                }else if(options[counter].equals(1)){
+                    ChessBoard chess = new ChessBoard();
+                    titleFrame.setVisible(false);
+                }
+            }*/
         }
     }
-
-    public static void startGame() {
-     
-        
-        
-    }
-    
 }
