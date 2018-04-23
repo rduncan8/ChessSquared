@@ -17,8 +17,8 @@ import javax.swing.JPanel;
 
 
 
-public class Game extends Screen {
-    
+public class Game extends Screen 
+{    
     boolean checkMate;
     private static JFrame titleFrame;
     private static final int FONT_SIZE = 100;
@@ -28,7 +28,8 @@ public class Game extends Screen {
         newGame();
     }
     
-    public static void newGame(){
+    public static void newGame()
+    {
         titleFrame = createFrame("Chess²");
         
         JButton exitButton = createButton("Exit", new ExitListener());
@@ -88,7 +89,6 @@ public class Game extends Screen {
         }
     }
     
-    
     //Make this ask if player wants to play white or black
     public static class NewGameListener implements ActionListener
     {
@@ -102,11 +102,14 @@ public class Game extends Screen {
                     JOptionPane.YES_NO_CANCEL_OPTION, 
                     null, options, options[0]);
             //ConnectionScreen screen = new ConnectionScreen();
-            if(dialogResult == 0){
-                playerWhite playerOne = new playerWhite();
+            if(dialogResult == 0)
+            {
+                PlayerWhite playerOne = new PlayerWhite();
                 titleFrame.setVisible(false);
-            }else if(dialogResult == 1){
-                playerBlack playerTwo = new playerBlack();
+            } 
+            else if(dialogResult == 1)
+            {
+                PlayerBlack playerTwo = new PlayerBlack();
                 titleFrame.setVisible(false);
             }
             /*for(int counter = 0, maxCounter = options.length; counter<maxCounter;

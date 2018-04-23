@@ -1,34 +1,39 @@
 import javax.swing.*;
 
-public class ChessBlock {
-    Piece pce;
-    boolean hasPce;
-    JButton block;
-    String blockName;
+public class ChessBlock 
+{
+    private Piece piece;
+    public boolean hasPiece;
+    JButton button;
+    private String blockDescription;
     
-    public ChessBlock(Piece pce, JButton block, String blockName){
-        hasPce = true;
-        this.pce = pce;
-        this.block = block;
-        this.blockName = blockName;
+    public ChessBlock(String blockDescription, Piece piece, JButton button)
+    {
+        hasPiece = true;
+        this.blockDescription = blockDescription;
+        this.piece = piece;
+        this.button = button;
     }
     
-    public ChessBlock(JButton block, String blockName){
-        hasPce = false;
-        this.block = block;
-        this.blockName = blockName;
-    }    
-    
-    public Boolean hasPce(){
-        return hasPce;
+    public ChessBlock(String blockDescription, JButton button)
+    {
+        hasPiece = false;
+        this.blockDescription = blockDescription;
+        this.button = button;
     }
     
-    public String getPce(){
-        return pce.getPieceName();
+    public String getPieceName()
+    {
+        return piece.getPieceName();
     }
     
-    public String getBlockName(){
-        return blockName;
+    public String getBlockDescription()
+    {
+        return blockDescription;
     }
     
+    public Piece getPiece()
+    {
+        return piece;
+    }
 }

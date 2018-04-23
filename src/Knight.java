@@ -1,28 +1,35 @@
 
+import java.awt.Color;
 
-public class Knight implements PiecesInterface {
-    
-    public Knight(){
+public class Knight extends Piece implements PiecesInterface 
+{    
+    public Knight(Color color, ChessBlock startingPosition)
+    {
+        super(color, startingPosition);
+        pieceName = "knight";
     }
     
     @Override
-    public void move(int dir) {
+    public void move(ChessBlock position) 
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     @Override
-    public void moveDistance(int dis) {
+    public void moveDistance(int dis) 
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean canAttack() {
+    public boolean canAttack() 
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     @Override
-    public boolean inCheck() {
+    public boolean inCheck() 
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 }
