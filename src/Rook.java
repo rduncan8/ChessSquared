@@ -1,38 +1,37 @@
 
+import java.awt.Color;
 
-public class Rook implements PiecesInterface {
-    ChessBlock StartingPos;
-    
-    public Rook(ChessBlock StartingPos){
-        this.StartingPos = StartingPos;
-    }
 
-    @Override
-    public void move(int dir) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    @Override
-    public void moveDistance(int dis) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
+public class Rook extends Piece implements PiecesInterface 
+{    
+    public Rook(Color color, ChessBlock startingPosition)
+    {
+        super(color, startingPosition);
+        pieceName = "rook";
+    }
     @Override
-    public boolean canAttack() {
+    public boolean canAttack() 
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     @Override
-    public boolean inCheck() {
+    public boolean inCheck() 
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    public boolean canCastle(){
+    public boolean canCastle()
+    {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    public boolean hasMoved(){
-        return true;
+    public void castle()
+    {
+        //move the king left 3 squares and rook right 2 squares or move king right
+        //2 squares and rook left 2 squares (essentially swapping position of king and rook
+        // -can't happen through a threatened square
+        // -castle can only happen if the king and rook have not moved
     }
-    
 }

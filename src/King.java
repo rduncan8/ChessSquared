@@ -1,38 +1,32 @@
 
+import java.awt.Color;
 
-public class King implements PiecesInterface {
+public class King extends Piece implements PiecesInterface 
+{
     ChessBlock StartingPos;
     
-    public King(ChessBlock StartingPos){
-        this.StartingPos = StartingPos;
+    public King(Color color, ChessBlock startingPosition)
+    {
+        super(color, startingPosition);
+        pieceName = "king";
     }  
     
-    public void move(int dir){
-        
-    }
-    
     @Override
-    public void moveDistance(int dis) {
+    public boolean canAttack() 
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     @Override
-    public boolean canAttack() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    public boolean inCheck(){
+    public boolean inCheck()
+    {
         
         return true;
     }
     
-    public boolean canCastle(){
+    public boolean canCastle()
+    {
         
         return true;
-    }    
-    
-    public boolean hasMoved(){
-        return true;
     }
-    
 }
