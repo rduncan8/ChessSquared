@@ -12,18 +12,6 @@ public class King extends Piece implements PiecesInterface
     }  
     
     @Override
-    public void move(ChessBlock position)
-    {
-        
-    }
-    
-    @Override
-    public void moveDistance(int dis) 
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    @Override
     public boolean canAttack() 
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -39,11 +27,6 @@ public class King extends Piece implements PiecesInterface
     public boolean canCastle()
     {
         
-        return true;
-    }    
-    
-    public boolean hasMoved()
-    {
         return true;
     }
 }

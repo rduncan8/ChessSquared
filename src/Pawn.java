@@ -11,38 +11,6 @@ public class Pawn extends Piece implements PiecesInterface
         pieceName = "pawn";
     }
     
-    public String pieceImage()
-    {
-        return "";
-    }
-    
-    public boolean startPos()
-    {
-        if(true){
-            return true;
-        }else if(false){
-            return true;
-        }else{
-            return false;
-        }
-    }
-    
-    @Override
-    public void move(ChessBlock position)  
-    {
-        
-    }
-    
-    @Override
-    public void moveDistance(int dis) 
-    {
-        if( startPos())
-        {
-            
-        }
-        
-    }
-
     @Override
     public boolean canAttack() 
     {

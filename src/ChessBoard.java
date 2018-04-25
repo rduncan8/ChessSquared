@@ -2,14 +2,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.*;
 
 public class ChessBoard extends Screen
 {
     public int player;
-    public String blockName;
-    private boolean isPieceSelected = false;
+    private ChessBlock selectedBlock = null;
     private final Color white = Color.WHITE;
     private final Color black = Color.BLACK;
     
@@ -25,7 +25,7 @@ public class ChessBoard extends Screen
     private static final String bCOLS = "HGFEDCBA";
     private static final String ROWS = "12345678";
     
-    private static ChessBlock[][] board = new ChessBlock[8][8];
+    public static ChessBlock[][] board = new ChessBlock[8][8];
     
     private final Piece[] whitePawns = new Pawn[8];
     private final Piece[] whiteRooks = new Rook[2];
@@ -76,7 +76,6 @@ public class ChessBoard extends Screen
         tools.addSeparator();
         tools.add(message);
         
-
         theChessBoard = new JPanel(new GridLayout(0, 9));
         theChessBoard.setBorder(new LineBorder(Color.BLACK));
         gui.add(theChessBoard);
@@ -196,7 +195,166 @@ public class ChessBoard extends Screen
         }
     }
     
-    public void setUpPieces(int player){
+    public void setUpPieces(int player)
+    {    
+        createBlocks(player);
+        createPieces();
+        putPiecesOnBlocks();
+    }
+    
+    public void createBlocks(int player)
+    {
+        if(player == 1){
+            board[0][0] = new ChessBlock("A1", chessBoardSquares[0][0], 0, 0);
+            board[1][0] = new ChessBlock("B1", chessBoardSquares[1][0], 1, 0);
+            board[2][0] = new ChessBlock("C1", chessBoardSquares[2][0], 2, 0);
+            board[3][0] = new ChessBlock("D1", chessBoardSquares[3][0], 3, 0);
+            board[4][0] = new ChessBlock("E1", chessBoardSquares[4][0], 4, 0);
+            board[5][0] = new ChessBlock("F1", chessBoardSquares[5][0], 5, 0);
+            board[6][0] = new ChessBlock("G1", chessBoardSquares[6][0], 6, 0);
+            board[7][0] = new ChessBlock("H1", chessBoardSquares[7][0], 7, 0);
+            
+            board[0][1] = new ChessBlock("A2", chessBoardSquares[0][1], 0, 1);
+            board[1][1] = new ChessBlock("B2", chessBoardSquares[1][1], 1, 1);
+            board[2][1] = new ChessBlock("C2", chessBoardSquares[2][1], 2, 1);
+            board[3][1] = new ChessBlock("D2", chessBoardSquares[3][1], 3, 1);
+            board[4][1] = new ChessBlock("E2", chessBoardSquares[4][1], 4, 1);
+            board[5][1] = new ChessBlock("F2", chessBoardSquares[5][1], 5, 1);
+            board[6][1] = new ChessBlock("G2", chessBoardSquares[6][1], 6, 1);
+            board[7][1] = new ChessBlock("H2", chessBoardSquares[7][1], 7, 1);
+            
+            board[0][2] = new ChessBlock("A3", chessBoardSquares[0][2], 0, 2);
+            board[1][2] = new ChessBlock("B3", chessBoardSquares[1][2], 1, 2);
+            board[2][2] = new ChessBlock("C3", chessBoardSquares[2][2], 2, 2);
+            board[3][2] = new ChessBlock("D3", chessBoardSquares[3][2], 3, 2);
+            board[4][2] = new ChessBlock("E3", chessBoardSquares[4][2], 4, 2);
+            board[5][2] = new ChessBlock("F3", chessBoardSquares[5][2], 5, 2);
+            board[6][2] = new ChessBlock("G3", chessBoardSquares[6][2], 6, 2);
+            board[7][2] = new ChessBlock("H3", chessBoardSquares[7][2], 7, 2);
+            
+            board[0][3] = new ChessBlock("A4", chessBoardSquares[0][3], 0, 3);
+            board[1][3] = new ChessBlock("B4", chessBoardSquares[1][3], 1, 3);
+            board[2][3] = new ChessBlock("C4", chessBoardSquares[2][3], 2, 3);
+            board[3][3] = new ChessBlock("D4", chessBoardSquares[3][3], 3, 3);
+            board[4][3] = new ChessBlock("E4", chessBoardSquares[4][3], 4, 3);
+            board[5][3] = new ChessBlock("F4", chessBoardSquares[5][3], 5, 3);
+            board[6][3] = new ChessBlock("G4", chessBoardSquares[6][3], 6, 3);
+            board[7][3] = new ChessBlock("H4", chessBoardSquares[7][3], 7, 3);
+            
+            board[0][4] = new ChessBlock("A5", chessBoardSquares[0][4], 0, 4);
+            board[1][4] = new ChessBlock("B5", chessBoardSquares[1][4], 0, 4);
+            board[2][4] = new ChessBlock("C5", chessBoardSquares[2][4], 0, 4);
+            board[3][4] = new ChessBlock("D5", chessBoardSquares[3][4], 0, 4);
+            board[4][4] = new ChessBlock("E5", chessBoardSquares[4][4], 0, 4);
+            board[5][4] = new ChessBlock("F5", chessBoardSquares[5][4], 0, 4);
+            board[6][4] = new ChessBlock("G5", chessBoardSquares[6][4], 0, 4);
+            board[7][4] = new ChessBlock("H5", chessBoardSquares[7][4], 0, 4);
+            
+            board[0][5] = new ChessBlock("A6", chessBoardSquares[0][5], 0, 5);
+            board[1][5] = new ChessBlock("B6", chessBoardSquares[1][5], 1, 5);
+            board[2][5] = new ChessBlock("C6", chessBoardSquares[2][5], 2, 5);
+            board[3][5] = new ChessBlock("D6", chessBoardSquares[3][5], 3, 5);
+            board[4][5] = new ChessBlock("E6", chessBoardSquares[4][5], 4, 5);
+            board[5][5] = new ChessBlock("F6", chessBoardSquares[5][5], 5, 5);
+            board[6][5] = new ChessBlock("G6", chessBoardSquares[6][5], 6, 5);
+            board[7][5] = new ChessBlock("H6", chessBoardSquares[7][5], 7, 5);
+            
+            board[0][6] = new ChessBlock("A7", chessBoardSquares[0][6], 0, 6);
+            board[1][6] = new ChessBlock("B7", chessBoardSquares[1][6], 1, 6);
+            board[2][6] = new ChessBlock("C7", chessBoardSquares[2][6], 2, 6);
+            board[3][6] = new ChessBlock("D7", chessBoardSquares[3][6], 3, 6);
+            board[4][6] = new ChessBlock("E7", chessBoardSquares[4][6], 4, 6);
+            board[5][6] = new ChessBlock("F7", chessBoardSquares[5][6], 5, 6);
+            board[6][6] = new ChessBlock("G7", chessBoardSquares[6][6], 6, 6);
+            board[7][6] = new ChessBlock("H7", chessBoardSquares[7][6], 7, 6);
+                                                      
+            board[0][7] = new ChessBlock("A8", chessBoardSquares[0][7], 0, 7);
+            board[1][7] = new ChessBlock("B8", chessBoardSquares[1][7], 1, 7);
+            board[2][7] = new ChessBlock("C8", chessBoardSquares[2][7], 2, 7);
+            board[3][7] = new ChessBlock("D8", chessBoardSquares[3][7], 3, 7);
+            board[4][7] = new ChessBlock("E8", chessBoardSquares[4][7], 4, 7);
+            board[5][7] = new ChessBlock("F8", chessBoardSquares[5][7], 5, 7);
+            board[6][7] = new ChessBlock("G8", chessBoardSquares[6][7], 6, 7);
+            board[7][7] = new ChessBlock("H8", chessBoardSquares[7][7], 7, 7);
+        }
+        else if(player == 2)
+        {    
+            board[0][0] = new ChessBlock("A1", chessBoardSquares[7][7], 0, 0);
+            board[1][0] = new ChessBlock("B1", chessBoardSquares[6][7], 1, 0);
+            board[2][0] = new ChessBlock("C1", chessBoardSquares[5][7], 2, 0);
+            board[3][0] = new ChessBlock("D1", chessBoardSquares[4][7], 3, 0);
+            board[4][0] = new ChessBlock("E1", chessBoardSquares[3][7], 4, 0);
+            board[5][0] = new ChessBlock("F1", chessBoardSquares[2][7], 5, 0);
+            board[6][0] = new ChessBlock("G1", chessBoardSquares[1][7], 6, 0);
+            board[7][0] = new ChessBlock("H1", chessBoardSquares[0][7], 7, 0);
+            
+            board[0][1] = new ChessBlock("A2", chessBoardSquares[7][6], 0, 1);
+            board[1][1] = new ChessBlock("B2", chessBoardSquares[6][6], 1, 1);
+            board[2][1] = new ChessBlock("C2", chessBoardSquares[5][6], 2, 1);
+            board[3][1] = new ChessBlock("D2", chessBoardSquares[4][6], 3, 1);
+            board[4][1] = new ChessBlock("E2", chessBoardSquares[3][6], 4, 1);
+            board[5][1] = new ChessBlock("F2", chessBoardSquares[2][6], 5, 1);
+            board[6][1] = new ChessBlock("G2", chessBoardSquares[1][6], 6, 1);
+            board[7][1] = new ChessBlock("H2", chessBoardSquares[0][6], 7, 1);
+            
+            board[0][2] = new ChessBlock("A3", chessBoardSquares[7][2], 0, 2);
+            board[1][2] = new ChessBlock("B3", chessBoardSquares[6][2], 1, 2);
+            board[2][2] = new ChessBlock("C3", chessBoardSquares[5][2], 2, 2);
+            board[3][2] = new ChessBlock("D3", chessBoardSquares[4][2], 3, 2);
+            board[4][2] = new ChessBlock("E3", chessBoardSquares[3][2], 4, 2);
+            board[5][2] = new ChessBlock("F3", chessBoardSquares[2][2], 5, 2);
+            board[6][2] = new ChessBlock("G3", chessBoardSquares[1][2], 6, 2);
+            board[7][2] = new ChessBlock("H3", chessBoardSquares[0][2], 7, 2);
+            
+            board[0][3] = new ChessBlock("A4", chessBoardSquares[7][3], 0, 3);
+            board[1][3] = new ChessBlock("B4", chessBoardSquares[6][3], 1, 3);
+            board[2][3] = new ChessBlock("C4", chessBoardSquares[5][3], 2, 3);
+            board[3][3] = new ChessBlock("D4", chessBoardSquares[4][3], 3, 3);
+            board[4][3] = new ChessBlock("E4", chessBoardSquares[3][3], 4, 3);
+            board[5][3] = new ChessBlock("F4", chessBoardSquares[2][3], 5, 3);
+            board[6][3] = new ChessBlock("G4", chessBoardSquares[1][3], 6, 3);
+            board[7][3] = new ChessBlock("H4", chessBoardSquares[0][3], 7, 3);
+            
+            board[0][4] = new ChessBlock("A5", chessBoardSquares[7][4], 0, 4);
+            board[1][4] = new ChessBlock("B5", chessBoardSquares[6][4], 1, 4);
+            board[2][4] = new ChessBlock("C5", chessBoardSquares[5][4], 2, 4);
+            board[3][4] = new ChessBlock("D5", chessBoardSquares[4][4], 3, 4);
+            board[4][4] = new ChessBlock("E5", chessBoardSquares[3][4], 4, 4);
+            board[5][4] = new ChessBlock("F5", chessBoardSquares[2][4], 5, 4);
+            board[6][4] = new ChessBlock("G5", chessBoardSquares[1][4], 6, 4);
+            board[7][4] = new ChessBlock("H5", chessBoardSquares[0][4], 7, 4);
+            
+            board[0][5] = new ChessBlock("A6", chessBoardSquares[7][5], 0, 5);
+            board[1][5] = new ChessBlock("B6", chessBoardSquares[6][5], 1, 5);
+            board[2][5] = new ChessBlock("C6", chessBoardSquares[5][5], 2, 5);
+            board[3][5] = new ChessBlock("D6", chessBoardSquares[4][5], 3, 5);
+            board[4][5] = new ChessBlock("E6", chessBoardSquares[3][5], 4, 5);
+            board[5][5] = new ChessBlock("F6", chessBoardSquares[2][5], 5, 5);
+            board[6][5] = new ChessBlock("G6", chessBoardSquares[1][5], 6, 5);
+            board[7][5] = new ChessBlock("H6", chessBoardSquares[0][5], 7, 5);
+
+            board[0][6] = new ChessBlock("A7", chessBoardSquares[7][1], 0, 6);
+            board[1][6] = new ChessBlock("B7", chessBoardSquares[6][1], 1, 6);
+            board[2][6] = new ChessBlock("C7", chessBoardSquares[5][1], 2, 6);
+            board[3][6] = new ChessBlock("D7", chessBoardSquares[4][1], 3, 6);
+            board[4][6] = new ChessBlock("E7", chessBoardSquares[3][1], 4, 6);
+            board[5][6] = new ChessBlock("F7", chessBoardSquares[2][1], 5, 6);
+            board[6][6] = new ChessBlock("G7", chessBoardSquares[1][1], 6, 6);
+            board[7][6] = new ChessBlock("H7", chessBoardSquares[0][1], 7, 6);
+            
+            board[0][7] = new ChessBlock("A8", chessBoardSquares[7][0], 0, 7);
+            board[1][7] = new ChessBlock("B8", chessBoardSquares[6][0], 1, 7);
+            board[2][7] = new ChessBlock("C8", chessBoardSquares[5][0], 2, 7);
+            board[3][7] = new ChessBlock("D8", chessBoardSquares[4][0], 3, 7);
+            board[4][7] = new ChessBlock("E8", chessBoardSquares[3][0], 4, 7);
+            board[5][7] = new ChessBlock("F8", chessBoardSquares[2][0], 5, 7);
+            board[6][7] = new ChessBlock("G8", chessBoardSquares[1][0], 6, 7);
+            board[7][7] = new ChessBlock("H8", chessBoardSquares[0][0], 7, 7);
+        }
+    }
+    
+    public void createPieces()
+    {
         whitePawns[0] = new Pawn(white, board[0][1]);
         whitePawns[1] = new Pawn(white, board[1][1]);
         whitePawns[2] = new Pawn(white, board[2][1]);
@@ -230,154 +388,45 @@ public class ChessBoard extends Screen
         blackBishops[1] = new Bishop(black, board[5][7]);
         blackKing = new King(black, board[3][7]);
         blackQueen = new Queen(black, board[4][7]);
+    }
+    
+    public void putPiecesOnBlocks()
+    {
+        board[0][0].setPiece(whiteRooks[0]);
+        board[1][0].setPiece(whiteKnights[0]);
+        board[2][0].setPiece(whiteBishops[0]);
+        board[3][0].setPiece(whiteKing);
+        board[4][0].setPiece(whiteQueen);
+        board[5][0].setPiece(whiteBishops[1]);
+        board[6][0].setPiece(whiteKnights[1]);
+        board[7][0].setPiece(whiteRooks[1]);
         
-        if(player == 1){
-            board[0][0] = new ChessBlock("A1", whiteRooks[0], chessBoardSquares[0][0]);
-            board[1][0] = new ChessBlock("B1", whiteKnights[0], chessBoardSquares[1][0]);
-            board[2][0] = new ChessBlock("C1", whiteBishops[0], chessBoardSquares[2][0]);
-            board[3][0] = new ChessBlock("D1", whiteKing, chessBoardSquares[3][0]);
-            board[4][0] = new ChessBlock("E1", whiteQueen, chessBoardSquares[4][0]);
-            board[5][0] = new ChessBlock("F1", whiteBishops[1], chessBoardSquares[5][0]);
-            board[6][0] = new ChessBlock("G1", whiteKnights[1], chessBoardSquares[6][0]);
-            board[7][0] = new ChessBlock("H1", whiteRooks[1], chessBoardSquares[7][0]);
-            
-            board[0][1] = new ChessBlock("A2", whitePawns[0], chessBoardSquares[0][1]);
-            board[1][1] = new ChessBlock("B2", whitePawns[1], chessBoardSquares[1][1]);
-            board[2][1] = new ChessBlock("C2", whitePawns[2], chessBoardSquares[2][1]);
-            board[3][1] = new ChessBlock("D2", whitePawns[3], chessBoardSquares[3][1]);
-            board[4][1] = new ChessBlock("E2", whitePawns[4], chessBoardSquares[4][1]);
-            board[5][1] = new ChessBlock("F2", whitePawns[5], chessBoardSquares[5][1]);
-            board[6][1] = new ChessBlock("G2", whitePawns[6], chessBoardSquares[6][1]);
-            board[7][1] = new ChessBlock("H2", whitePawns[7], chessBoardSquares[7][1]);
-            
-            board[0][2] = new ChessBlock("A3", chessBoardSquares[0][2]);
-            board[1][2] = new ChessBlock("B3", chessBoardSquares[1][2]);
-            board[2][2] = new ChessBlock("C3", chessBoardSquares[2][2]);
-            board[3][2] = new ChessBlock("D3", chessBoardSquares[3][2]);
-            board[4][2] = new ChessBlock("E3", chessBoardSquares[4][2]);
-            board[5][2] = new ChessBlock("F3", chessBoardSquares[5][2]);
-            board[6][2] = new ChessBlock("G3", chessBoardSquares[6][2]);
-            board[7][2] = new ChessBlock("H3", chessBoardSquares[7][2]);
-            
-            board[0][3] = new ChessBlock("A4", chessBoardSquares[0][3]);
-            board[1][3] = new ChessBlock("B4", chessBoardSquares[1][3]);
-            board[2][3] = new ChessBlock("C4", chessBoardSquares[2][3]);
-            board[3][3] = new ChessBlock("D4", chessBoardSquares[3][3]);
-            board[4][3] = new ChessBlock("E4", chessBoardSquares[4][3]);
-            board[5][3] = new ChessBlock("F4", chessBoardSquares[5][3]);
-            board[6][3] = new ChessBlock("G4", chessBoardSquares[6][3]);
-            board[7][3] = new ChessBlock("H4", chessBoardSquares[7][3]);
-            
-            board[0][4] = new ChessBlock("A5", chessBoardSquares[0][4]);
-            board[1][4] = new ChessBlock("B5", chessBoardSquares[1][4]);
-            board[2][4] = new ChessBlock("C5", chessBoardSquares[2][4]);
-            board[3][4] = new ChessBlock("D5", chessBoardSquares[3][4]);
-            board[4][4] = new ChessBlock("E5", chessBoardSquares[4][4]);
-            board[5][4] = new ChessBlock("F5", chessBoardSquares[5][4]);
-            board[6][4] = new ChessBlock("G5", chessBoardSquares[6][4]);
-            board[7][4] = new ChessBlock("H5", chessBoardSquares[7][4]);
-            
-            board[0][5] = new ChessBlock("A6", chessBoardSquares[0][5]);
-            board[1][5] = new ChessBlock("B6", chessBoardSquares[1][5]);
-            board[2][5] = new ChessBlock("C6", chessBoardSquares[2][5]);
-            board[3][5] = new ChessBlock("D6", chessBoardSquares[3][5]);
-            board[4][5] = new ChessBlock("E6", chessBoardSquares[4][5]);
-            board[5][5] = new ChessBlock("F6", chessBoardSquares[5][5]);
-            board[6][5] = new ChessBlock("G6", chessBoardSquares[6][5]);
-            board[7][5] = new ChessBlock("H6", chessBoardSquares[7][5]);
-            
-            board[0][6] = new ChessBlock("A7", blackPawns[0], chessBoardSquares[0][6]);
-            board[1][6] = new ChessBlock("B7", blackPawns[1], chessBoardSquares[1][6]);
-            board[2][6] = new ChessBlock("C7", blackPawns[2], chessBoardSquares[2][6]);
-            board[3][6] = new ChessBlock("D7", blackPawns[3], chessBoardSquares[3][6]);
-            board[4][6] = new ChessBlock("E7", blackPawns[4], chessBoardSquares[4][6]);
-            board[5][6] = new ChessBlock("F7", blackPawns[5], chessBoardSquares[5][6]);
-            board[6][6] = new ChessBlock("G7", blackPawns[6], chessBoardSquares[6][6]);
-            board[7][6] = new ChessBlock("H7", blackPawns[7], chessBoardSquares[7][6]);
-            
-            board[0][7] = new ChessBlock("A8", blackRooks[0], chessBoardSquares[0][7]);
-            board[1][7] = new ChessBlock("B8", blackKnights[0], chessBoardSquares[1][7]);
-            board[2][7] = new ChessBlock("C8", blackBishops[0], chessBoardSquares[2][7]);
-            board[3][7] = new ChessBlock("D8", blackKing, chessBoardSquares[3][7]);
-            board[4][7] = new ChessBlock("E8", blackQueen, chessBoardSquares[4][7]);
-            board[5][7] = new ChessBlock("F8", blackBishops[1], chessBoardSquares[5][7]);
-            board[6][7] = new ChessBlock("G8", blackKnights[1], chessBoardSquares[6][7]);
-            board[7][7] = new ChessBlock("H8", blackRooks[1], chessBoardSquares[7][7]);
-            
-        }else if(player == 2){
-            
-            board[0][0] = new ChessBlock("A1", whiteRooks[0], chessBoardSquares[7][7]);
-            board[1][0] = new ChessBlock("B1", whiteKnights[0], chessBoardSquares[6][7]);
-            board[2][0] = new ChessBlock("C1", whiteBishops[0], chessBoardSquares[5][7]);
-            board[3][0] = new ChessBlock("D1", whiteKing, chessBoardSquares[4][7]);
-            board[4][0] = new ChessBlock("E1", whiteQueen, chessBoardSquares[3][7]);
-            board[5][0] = new ChessBlock("F1", whiteBishops[1], chessBoardSquares[2][7]);
-            board[6][0] = new ChessBlock("G1", whiteKnights[1], chessBoardSquares[1][7]);
-            board[7][0] = new ChessBlock("H1", whiteRooks[1], chessBoardSquares[0][7]);
-            
-            board[0][1] = new ChessBlock("A2", whitePawns[0], chessBoardSquares[7][6]);
-            board[1][1] = new ChessBlock("B2", whitePawns[1], chessBoardSquares[6][6]);
-            board[2][1] = new ChessBlock("C2", whitePawns[2], chessBoardSquares[5][6]);
-            board[3][1] = new ChessBlock("D2", whitePawns[3], chessBoardSquares[4][6]);
-            board[4][1] = new ChessBlock("E2", whitePawns[4], chessBoardSquares[3][6]);
-            board[5][1] = new ChessBlock("F2", whitePawns[5], chessBoardSquares[2][6]);
-            board[6][1] = new ChessBlock("G2", whitePawns[6], chessBoardSquares[1][6]);
-            board[7][1] = new ChessBlock("H2", whitePawns[7], chessBoardSquares[0][6]);
-            
-            board[0][2] = new ChessBlock("A3", chessBoardSquares[7][2]);
-            board[1][2] = new ChessBlock("B3", chessBoardSquares[6][2]);
-            board[2][2] = new ChessBlock("C3", chessBoardSquares[5][2]);
-            board[3][2] = new ChessBlock("D3", chessBoardSquares[4][2]);
-            board[4][2] = new ChessBlock("E3", chessBoardSquares[3][2]);
-            board[5][2] = new ChessBlock("F3", chessBoardSquares[2][2]);
-            board[6][2] = new ChessBlock("G3", chessBoardSquares[1][2]);
-            board[7][2] = new ChessBlock("H3", chessBoardSquares[0][2]);
-            
-            board[0][3] = new ChessBlock("A4", chessBoardSquares[7][3]);
-            board[1][3] = new ChessBlock("B4", chessBoardSquares[6][3]);
-            board[2][3] = new ChessBlock("C4", chessBoardSquares[5][3]);
-            board[3][3] = new ChessBlock("D4", chessBoardSquares[4][3]);
-            board[4][3] = new ChessBlock("E4", chessBoardSquares[3][3]);
-            board[5][3] = new ChessBlock("F4", chessBoardSquares[2][3]);
-            board[6][3] = new ChessBlock("G4", chessBoardSquares[1][3]);
-            board[7][3] = new ChessBlock("H4", chessBoardSquares[0][3]);
-            
-            board[0][4] = new ChessBlock("A5", chessBoardSquares[7][4]);
-            board[1][4] = new ChessBlock("B5", chessBoardSquares[6][4]);
-            board[2][4] = new ChessBlock("C5", chessBoardSquares[5][4]);
-            board[3][4] = new ChessBlock("D5", chessBoardSquares[4][4]);
-            board[4][4] = new ChessBlock("E5", chessBoardSquares[3][4]);
-            board[5][4] = new ChessBlock("F5", chessBoardSquares[2][4]);
-            board[6][4] = new ChessBlock("G5", chessBoardSquares[1][4]);
-            board[7][4] = new ChessBlock("H5", chessBoardSquares[0][4]);
-            
-            board[0][5] = new ChessBlock("A6", chessBoardSquares[7][5]);
-            board[1][5] = new ChessBlock("B6", chessBoardSquares[6][5]);
-            board[2][5] = new ChessBlock("C6", chessBoardSquares[5][5]);
-            board[3][5] = new ChessBlock("D6", chessBoardSquares[4][5]);
-            board[4][5] = new ChessBlock("E6", chessBoardSquares[3][5]);
-            board[5][5] = new ChessBlock("F6", chessBoardSquares[2][5]);
-            board[6][5] = new ChessBlock("G6", chessBoardSquares[1][5]);
-            board[7][5] = new ChessBlock("H6", chessBoardSquares[0][5]);
-
-            board[0][6] = new ChessBlock("A7", blackPawns[0], chessBoardSquares[7][1]);
-            board[1][6] = new ChessBlock("B7", blackPawns[1], chessBoardSquares[6][1]);
-            board[2][6] = new ChessBlock("C7", blackPawns[2], chessBoardSquares[5][1]);
-            board[3][6] = new ChessBlock("D7", blackPawns[3], chessBoardSquares[4][1]);
-            board[4][6] = new ChessBlock("E7", blackPawns[4], chessBoardSquares[3][1]);
-            board[5][6] = new ChessBlock("F7", blackPawns[5], chessBoardSquares[2][1]);
-            board[6][6] = new ChessBlock("G7", blackPawns[6], chessBoardSquares[1][1]);
-            board[7][6] = new ChessBlock("H7", blackPawns[7], chessBoardSquares[0][1]);
-            
-            board[0][7] = new ChessBlock("A8", blackRooks[0], chessBoardSquares[7][0]);
-            board[1][7] = new ChessBlock("B8", blackKnights[0], chessBoardSquares[6][0]);
-            board[2][7] = new ChessBlock("C8", blackBishops[0], chessBoardSquares[5][0]);
-            board[3][7] = new ChessBlock("D8", blackKing, chessBoardSquares[4][0]);
-            board[4][7] = new ChessBlock("E8", blackQueen, chessBoardSquares[3][0]);
-            board[5][7] = new ChessBlock("F8", blackBishops[1], chessBoardSquares[2][0]);
-            board[6][7] = new ChessBlock("G8", blackKnights[1], chessBoardSquares[1][0]);
-            board[7][7] = new ChessBlock("H8", blackRooks[0], chessBoardSquares[0][0]);
-        }
+        board[0][1].setPiece(whitePawns[0]);
+        board[1][1].setPiece(whitePawns[1]);
+        board[2][1].setPiece(whitePawns[2]);
+        board[3][1].setPiece(whitePawns[3]);
+        board[4][1].setPiece(whitePawns[4]);
+        board[5][1].setPiece(whitePawns[5]);
+        board[6][1].setPiece(whitePawns[6]);
+        board[7][1].setPiece(whitePawns[7]);
+        
+        board[0][6].setPiece(blackPawns[0]);
+        board[1][6].setPiece(blackPawns[1]);
+        board[2][6].setPiece(blackPawns[2]);
+        board[3][6].setPiece(blackPawns[3]);
+        board[4][6].setPiece(blackPawns[4]);
+        board[5][6].setPiece(blackPawns[5]);
+        board[6][6].setPiece(blackPawns[6]);
+        board[7][6].setPiece(blackPawns[7]);
+        
+        board[0][7].setPiece(blackRooks[0]);
+        board[1][7].setPiece(blackKnights[0]);
+        board[2][7].setPiece(blackBishops[0]);
+        board[3][7].setPiece(blackKing);
+        board[4][7].setPiece(blackQueen);
+        board[5][7].setPiece(blackBishops[1]);
+        board[6][7].setPiece(blackKnights[1]);
+        board[7][7].setPiece(blackRooks[1]);
     }
     
     public class toolsListener implements ActionListener
@@ -399,16 +448,153 @@ public class ChessBoard extends Screen
         
     }
     
-    private void pieceClicked(ChessBlock chessBlock)
+    private boolean isPieceSelected()
     {
-        if (chessBlock.hasPiece)
+        return selectedBlock != null;
+    }
+    
+    private void blockClicked(ChessBlock chessBlock)
+    {
+        if (chessBlock.hasPiece())
         {
-                System.out.println(chessBlock.getBlockDescription() + " has a " + chessBlock.getPiece().getColor() + " " + chessBlock.getPiece().getPieceName());
+            selectedBlock = chessBlock;
+            System.out.print(selectedBlock.getPiece().getPieceDescription() + " was selected");
+            ArrayList<ChessBlock> validMoves = getValidMoves();
+            if (validMoves.size() > 0)
+            {
+                validMoves.forEach(block -> System.out.print(", " + block.getBlockDescription()));
+                System.out.print(" are valid moves\r\n");
+            }
+            else
+            {
+                System.out.print(", there are no valid moves\r\n");
+            }
         }
         else
         {
-            System.out.println(chessBlock.getBlockDescription() + " is empty");
+            if (isPieceSelected())
+            {
+                if (chessBlock != selectedBlock)
+                {
+                    selectedBlock.getPiece().move(chessBlock);
+                    System.out.println(chessBlock.getPiece().getPieceDescription() + " (" + chessBlock.x + ", " + chessBlock.y + ") " + " was moved to " + chessBlock.getBlockDescription());
+                    selectedBlock = null;
+                }
+            }
+            else
+            {
+                System.out.println(chessBlock.getBlockDescription() + " was clicked, but no piece is selected");
+            }
         }
+    }
+    
+    private ArrayList<ChessBlock> getValidMoves()
+    {
+        ArrayList<ChessBlock> validMoves = new ArrayList<>();
+        
+        if (selectedBlock.getPiece().pieceName == "pawn")
+        {
+            validMoves = getValidPawnMoves();
+        }
+        else if (selectedBlock.getPiece().pieceName == "rook")
+        {
+            validMoves = getValidRookMoves();
+        }
+        else if (selectedBlock.getPiece().pieceName == "knight")
+        {
+            validMoves = getValidKnightMoves();
+        }
+        else if (selectedBlock.getPiece().pieceName == "bishop")
+        {
+            validMoves = getValidBishopMoves();
+        }
+        else if (selectedBlock.getPiece().pieceName == "queen")
+        {
+            validMoves = getValidQueenMoves();
+        }
+        else if (selectedBlock.getPiece().pieceName == "king")
+        {
+            validMoves = getValidKingMoves();
+        }
+        
+        return validMoves;
+    }
+    
+    private ArrayList<ChessBlock> getValidPawnMoves()
+    {
+        ArrayList<ChessBlock> validMoves = new ArrayList<>();
+        
+        if (selectedBlock.getPiece().color == Color.WHITE)
+        {
+            if (selectedBlock.y + 1 < 8)
+            {
+                if (!board[selectedBlock.x][selectedBlock.y + 1].hasPiece())
+                {
+                    validMoves.add(board[selectedBlock.x][selectedBlock.y + 1]);
+                }
+            }
+            
+            if (!selectedBlock.getPiece().hasMoved)
+            {
+                if (!board[selectedBlock.x][selectedBlock.y + 2].hasPiece())
+                {
+                    validMoves.add(board[selectedBlock.x][selectedBlock.y + 2]);
+                }
+            }
+        }
+        else
+        {
+            if (selectedBlock.y - 1 > 0)
+            {
+                if (!board[selectedBlock.x][selectedBlock.y - 1].hasPiece())
+                {
+                    validMoves.add(board[selectedBlock.x][selectedBlock.y - 1]);
+                }
+            }
+            
+            if (!selectedBlock.getPiece().hasMoved)
+            {
+                if (!board[selectedBlock.x][selectedBlock.y - 2].hasPiece())
+                {
+                    validMoves.add(board[selectedBlock.x][selectedBlock.y - 2]);
+                }
+            }
+        }
+        
+        return validMoves;
+    }
+    
+    private ArrayList<ChessBlock> getValidRookMoves()
+    {
+        ArrayList<ChessBlock> validMoves = new ArrayList<>();
+        
+        
+        
+        return validMoves;
+    }
+    
+    private ArrayList<ChessBlock> getValidKnightMoves()
+    {
+        ArrayList<ChessBlock> validMoves = new ArrayList<>();
+        return validMoves;
+    }
+    
+    private ArrayList<ChessBlock> getValidBishopMoves()
+    {
+        ArrayList<ChessBlock> validMoves = new ArrayList<>();
+        return validMoves;
+    }
+    
+    private ArrayList<ChessBlock> getValidQueenMoves()
+    {
+        ArrayList<ChessBlock> validMoves = new ArrayList<>();
+        return validMoves;
+    }
+    
+    private ArrayList<ChessBlock> getValidKingMoves()
+    {
+        ArrayList<ChessBlock> validMoves = new ArrayList<>();
+        return validMoves;
     }
     
     public class MovePieceListener implements ActionListener
@@ -418,264 +604,264 @@ public class ChessBoard extends Screen
         {
             if (player == 1){
                 if("00".equals(e.getActionCommand())){
-                    pieceClicked(board[0][0]);
+                    blockClicked(board[0][0]);
                 }else if("01".equals(e.getActionCommand())){
-                    pieceClicked(board[1][0]);
+                    blockClicked(board[1][0]);
                 }else if("02".equals(e.getActionCommand())){
-                    pieceClicked(board[2][0]);
+                    blockClicked(board[2][0]);
                 }else if("03".equals(e.getActionCommand())){
-                    pieceClicked(board[3][0]);
+                    blockClicked(board[3][0]);
                 }else if("04".equals(e.getActionCommand())){
-                    pieceClicked(board[4][0]);
+                    blockClicked(board[4][0]);
                 }else if("05".equals(e.getActionCommand())){
-                    pieceClicked(board[5][0]);
+                    blockClicked(board[5][0]);
                 }else if("06".equals(e.getActionCommand())){
-                    pieceClicked(board[6][0]);
+                    blockClicked(board[6][0]);
                 }else if("07".equals(e.getActionCommand())){
-                    pieceClicked(board[7][0]);
+                    blockClicked(board[7][0]);
                 }else if("10".equals(e.getActionCommand())){
-                    pieceClicked(board[0][1]);
+                    blockClicked(board[0][1]);
                 }else if("11".equals(e.getActionCommand())){
-                    pieceClicked(board[1][1]);
+                    blockClicked(board[1][1]);
                 }else if("12".equals(e.getActionCommand())){
-                    pieceClicked(board[2][1]);
+                    blockClicked(board[2][1]);
                 }else if("13".equals(e.getActionCommand())){
-                    pieceClicked(board[3][1]);
+                    blockClicked(board[3][1]);
                 }else if("14".equals(e.getActionCommand())){
-                    pieceClicked(board[4][1]);
+                    blockClicked(board[4][1]);
                 }else if("15".equals(e.getActionCommand())){
-                    pieceClicked(board[5][1]);
+                    blockClicked(board[5][1]);
                 }else if("16".equals(e.getActionCommand())){
-                    pieceClicked(board[6][1]);
+                    blockClicked(board[6][1]);
                 }else if("17".equals(e.getActionCommand())){
-                    pieceClicked(board[7][1]);
+                    blockClicked(board[7][1]);
                 }else if("20".equals(e.getActionCommand())){
-                    pieceClicked(board[0][2]);
+                    blockClicked(board[0][2]);
                 }else if("21".equals(e.getActionCommand())){
-                    pieceClicked(board[1][2]);
+                    blockClicked(board[1][2]);
                 }else if("22".equals(e.getActionCommand())){
-                    pieceClicked(board[2][2]);
+                    blockClicked(board[2][2]);
                 }else if("23".equals(e.getActionCommand())){
-                    pieceClicked(board[3][2]);
+                    blockClicked(board[3][2]);
                 }else if("24".equals(e.getActionCommand())){
-                    pieceClicked(board[4][2]);
+                    blockClicked(board[4][2]);
                 }else if("25".equals(e.getActionCommand())){
-                    pieceClicked(board[5][2]);
+                    blockClicked(board[5][2]);
                 }else if("26".equals(e.getActionCommand())){
-                    pieceClicked(board[6][2]);
+                    blockClicked(board[6][2]);
                 }else if("27".equals(e.getActionCommand())){
-                    pieceClicked(board[7][2]);
+                    blockClicked(board[7][2]);
                 }else if("30".equals(e.getActionCommand())){
-                    pieceClicked(board[0][3]);
+                    blockClicked(board[0][3]);
                 }else if("31".equals(e.getActionCommand())){
-                    pieceClicked(board[1][3]);
+                    blockClicked(board[1][3]);
                 }else if("32".equals(e.getActionCommand())){
-                    pieceClicked(board[2][3]);
+                    blockClicked(board[2][3]);
                 }else if("33".equals(e.getActionCommand())){
-                    pieceClicked(board[3][3]);
+                    blockClicked(board[3][3]);
                 }else if("34".equals(e.getActionCommand())){
-                    pieceClicked(board[4][3]);
+                    blockClicked(board[4][3]);
                 }else if("35".equals(e.getActionCommand())){
-                    pieceClicked(board[5][3]);
+                    blockClicked(board[5][3]);
                 }else if("36".equals(e.getActionCommand())){
-                    pieceClicked(board[6][3]);
+                    blockClicked(board[6][3]);
                 }else if("37".equals(e.getActionCommand())){
-                    pieceClicked(board[7][3]);
+                    blockClicked(board[7][3]);
                 }else if("40".equals(e.getActionCommand())){
-                    pieceClicked(board[0][4]);
+                    blockClicked(board[0][4]);
                 }else if("41".equals(e.getActionCommand())){
-                    pieceClicked(board[1][4]);
+                    blockClicked(board[1][4]);
                 }else if("42".equals(e.getActionCommand())){
-                    pieceClicked(board[2][4]);
+                    blockClicked(board[2][4]);
                 }else if("43".equals(e.getActionCommand())){
-                    pieceClicked(board[3][4]);
+                    blockClicked(board[3][4]);
                 }else if("44".equals(e.getActionCommand())){
-                    pieceClicked(board[4][4]);
+                    blockClicked(board[4][4]);
                 }else if("45".equals(e.getActionCommand())){
-                    pieceClicked(board[5][4]);
+                    blockClicked(board[5][4]);
                 }else if("46".equals(e.getActionCommand())){
-                    pieceClicked(board[6][4]);
+                    blockClicked(board[6][4]);
                 }else if("47".equals(e.getActionCommand())){
-                    pieceClicked(board[7][4]);
+                    blockClicked(board[7][4]);
                 }else if("50".equals(e.getActionCommand())){
-                    pieceClicked(board[0][5]);
+                    blockClicked(board[0][5]);
                 }else if("51".equals(e.getActionCommand())){
-                    pieceClicked(board[1][5]);
+                    blockClicked(board[1][5]);
                 }else if("52".equals(e.getActionCommand())){
-                    pieceClicked(board[2][5]);
+                    blockClicked(board[2][5]);
                 }else if("53".equals(e.getActionCommand())){
-                    pieceClicked(board[3][5]);
+                    blockClicked(board[3][5]);
                 }else if("54".equals(e.getActionCommand())){
-                    pieceClicked(board[4][5]);
+                    blockClicked(board[4][5]);
                 }else if("55".equals(e.getActionCommand())){
-                    pieceClicked(board[5][5]);
+                    blockClicked(board[5][5]);
                 }else if("56".equals(e.getActionCommand())){
-                    pieceClicked(board[6][5]);
+                    blockClicked(board[6][5]);
                 }else if("57".equals(e.getActionCommand())){
-                    pieceClicked(board[7][5]);
+                    blockClicked(board[7][5]);
                 }else if("60".equals(e.getActionCommand())){
-                    pieceClicked(board[0][6]);
+                    blockClicked(board[0][6]);
                 }else if("61".equals(e.getActionCommand())){
-                    pieceClicked(board[1][6]);
+                    blockClicked(board[1][6]);
                 }else if("62".equals(e.getActionCommand())){
-                    pieceClicked(board[2][6]);
+                    blockClicked(board[2][6]);
                 }else if("63".equals(e.getActionCommand())){
-                    pieceClicked(board[3][6]);
+                    blockClicked(board[3][6]);
                 }else if("64".equals(e.getActionCommand())){
-                    pieceClicked(board[4][6]);
+                    blockClicked(board[4][6]);
                 }else if("65".equals(e.getActionCommand())){
-                    pieceClicked(board[5][6]);
+                    blockClicked(board[5][6]);
                 }else if("66".equals(e.getActionCommand())){
-                    pieceClicked(board[6][6]);
+                    blockClicked(board[6][6]);
                 }else if("67".equals(e.getActionCommand())){
-                    pieceClicked(board[7][6]);
+                    blockClicked(board[7][6]);
                 }else if("70".equals(e.getActionCommand())){
-                    pieceClicked(board[0][7]);
+                    blockClicked(board[0][7]);
                 }else if("71".equals(e.getActionCommand())){
-                    pieceClicked(board[1][7]);
+                    blockClicked(board[1][7]);
                 }else if("72".equals(e.getActionCommand())){
-                    pieceClicked(board[2][7]);
+                    blockClicked(board[2][7]);
                 }else if("73".equals(e.getActionCommand())){
-                    pieceClicked(board[3][7]);
+                    blockClicked(board[3][7]);
                 }else if("74".equals(e.getActionCommand())){
-                    pieceClicked(board[4][7]);
+                    blockClicked(board[4][7]);
                 }else if("75".equals(e.getActionCommand())){
-                    pieceClicked(board[5][7]);
+                    blockClicked(board[5][7]);
                 }else if("76".equals(e.getActionCommand())){
-                    pieceClicked(board[6][7]);
+                    blockClicked(board[6][7]);
                 }else if("77".equals(e.getActionCommand())){
-                    pieceClicked(board[7][7]);
+                    blockClicked(board[7][7]);
                 }
             }else if (player == 2){
                 
                 if("77".equals(e.getActionCommand())){
-                    pieceClicked(board[0][0]);
+                    blockClicked(board[0][0]);
                 }else if("76".equals(e.getActionCommand())){
-                    pieceClicked(board[1][0]);
+                    blockClicked(board[1][0]);
                 }else if("75".equals(e.getActionCommand())){
-                    pieceClicked(board[2][0]);
+                    blockClicked(board[2][0]);
                 }else if("74".equals(e.getActionCommand())){
-                    pieceClicked(board[3][0]);
+                    blockClicked(board[3][0]);
                 }else if("73".equals(e.getActionCommand())){
-                    pieceClicked(board[4][0]);
+                    blockClicked(board[4][0]);
                 }else if("72".equals(e.getActionCommand())){
-                    pieceClicked(board[5][0]);
+                    blockClicked(board[5][0]);
                 }else if("71".equals(e.getActionCommand())){
-                    pieceClicked(board[6][0]);
+                    blockClicked(board[6][0]);
                 }else if("70".equals(e.getActionCommand())){
-                    pieceClicked(board[7][0]);
+                    blockClicked(board[7][0]);
                 }else if("67".equals(e.getActionCommand())){
-                    pieceClicked(board[0][1]);
+                    blockClicked(board[0][1]);
                 }else if("66".equals(e.getActionCommand())){
-                    pieceClicked(board[1][1]);
+                    blockClicked(board[1][1]);
                 }else if("65".equals(e.getActionCommand())){
-                    pieceClicked(board[2][1]);
+                    blockClicked(board[2][1]);
                 }else if("64".equals(e.getActionCommand())){
-                    pieceClicked(board[3][1]);
+                    blockClicked(board[3][1]);
                 }else if("63".equals(e.getActionCommand())){
-                    pieceClicked(board[4][1]);
+                    blockClicked(board[4][1]);
                 }else if("62".equals(e.getActionCommand())){
-                    pieceClicked(board[5][1]);
+                    blockClicked(board[5][1]);
                 }else if("61".equals(e.getActionCommand())){
-                    pieceClicked(board[6][1]);
+                    blockClicked(board[6][1]);
                 }else if("60".equals(e.getActionCommand())){
-                    pieceClicked(board[7][1]);
+                    blockClicked(board[7][1]);
                 }else if("57".equals(e.getActionCommand())){
-                    pieceClicked(board[0][2]);
+                    blockClicked(board[0][2]);
                 }else if("56".equals(e.getActionCommand())){
-                    pieceClicked(board[1][2]);
+                    blockClicked(board[1][2]);
                 }else if("55".equals(e.getActionCommand())){
-                    pieceClicked(board[2][2]);
+                    blockClicked(board[2][2]);
                 }else if("54".equals(e.getActionCommand())){
-                    pieceClicked(board[3][2]);
+                    blockClicked(board[3][2]);
                 }else if("53".equals(e.getActionCommand())){
-                    pieceClicked(board[4][2]);
+                    blockClicked(board[4][2]);
                 }else if("52".equals(e.getActionCommand())){
-                    pieceClicked(board[5][2]);
+                    blockClicked(board[5][2]);
                 }else if("51".equals(e.getActionCommand())){
-                    pieceClicked(board[6][2]);
+                    blockClicked(board[6][2]);
                 }else if("50".equals(e.getActionCommand())){
-                    pieceClicked(board[7][2]);
+                    blockClicked(board[7][2]);
                 }else if("47".equals(e.getActionCommand())){
-                    pieceClicked(board[0][3]);
+                    blockClicked(board[0][3]);
                 }else if("46".equals(e.getActionCommand())){
-                    pieceClicked(board[1][3]);
+                    blockClicked(board[1][3]);
                 }else if("45".equals(e.getActionCommand())){
-                    pieceClicked(board[2][3]);
+                    blockClicked(board[2][3]);
                 }else if("44".equals(e.getActionCommand())){
-                    pieceClicked(board[3][3]);
+                    blockClicked(board[3][3]);
                 }else if("43".equals(e.getActionCommand())){
-                    pieceClicked(board[4][3]);
+                    blockClicked(board[4][3]);
                 }else if("42".equals(e.getActionCommand())){
-                    pieceClicked(board[5][3]);
+                    blockClicked(board[5][3]);
                 }else if("41".equals(e.getActionCommand())){
-                    pieceClicked(board[6][3]);
+                    blockClicked(board[6][3]);
                 }else if("40".equals(e.getActionCommand())){
-                    pieceClicked(board[7][3]);
+                    blockClicked(board[7][3]);
                 }else if("37".equals(e.getActionCommand())){
-                    pieceClicked(board[0][4]);
+                    blockClicked(board[0][4]);
                 }else if("36".equals(e.getActionCommand())){
-                    pieceClicked(board[1][4]);
+                    blockClicked(board[1][4]);
                 }else if("35".equals(e.getActionCommand())){
-                    pieceClicked(board[2][4]);
+                    blockClicked(board[2][4]);
                 }else if("34".equals(e.getActionCommand())){
-                    pieceClicked(board[3][4]);
+                    blockClicked(board[3][4]);
                 }else if("33".equals(e.getActionCommand())){
-                    pieceClicked(board[4][4]);
+                    blockClicked(board[4][4]);
                 }else if("32".equals(e.getActionCommand())){
-                    pieceClicked(board[5][4]);
+                    blockClicked(board[5][4]);
                 }else if("31".equals(e.getActionCommand())){
-                    pieceClicked(board[6][4]);
+                    blockClicked(board[6][4]);
                 }else if("30".equals(e.getActionCommand())){
-                    pieceClicked(board[7][4]);
+                    blockClicked(board[7][4]);
                 }else if("27".equals(e.getActionCommand())){
-                    pieceClicked(board[0][5]);
+                    blockClicked(board[0][5]);
                 }else if("26".equals(e.getActionCommand())){
-                    pieceClicked(board[1][5]);
+                    blockClicked(board[1][5]);
                 }else if("25".equals(e.getActionCommand())){
-                    pieceClicked(board[2][5]);
+                    blockClicked(board[2][5]);
                 }else if("24".equals(e.getActionCommand())){
-                    pieceClicked(board[3][5]);
+                    blockClicked(board[3][5]);
                 }else if("23".equals(e.getActionCommand())){
-                    pieceClicked(board[4][5]);
+                    blockClicked(board[4][5]);
                 }else if("22".equals(e.getActionCommand())){
-                    pieceClicked(board[5][5]);
+                    blockClicked(board[5][5]);
                 }else if("21".equals(e.getActionCommand())){
-                    pieceClicked(board[6][5]);
+                    blockClicked(board[6][5]);
                 }else if("20".equals(e.getActionCommand())){
-                    pieceClicked(board[7][5]);
+                    blockClicked(board[7][5]);
                 }else if("17".equals(e.getActionCommand())){
-                    pieceClicked(board[0][6]);
+                    blockClicked(board[0][6]);
                 }else if("16".equals(e.getActionCommand())){
-                    pieceClicked(board[1][6]);
+                    blockClicked(board[1][6]);
                 }else if("15".equals(e.getActionCommand())){
-                    pieceClicked(board[2][6]);
+                    blockClicked(board[2][6]);
                 }else if("14".equals(e.getActionCommand())){
-                    pieceClicked(board[3][6]);
+                    blockClicked(board[3][6]);
                 }else if("13".equals(e.getActionCommand())){
-                    pieceClicked(board[4][6]);
+                    blockClicked(board[4][6]);
                 }else if("12".equals(e.getActionCommand())){
-                    pieceClicked(board[5][6]);
+                    blockClicked(board[5][6]);
                 }else if("11".equals(e.getActionCommand())){
-                    pieceClicked(board[6][6]);
+                    blockClicked(board[6][6]);
                 }else if("10".equals(e.getActionCommand())){
-                    pieceClicked(board[7][6]);
+                    blockClicked(board[7][6]);
                 }else if("07".equals(e.getActionCommand())){
-                    pieceClicked(board[0][7]);
+                    blockClicked(board[0][7]);
                 }else if("06".equals(e.getActionCommand())){
-                    pieceClicked(board[1][7]);
+                    blockClicked(board[1][7]);
                 }else if("05".equals(e.getActionCommand())){
-                    pieceClicked(board[2][7]);
+                    blockClicked(board[2][7]);
                 }else if("04".equals(e.getActionCommand())){
-                    pieceClicked(board[3][7]);
+                    blockClicked(board[3][7]);
                 }else if("03".equals(e.getActionCommand())){
-                    pieceClicked(board[4][7]);
+                    blockClicked(board[4][7]);
                 }else if("02".equals(e.getActionCommand())){
-                    pieceClicked(board[5][7]);
+                    blockClicked(board[5][7]);
                 }else if("01".equals(e.getActionCommand())){
-                    pieceClicked(board[6][7]);
+                    blockClicked(board[6][7]);
                 }else if("00".equals(e.getActionCommand())){
-                    pieceClicked(board[7][7]);
+                    blockClicked(board[7][7]);
                 }
             }
         }

@@ -1,15 +1,13 @@
 
 import java.awt.Color;
 
-
-
-public class Piece 
+public class Piece
 {
-    private final Color color;
-    private ChessBlock currentPosition;
-    private final ChessBlock startingPosition;
-    public boolean isPieceSelected;
+    protected final Color color;
+    protected ChessBlock currentPosition;
+    protected final ChessBlock startingPosition;
     protected String pieceName;
+    protected boolean hasMoved = false;
     
     public Piece(Color color, ChessBlock startingPosition)
     {
@@ -18,7 +16,15 @@ public class Piece
          currentPosition = startingPosition;
     }
     
-    public Color getColor()
+    public void move(ChessBlock position)
+    {
+        position.setPiece(currentPosition.getPiece());
+        currentPosition.setPiece(null);
+        currentPosition = position;
+        hasMoved = true;
+    }
+    
+    public Color getPieceColor()
     {
         return color;
     }
@@ -43,8 +49,15 @@ public class Piece
         currentPosition = position;
     }
     
-    public String getPieceName()
+    public String getPieceDescription()
     {
-        return pieceName;
+        if (color == Color.BLACK)
+        {
+            return "Black" + pieceName;
+        }
+        else
+        {
+            return "White" + pieceName;
+        }
     }
 }

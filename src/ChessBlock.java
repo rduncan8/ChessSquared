@@ -2,29 +2,18 @@ import javax.swing.*;
 
 public class ChessBlock 
 {
-    private Piece piece;
-    public boolean hasPiece;
+    private Piece piece = null;
     JButton button;
     private String blockDescription;
+    public int x;
+    public int y;
     
-    public ChessBlock(String blockDescription, Piece piece, JButton button)
+    public ChessBlock(String blockDescription, JButton button, int x, int y)
     {
-        hasPiece = true;
-        this.blockDescription = blockDescription;
-        this.piece = piece;
-        this.button = button;
-    }
-    
-    public ChessBlock(String blockDescription, JButton button)
-    {
-        hasPiece = false;
         this.blockDescription = blockDescription;
         this.button = button;
-    }
-    
-    public String getPieceName()
-    {
-        return piece.getPieceName();
+        this.x = x;
+        this.y = y;
     }
     
     public String getBlockDescription()
@@ -32,8 +21,18 @@ public class ChessBlock
         return blockDescription;
     }
     
+    public void setPiece(Piece piece)
+    {
+        this.piece = piece;
+    }
+    
     public Piece getPiece()
     {
         return piece;
+    }
+    
+    public boolean hasPiece()
+    {
+        return piece != null;
     }
 }

@@ -10,19 +10,6 @@ public class Rook extends Piece implements PiecesInterface
         super(color, startingPosition);
         pieceName = "rook";
     }
-
-    @Override
-    public void move(ChessBlock position) 
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    @Override
-    public void moveDistance(int dis) 
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     @Override
     public boolean canAttack() 
     {
@@ -38,11 +25,6 @@ public class Rook extends Piece implements PiecesInterface
     public boolean canCastle()
     {
         throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
-    public boolean hasMoved()
-    {
-        return true;
     }
     
     public void castle()

@@ -8,18 +8,6 @@ public class Knight extends Piece implements PiecesInterface
         super(color, startingPosition);
         pieceName = "knight";
     }
-    
-    @Override
-    public void move(ChessBlock position) 
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    @Override
-    public void moveDistance(int dis) 
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public boolean canAttack() 
