@@ -1,5 +1,6 @@
 
 import java.awt.Color;
+import javax.swing.ImageIcon;
 
 public class Piece
 {
@@ -22,6 +23,11 @@ public class Piece
         currentPosition.setPiece(null);
         currentPosition = position;
         hasMoved = true;
+    }
+    
+    public ImageIcon getPieceIcon()
+    {
+        return new ImageIcon();
     }
     
     public Color getPieceColor()

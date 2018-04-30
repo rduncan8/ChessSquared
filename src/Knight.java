@@ -1,5 +1,6 @@
 
 import java.awt.Color;
+import javax.swing.ImageIcon;
 
 public class Knight extends Piece implements PiecesInterface 
 {    
@@ -8,16 +9,17 @@ public class Knight extends Piece implements PiecesInterface
         super(color, startingPosition);
         pieceName = "knight";
     }
-
-    @Override
-    public boolean canAttack() 
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
     @Override
-    public boolean inCheck() 
+    public ImageIcon getPieceIcon() 
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (color == Color.WHITE)
+        {
+            return new ImageIcon(getClass().getResource("resources/White_Knight.png"));
+        }
+        else
+        {
+            return new ImageIcon(getClass().getResource("resources/Black_Knight.png"));
+        }
     }
 }
