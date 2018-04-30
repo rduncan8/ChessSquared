@@ -1,5 +1,6 @@
 
 import java.awt.Color;
+import javax.swing.ImageIcon;
 
 public class Queen extends Piece implements PiecesInterface 
 {    
@@ -10,14 +11,15 @@ public class Queen extends Piece implements PiecesInterface
     }
 
     @Override
-    public boolean canAttack() 
+    public ImageIcon getPieceIcon() 
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    @Override
-    public boolean inCheck() 
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (color == Color.WHITE)
+        {
+            return new ImageIcon(getClass().getResource("resources/White_Queen.png"));
+        }
+        else
+        {
+            return new ImageIcon(getClass().getResource("resources/Black_Queen.png"));
+        }
     }
 }

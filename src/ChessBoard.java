@@ -9,9 +9,17 @@ import javax.swing.border.*;
 public class ChessBoard extends Screen
 {
     public int player;
+    private int turn;
     private ChessBlock selectedBlock = null;
     private final Color white = Color.WHITE;
     private final Color black = Color.BLACK;
+    private final Color buttonColor1 = new Color(0, 130, 0);
+    private final Color buttonColor2 = new Color(255, 255, 255);
+    private ArrayList<ChessBlock> possibleMoves = new ArrayList<>();
+    private ArrayList<ChessBlock> possibleCaptures = new ArrayList<>();
+    private ArrayList<ChessBlock> dangerousBlocksForWhite = new ArrayList<>();
+    private ArrayList<ChessBlock> dangerousBlocksForBlack = new ArrayList<>();
+    private boolean gameOver = false;
     
     public PlayerWhite pWhite;
     public PlayerBlack pBlack;
@@ -31,19 +39,23 @@ public class ChessBoard extends Screen
     private final Piece[] whiteRooks = new Rook[2];
     private final Piece[] whiteKnights = new Knight[2];
     private final Piece[] whiteBishops = new Bishop[2];
-    private Piece whiteKing;
     private Piece whiteQueen;
+    private Piece whiteKing;
+    private ArrayList<Piece> whitePieces = new ArrayList<>();
+    
     
     private final Piece[] blackPawns = new Pawn[8];
     private final Piece[] blackRooks = new Rook[2];
     private final Piece[] blackKnights = new Knight[2];
     private final Piece[] blackBishops = new Bishop[2];
-    private Piece blackKing;
     private Piece blackQueen;
+    private Piece blackKing;
+    private ArrayList<Piece> blackPieces = new ArrayList<>();
     
     public ChessBoard(int player) 
     {
         this.player = player;
+        turn = player;
         createGUI(player);
         frame.add(gui);
         frame.setVisible(true);
@@ -205,151 +217,151 @@ public class ChessBoard extends Screen
     public void createBlocks(int player)
     {
         if(player == 1){
-            board[0][0] = new ChessBlock("A1", chessBoardSquares[0][0], 0, 0);
-            board[1][0] = new ChessBlock("B1", chessBoardSquares[1][0], 1, 0);
-            board[2][0] = new ChessBlock("C1", chessBoardSquares[2][0], 2, 0);
-            board[3][0] = new ChessBlock("D1", chessBoardSquares[3][0], 3, 0);
-            board[4][0] = new ChessBlock("E1", chessBoardSquares[4][0], 4, 0);
-            board[5][0] = new ChessBlock("F1", chessBoardSquares[5][0], 5, 0);
-            board[6][0] = new ChessBlock("G1", chessBoardSquares[6][0], 6, 0);
-            board[7][0] = new ChessBlock("H1", chessBoardSquares[7][0], 7, 0);
+            board[0][0] = new ChessBlock("A1", chessBoardSquares[0][7], 0, 0, buttonColor1);
+            board[1][0] = new ChessBlock("B1", chessBoardSquares[1][7], 1, 0, buttonColor2);
+            board[2][0] = new ChessBlock("C1", chessBoardSquares[2][7], 2, 0, buttonColor1);
+            board[3][0] = new ChessBlock("D1", chessBoardSquares[3][7], 3, 0, buttonColor2);
+            board[4][0] = new ChessBlock("E1", chessBoardSquares[4][7], 4, 0, buttonColor1);
+            board[5][0] = new ChessBlock("F1", chessBoardSquares[5][7], 5, 0, buttonColor2);
+            board[6][0] = new ChessBlock("G1", chessBoardSquares[6][7], 6, 0, buttonColor1);
+            board[7][0] = new ChessBlock("H1", chessBoardSquares[7][7], 7, 0, buttonColor2);
             
-            board[0][1] = new ChessBlock("A2", chessBoardSquares[0][1], 0, 1);
-            board[1][1] = new ChessBlock("B2", chessBoardSquares[1][1], 1, 1);
-            board[2][1] = new ChessBlock("C2", chessBoardSquares[2][1], 2, 1);
-            board[3][1] = new ChessBlock("D2", chessBoardSquares[3][1], 3, 1);
-            board[4][1] = new ChessBlock("E2", chessBoardSquares[4][1], 4, 1);
-            board[5][1] = new ChessBlock("F2", chessBoardSquares[5][1], 5, 1);
-            board[6][1] = new ChessBlock("G2", chessBoardSquares[6][1], 6, 1);
-            board[7][1] = new ChessBlock("H2", chessBoardSquares[7][1], 7, 1);
+            board[0][1] = new ChessBlock("A2", chessBoardSquares[0][6], 0, 1, buttonColor2);
+            board[1][1] = new ChessBlock("B2", chessBoardSquares[1][6], 1, 1, buttonColor1);
+            board[2][1] = new ChessBlock("C2", chessBoardSquares[2][6], 2, 1, buttonColor2);
+            board[3][1] = new ChessBlock("D2", chessBoardSquares[3][6], 3, 1, buttonColor1);
+            board[4][1] = new ChessBlock("E2", chessBoardSquares[4][6], 4, 1, buttonColor2);
+            board[5][1] = new ChessBlock("F2", chessBoardSquares[5][6], 5, 1, buttonColor1);
+            board[6][1] = new ChessBlock("G2", chessBoardSquares[6][6], 6, 1, buttonColor2);
+            board[7][1] = new ChessBlock("H2", chessBoardSquares[7][6], 7, 1, buttonColor1);
             
-            board[0][2] = new ChessBlock("A3", chessBoardSquares[0][2], 0, 2);
-            board[1][2] = new ChessBlock("B3", chessBoardSquares[1][2], 1, 2);
-            board[2][2] = new ChessBlock("C3", chessBoardSquares[2][2], 2, 2);
-            board[3][2] = new ChessBlock("D3", chessBoardSquares[3][2], 3, 2);
-            board[4][2] = new ChessBlock("E3", chessBoardSquares[4][2], 4, 2);
-            board[5][2] = new ChessBlock("F3", chessBoardSquares[5][2], 5, 2);
-            board[6][2] = new ChessBlock("G3", chessBoardSquares[6][2], 6, 2);
-            board[7][2] = new ChessBlock("H3", chessBoardSquares[7][2], 7, 2);
+            board[0][2] = new ChessBlock("A3", chessBoardSquares[0][5], 0, 2, buttonColor1);
+            board[1][2] = new ChessBlock("B3", chessBoardSquares[1][5], 1, 2, buttonColor2);
+            board[2][2] = new ChessBlock("C3", chessBoardSquares[2][5], 2, 2, buttonColor1);
+            board[3][2] = new ChessBlock("D3", chessBoardSquares[3][5], 3, 2, buttonColor2);
+            board[4][2] = new ChessBlock("E3", chessBoardSquares[4][5], 4, 2, buttonColor1);
+            board[5][2] = new ChessBlock("F3", chessBoardSquares[5][5], 5, 2, buttonColor2);
+            board[6][2] = new ChessBlock("G3", chessBoardSquares[6][5], 6, 2, buttonColor1);
+            board[7][2] = new ChessBlock("H3", chessBoardSquares[7][5], 7, 2, buttonColor2);
             
-            board[0][3] = new ChessBlock("A4", chessBoardSquares[0][3], 0, 3);
-            board[1][3] = new ChessBlock("B4", chessBoardSquares[1][3], 1, 3);
-            board[2][3] = new ChessBlock("C4", chessBoardSquares[2][3], 2, 3);
-            board[3][3] = new ChessBlock("D4", chessBoardSquares[3][3], 3, 3);
-            board[4][3] = new ChessBlock("E4", chessBoardSquares[4][3], 4, 3);
-            board[5][3] = new ChessBlock("F4", chessBoardSquares[5][3], 5, 3);
-            board[6][3] = new ChessBlock("G4", chessBoardSquares[6][3], 6, 3);
-            board[7][3] = new ChessBlock("H4", chessBoardSquares[7][3], 7, 3);
+            board[0][3] = new ChessBlock("A4", chessBoardSquares[0][4], 0, 3, buttonColor2);
+            board[1][3] = new ChessBlock("B4", chessBoardSquares[1][4], 1, 3, buttonColor1);
+            board[2][3] = new ChessBlock("C4", chessBoardSquares[2][4], 2, 3, buttonColor2);
+            board[3][3] = new ChessBlock("D4", chessBoardSquares[3][4], 3, 3, buttonColor1);
+            board[4][3] = new ChessBlock("E4", chessBoardSquares[4][4], 4, 3, buttonColor2);
+            board[5][3] = new ChessBlock("F4", chessBoardSquares[5][4], 5, 3, buttonColor1);
+            board[6][3] = new ChessBlock("G4", chessBoardSquares[6][4], 6, 3, buttonColor2);
+            board[7][3] = new ChessBlock("H4", chessBoardSquares[7][4], 7, 3, buttonColor1);
             
-            board[0][4] = new ChessBlock("A5", chessBoardSquares[0][4], 0, 4);
-            board[1][4] = new ChessBlock("B5", chessBoardSquares[1][4], 0, 4);
-            board[2][4] = new ChessBlock("C5", chessBoardSquares[2][4], 0, 4);
-            board[3][4] = new ChessBlock("D5", chessBoardSquares[3][4], 0, 4);
-            board[4][4] = new ChessBlock("E5", chessBoardSquares[4][4], 0, 4);
-            board[5][4] = new ChessBlock("F5", chessBoardSquares[5][4], 0, 4);
-            board[6][4] = new ChessBlock("G5", chessBoardSquares[6][4], 0, 4);
-            board[7][4] = new ChessBlock("H5", chessBoardSquares[7][4], 0, 4);
+            board[0][4] = new ChessBlock("A5", chessBoardSquares[0][3], 0, 4, buttonColor1);
+            board[1][4] = new ChessBlock("B5", chessBoardSquares[1][3], 1, 4, buttonColor2);
+            board[2][4] = new ChessBlock("C5", chessBoardSquares[2][3], 2, 4, buttonColor1);
+            board[3][4] = new ChessBlock("D5", chessBoardSquares[3][3], 3, 4, buttonColor2);
+            board[4][4] = new ChessBlock("E5", chessBoardSquares[4][3], 4, 4, buttonColor1);
+            board[5][4] = new ChessBlock("F5", chessBoardSquares[5][3], 5, 4, buttonColor2);
+            board[6][4] = new ChessBlock("G5", chessBoardSquares[6][3], 6, 4, buttonColor1);
+            board[7][4] = new ChessBlock("H5", chessBoardSquares[7][3], 7, 4, buttonColor2);
             
-            board[0][5] = new ChessBlock("A6", chessBoardSquares[0][5], 0, 5);
-            board[1][5] = new ChessBlock("B6", chessBoardSquares[1][5], 1, 5);
-            board[2][5] = new ChessBlock("C6", chessBoardSquares[2][5], 2, 5);
-            board[3][5] = new ChessBlock("D6", chessBoardSquares[3][5], 3, 5);
-            board[4][5] = new ChessBlock("E6", chessBoardSquares[4][5], 4, 5);
-            board[5][5] = new ChessBlock("F6", chessBoardSquares[5][5], 5, 5);
-            board[6][5] = new ChessBlock("G6", chessBoardSquares[6][5], 6, 5);
-            board[7][5] = new ChessBlock("H6", chessBoardSquares[7][5], 7, 5);
+            board[0][5] = new ChessBlock("A6", chessBoardSquares[0][2], 0, 5, buttonColor2);
+            board[1][5] = new ChessBlock("B6", chessBoardSquares[1][2], 1, 5, buttonColor1);
+            board[2][5] = new ChessBlock("C6", chessBoardSquares[2][2], 2, 5, buttonColor2);
+            board[3][5] = new ChessBlock("D6", chessBoardSquares[3][2], 3, 5, buttonColor1);
+            board[4][5] = new ChessBlock("E6", chessBoardSquares[4][2], 4, 5, buttonColor2);
+            board[5][5] = new ChessBlock("F6", chessBoardSquares[5][2], 5, 5, buttonColor1);
+            board[6][5] = new ChessBlock("G6", chessBoardSquares[6][2], 6, 5, buttonColor2);
+            board[7][5] = new ChessBlock("H6", chessBoardSquares[7][2], 7, 5, buttonColor1);
             
-            board[0][6] = new ChessBlock("A7", chessBoardSquares[0][6], 0, 6);
-            board[1][6] = new ChessBlock("B7", chessBoardSquares[1][6], 1, 6);
-            board[2][6] = new ChessBlock("C7", chessBoardSquares[2][6], 2, 6);
-            board[3][6] = new ChessBlock("D7", chessBoardSquares[3][6], 3, 6);
-            board[4][6] = new ChessBlock("E7", chessBoardSquares[4][6], 4, 6);
-            board[5][6] = new ChessBlock("F7", chessBoardSquares[5][6], 5, 6);
-            board[6][6] = new ChessBlock("G7", chessBoardSquares[6][6], 6, 6);
-            board[7][6] = new ChessBlock("H7", chessBoardSquares[7][6], 7, 6);
+            board[0][6] = new ChessBlock("A7", chessBoardSquares[0][1], 0, 6, buttonColor1);
+            board[1][6] = new ChessBlock("B7", chessBoardSquares[1][1], 1, 6, buttonColor2);
+            board[2][6] = new ChessBlock("C7", chessBoardSquares[2][1], 2, 6, buttonColor1);
+            board[3][6] = new ChessBlock("D7", chessBoardSquares[3][1], 3, 6, buttonColor2);
+            board[4][6] = new ChessBlock("E7", chessBoardSquares[4][1], 4, 6, buttonColor1);
+            board[5][6] = new ChessBlock("F7", chessBoardSquares[5][1], 5, 6, buttonColor2);
+            board[6][6] = new ChessBlock("G7", chessBoardSquares[6][1], 6, 6, buttonColor1);
+            board[7][6] = new ChessBlock("H7", chessBoardSquares[7][1], 7, 6, buttonColor2);
                                                       
-            board[0][7] = new ChessBlock("A8", chessBoardSquares[0][7], 0, 7);
-            board[1][7] = new ChessBlock("B8", chessBoardSquares[1][7], 1, 7);
-            board[2][7] = new ChessBlock("C8", chessBoardSquares[2][7], 2, 7);
-            board[3][7] = new ChessBlock("D8", chessBoardSquares[3][7], 3, 7);
-            board[4][7] = new ChessBlock("E8", chessBoardSquares[4][7], 4, 7);
-            board[5][7] = new ChessBlock("F8", chessBoardSquares[5][7], 5, 7);
-            board[6][7] = new ChessBlock("G8", chessBoardSquares[6][7], 6, 7);
-            board[7][7] = new ChessBlock("H8", chessBoardSquares[7][7], 7, 7);
+            board[0][7] = new ChessBlock("A8", chessBoardSquares[0][0], 0, 7, buttonColor2);
+            board[1][7] = new ChessBlock("B8", chessBoardSquares[1][0], 1, 7, buttonColor1);
+            board[2][7] = new ChessBlock("C8", chessBoardSquares[2][0], 2, 7, buttonColor2);
+            board[3][7] = new ChessBlock("D8", chessBoardSquares[3][0], 3, 7, buttonColor1);
+            board[4][7] = new ChessBlock("E8", chessBoardSquares[4][0], 4, 7, buttonColor2);
+            board[5][7] = new ChessBlock("F8", chessBoardSquares[5][0], 5, 7, buttonColor1);
+            board[6][7] = new ChessBlock("G8", chessBoardSquares[6][0], 6, 7, buttonColor2);
+            board[7][7] = new ChessBlock("H8", chessBoardSquares[7][0], 7, 7, buttonColor1);
         }
         else if(player == 2)
         {    
-            board[0][0] = new ChessBlock("A1", chessBoardSquares[7][7], 0, 0);
-            board[1][0] = new ChessBlock("B1", chessBoardSquares[6][7], 1, 0);
-            board[2][0] = new ChessBlock("C1", chessBoardSquares[5][7], 2, 0);
-            board[3][0] = new ChessBlock("D1", chessBoardSquares[4][7], 3, 0);
-            board[4][0] = new ChessBlock("E1", chessBoardSquares[3][7], 4, 0);
-            board[5][0] = new ChessBlock("F1", chessBoardSquares[2][7], 5, 0);
-            board[6][0] = new ChessBlock("G1", chessBoardSquares[1][7], 6, 0);
-            board[7][0] = new ChessBlock("H1", chessBoardSquares[0][7], 7, 0);
+            board[0][0] = new ChessBlock("A1", chessBoardSquares[7][0], 0, 0, buttonColor1);
+            board[1][0] = new ChessBlock("B1", chessBoardSquares[6][0], 1, 0, buttonColor2);
+            board[2][0] = new ChessBlock("C1", chessBoardSquares[5][0], 2, 0, buttonColor1);
+            board[3][0] = new ChessBlock("D1", chessBoardSquares[4][0], 3, 0, buttonColor2);
+            board[4][0] = new ChessBlock("E1", chessBoardSquares[3][0], 4, 0, buttonColor1);
+            board[5][0] = new ChessBlock("F1", chessBoardSquares[2][0], 5, 0, buttonColor2);
+            board[6][0] = new ChessBlock("G1", chessBoardSquares[1][0], 6, 0, buttonColor1);
+            board[7][0] = new ChessBlock("H1", chessBoardSquares[0][0], 7, 0, buttonColor2);
             
-            board[0][1] = new ChessBlock("A2", chessBoardSquares[7][6], 0, 1);
-            board[1][1] = new ChessBlock("B2", chessBoardSquares[6][6], 1, 1);
-            board[2][1] = new ChessBlock("C2", chessBoardSquares[5][6], 2, 1);
-            board[3][1] = new ChessBlock("D2", chessBoardSquares[4][6], 3, 1);
-            board[4][1] = new ChessBlock("E2", chessBoardSquares[3][6], 4, 1);
-            board[5][1] = new ChessBlock("F2", chessBoardSquares[2][6], 5, 1);
-            board[6][1] = new ChessBlock("G2", chessBoardSquares[1][6], 6, 1);
-            board[7][1] = new ChessBlock("H2", chessBoardSquares[0][6], 7, 1);
+            board[0][1] = new ChessBlock("A2", chessBoardSquares[7][1], 0, 1, buttonColor2);
+            board[1][1] = new ChessBlock("B2", chessBoardSquares[6][1], 1, 1, buttonColor1);
+            board[2][1] = new ChessBlock("C2", chessBoardSquares[5][1], 2, 1, buttonColor2);
+            board[3][1] = new ChessBlock("D2", chessBoardSquares[4][1], 3, 1, buttonColor1);
+            board[4][1] = new ChessBlock("E2", chessBoardSquares[3][1], 4, 1, buttonColor2);
+            board[5][1] = new ChessBlock("F2", chessBoardSquares[2][1], 5, 1, buttonColor1);
+            board[6][1] = new ChessBlock("G2", chessBoardSquares[1][1], 6, 1, buttonColor2);
+            board[7][1] = new ChessBlock("H2", chessBoardSquares[0][1], 7, 1, buttonColor1);
             
-            board[0][2] = new ChessBlock("A3", chessBoardSquares[7][2], 0, 2);
-            board[1][2] = new ChessBlock("B3", chessBoardSquares[6][2], 1, 2);
-            board[2][2] = new ChessBlock("C3", chessBoardSquares[5][2], 2, 2);
-            board[3][2] = new ChessBlock("D3", chessBoardSquares[4][2], 3, 2);
-            board[4][2] = new ChessBlock("E3", chessBoardSquares[3][2], 4, 2);
-            board[5][2] = new ChessBlock("F3", chessBoardSquares[2][2], 5, 2);
-            board[6][2] = new ChessBlock("G3", chessBoardSquares[1][2], 6, 2);
-            board[7][2] = new ChessBlock("H3", chessBoardSquares[0][2], 7, 2);
+            board[0][2] = new ChessBlock("A3", chessBoardSquares[7][2], 0, 2, buttonColor1);
+            board[1][2] = new ChessBlock("B3", chessBoardSquares[6][2], 1, 2, buttonColor2);
+            board[2][2] = new ChessBlock("C3", chessBoardSquares[5][2], 2, 2, buttonColor1);
+            board[3][2] = new ChessBlock("D3", chessBoardSquares[4][2], 3, 2, buttonColor2);
+            board[4][2] = new ChessBlock("E3", chessBoardSquares[3][2], 4, 2, buttonColor1);
+            board[5][2] = new ChessBlock("F3", chessBoardSquares[2][2], 5, 2, buttonColor2);
+            board[6][2] = new ChessBlock("G3", chessBoardSquares[1][2], 6, 2, buttonColor1);
+            board[7][2] = new ChessBlock("H3", chessBoardSquares[0][2], 7, 2, buttonColor2);
             
-            board[0][3] = new ChessBlock("A4", chessBoardSquares[7][3], 0, 3);
-            board[1][3] = new ChessBlock("B4", chessBoardSquares[6][3], 1, 3);
-            board[2][3] = new ChessBlock("C4", chessBoardSquares[5][3], 2, 3);
-            board[3][3] = new ChessBlock("D4", chessBoardSquares[4][3], 3, 3);
-            board[4][3] = new ChessBlock("E4", chessBoardSquares[3][3], 4, 3);
-            board[5][3] = new ChessBlock("F4", chessBoardSquares[2][3], 5, 3);
-            board[6][3] = new ChessBlock("G4", chessBoardSquares[1][3], 6, 3);
-            board[7][3] = new ChessBlock("H4", chessBoardSquares[0][3], 7, 3);
+            board[0][3] = new ChessBlock("A4", chessBoardSquares[7][3], 0, 3, buttonColor2);
+            board[1][3] = new ChessBlock("B4", chessBoardSquares[6][3], 1, 3, buttonColor1);
+            board[2][3] = new ChessBlock("C4", chessBoardSquares[5][3], 2, 3, buttonColor2);
+            board[3][3] = new ChessBlock("D4", chessBoardSquares[4][3], 3, 3, buttonColor1);
+            board[4][3] = new ChessBlock("E4", chessBoardSquares[3][3], 4, 3, buttonColor2);
+            board[5][3] = new ChessBlock("F4", chessBoardSquares[2][3], 5, 3, buttonColor1);
+            board[6][3] = new ChessBlock("G4", chessBoardSquares[1][3], 6, 3, buttonColor2);
+            board[7][3] = new ChessBlock("H4", chessBoardSquares[0][3], 7, 3, buttonColor1);
             
-            board[0][4] = new ChessBlock("A5", chessBoardSquares[7][4], 0, 4);
-            board[1][4] = new ChessBlock("B5", chessBoardSquares[6][4], 1, 4);
-            board[2][4] = new ChessBlock("C5", chessBoardSquares[5][4], 2, 4);
-            board[3][4] = new ChessBlock("D5", chessBoardSquares[4][4], 3, 4);
-            board[4][4] = new ChessBlock("E5", chessBoardSquares[3][4], 4, 4);
-            board[5][4] = new ChessBlock("F5", chessBoardSquares[2][4], 5, 4);
-            board[6][4] = new ChessBlock("G5", chessBoardSquares[1][4], 6, 4);
-            board[7][4] = new ChessBlock("H5", chessBoardSquares[0][4], 7, 4);
+            board[0][4] = new ChessBlock("A5", chessBoardSquares[7][4], 0, 4, buttonColor1);
+            board[1][4] = new ChessBlock("B5", chessBoardSquares[6][4], 1, 4, buttonColor2);
+            board[2][4] = new ChessBlock("C5", chessBoardSquares[5][4], 2, 4, buttonColor1);
+            board[3][4] = new ChessBlock("D5", chessBoardSquares[4][4], 3, 4, buttonColor2);
+            board[4][4] = new ChessBlock("E5", chessBoardSquares[3][4], 4, 4, buttonColor1);
+            board[5][4] = new ChessBlock("F5", chessBoardSquares[2][4], 5, 4, buttonColor2);
+            board[6][4] = new ChessBlock("G5", chessBoardSquares[1][4], 6, 4, buttonColor1);
+            board[7][4] = new ChessBlock("H5", chessBoardSquares[0][4], 7, 4, buttonColor2);
             
-            board[0][5] = new ChessBlock("A6", chessBoardSquares[7][5], 0, 5);
-            board[1][5] = new ChessBlock("B6", chessBoardSquares[6][5], 1, 5);
-            board[2][5] = new ChessBlock("C6", chessBoardSquares[5][5], 2, 5);
-            board[3][5] = new ChessBlock("D6", chessBoardSquares[4][5], 3, 5);
-            board[4][5] = new ChessBlock("E6", chessBoardSquares[3][5], 4, 5);
-            board[5][5] = new ChessBlock("F6", chessBoardSquares[2][5], 5, 5);
-            board[6][5] = new ChessBlock("G6", chessBoardSquares[1][5], 6, 5);
-            board[7][5] = new ChessBlock("H6", chessBoardSquares[0][5], 7, 5);
+            board[0][5] = new ChessBlock("A6", chessBoardSquares[7][5], 0, 5, buttonColor2);
+            board[1][5] = new ChessBlock("B6", chessBoardSquares[6][5], 1, 5, buttonColor1);
+            board[2][5] = new ChessBlock("C6", chessBoardSquares[5][5], 2, 5, buttonColor2);
+            board[3][5] = new ChessBlock("D6", chessBoardSquares[4][5], 3, 5, buttonColor1);
+            board[4][5] = new ChessBlock("E6", chessBoardSquares[3][5], 4, 5, buttonColor2);
+            board[5][5] = new ChessBlock("F6", chessBoardSquares[2][5], 5, 5, buttonColor1);
+            board[6][5] = new ChessBlock("G6", chessBoardSquares[1][5], 6, 5, buttonColor2);
+            board[7][5] = new ChessBlock("H6", chessBoardSquares[0][5], 7, 5, buttonColor1);
 
-            board[0][6] = new ChessBlock("A7", chessBoardSquares[7][1], 0, 6);
-            board[1][6] = new ChessBlock("B7", chessBoardSquares[6][1], 1, 6);
-            board[2][6] = new ChessBlock("C7", chessBoardSquares[5][1], 2, 6);
-            board[3][6] = new ChessBlock("D7", chessBoardSquares[4][1], 3, 6);
-            board[4][6] = new ChessBlock("E7", chessBoardSquares[3][1], 4, 6);
-            board[5][6] = new ChessBlock("F7", chessBoardSquares[2][1], 5, 6);
-            board[6][6] = new ChessBlock("G7", chessBoardSquares[1][1], 6, 6);
-            board[7][6] = new ChessBlock("H7", chessBoardSquares[0][1], 7, 6);
+            board[0][6] = new ChessBlock("A7", chessBoardSquares[7][6], 0, 6, buttonColor1);
+            board[1][6] = new ChessBlock("B7", chessBoardSquares[6][6], 1, 6, buttonColor2);
+            board[2][6] = new ChessBlock("C7", chessBoardSquares[5][6], 2, 6, buttonColor1);
+            board[3][6] = new ChessBlock("D7", chessBoardSquares[4][6], 3, 6, buttonColor2);
+            board[4][6] = new ChessBlock("E7", chessBoardSquares[3][6], 4, 6, buttonColor1);
+            board[5][6] = new ChessBlock("F7", chessBoardSquares[2][6], 5, 6, buttonColor2);
+            board[6][6] = new ChessBlock("G7", chessBoardSquares[1][6], 6, 6, buttonColor1);
+            board[7][6] = new ChessBlock("H7", chessBoardSquares[0][6], 7, 6, buttonColor2);
             
-            board[0][7] = new ChessBlock("A8", chessBoardSquares[7][0], 0, 7);
-            board[1][7] = new ChessBlock("B8", chessBoardSquares[6][0], 1, 7);
-            board[2][7] = new ChessBlock("C8", chessBoardSquares[5][0], 2, 7);
-            board[3][7] = new ChessBlock("D8", chessBoardSquares[4][0], 3, 7);
-            board[4][7] = new ChessBlock("E8", chessBoardSquares[3][0], 4, 7);
-            board[5][7] = new ChessBlock("F8", chessBoardSquares[2][0], 5, 7);
-            board[6][7] = new ChessBlock("G8", chessBoardSquares[1][0], 6, 7);
-            board[7][7] = new ChessBlock("H8", chessBoardSquares[0][0], 7, 7);
+            board[0][7] = new ChessBlock("A8", chessBoardSquares[7][7], 0, 7, buttonColor2);
+            board[1][7] = new ChessBlock("B8", chessBoardSquares[6][7], 1, 7, buttonColor1);
+            board[2][7] = new ChessBlock("C8", chessBoardSquares[5][7], 2, 7, buttonColor2);
+            board[3][7] = new ChessBlock("D8", chessBoardSquares[4][7], 3, 7, buttonColor1);
+            board[4][7] = new ChessBlock("E8", chessBoardSquares[3][7], 4, 7, buttonColor2);
+            board[5][7] = new ChessBlock("F8", chessBoardSquares[2][7], 5, 7, buttonColor1);
+            board[6][7] = new ChessBlock("G8", chessBoardSquares[1][7], 6, 7, buttonColor2);
+            board[7][7] = new ChessBlock("H8", chessBoardSquares[0][7], 7, 7, buttonColor1);
         }
     }
     
@@ -372,6 +384,23 @@ public class ChessBoard extends Screen
         whiteKing = new King(white, board[3][0]);
         whiteQueen = new Queen(white, board[4][0]);
         
+        whitePieces.add(whitePawns[0]);
+        whitePieces.add(whitePawns[1]);
+        whitePieces.add(whitePawns[2]);
+        whitePieces.add(whitePawns[3]);
+        whitePieces.add(whitePawns[4]);
+        whitePieces.add(whitePawns[5]);
+        whitePieces.add(whitePawns[6]);
+        whitePieces.add(whitePawns[7]);
+        whitePieces.add(whiteRooks[0]);
+        whitePieces.add(whiteRooks[1]);
+        whitePieces.add(whiteKnights[0]);
+        whitePieces.add(whiteKnights[1]);
+        whitePieces.add(whiteBishops[0]);
+        whitePieces.add(whiteBishops[1]);
+        whitePieces.add(whiteQueen);
+        whitePieces.add(whiteKing);
+        
         blackPawns[0] = new Pawn(black, board[0][6]);
         blackPawns[1] = new Pawn(black, board[1][6]);
         blackPawns[2] = new Pawn(black, board[2][6]);
@@ -388,6 +417,23 @@ public class ChessBoard extends Screen
         blackBishops[1] = new Bishop(black, board[5][7]);
         blackKing = new King(black, board[3][7]);
         blackQueen = new Queen(black, board[4][7]);
+        
+        blackPieces.add(blackPawns[0]);
+        blackPieces.add(blackPawns[1]);
+        blackPieces.add(blackPawns[2]);
+        blackPieces.add(blackPawns[3]);
+        blackPieces.add(blackPawns[4]);
+        blackPieces.add(blackPawns[5]);
+        blackPieces.add(blackPawns[6]);
+        blackPieces.add(blackPawns[7]);
+        blackPieces.add(blackRooks[0]);
+        blackPieces.add(blackRooks[1]);
+        blackPieces.add(blackKnights[0]);
+        blackPieces.add(blackKnights[1]);
+        blackPieces.add(blackBishops[0]);
+        blackPieces.add(blackBishops[1]);
+        blackPieces.add(blackQueen);
+        blackPieces.add(blackKing);
     }
     
     public void putPiecesOnBlocks()
@@ -445,7 +491,6 @@ public class ChessBoard extends Screen
                 
             }
         }
-        
     }
     
     private boolean isPieceSelected()
@@ -455,146 +500,601 @@ public class ChessBoard extends Screen
     
     private void blockClicked(ChessBlock chessBlock)
     {
-        if (chessBlock.hasPiece())
+        if (!gameOver)
         {
-            selectedBlock = chessBlock;
-            System.out.print(selectedBlock.getPiece().getPieceDescription() + " was selected");
-            ArrayList<ChessBlock> validMoves = getValidMoves();
-            if (validMoves.size() > 0)
+            if (chessBlock.hasPiece())
             {
-                validMoves.forEach(block -> System.out.print(", " + block.getBlockDescription()));
-                System.out.print(" are valid moves\r\n");
-            }
-            else
-            {
-                System.out.print(", there are no valid moves\r\n");
-            }
-        }
-        else
-        {
-            if (isPieceSelected())
-            {
-                if (chessBlock != selectedBlock)
+                if (isPieceSelected() && chessBlock != selectedBlock && possibleCaptures.contains(chessBlock))
                 {
-                    selectedBlock.getPiece().move(chessBlock);
-                    System.out.println(chessBlock.getPiece().getPieceDescription() + " (" + chessBlock.x + ", " + chessBlock.y + ") " + " was moved to " + chessBlock.getBlockDescription());
-                    selectedBlock = null;
+                    capturePiece(chessBlock);
+                }
+                else if ((turn == 1 && chessBlock.getPiece().color == Color.WHITE) || (turn == 2 && chessBlock.getPiece().color == Color.BLACK))
+                {
+                    selectBlock(chessBlock);
                 }
             }
             else
             {
-                System.out.println(chessBlock.getBlockDescription() + " was clicked, but no piece is selected");
-            }
-        }
-    }
-    
-    private ArrayList<ChessBlock> getValidMoves()
-    {
-        ArrayList<ChessBlock> validMoves = new ArrayList<>();
-        
-        if (selectedBlock.getPiece().pieceName == "pawn")
-        {
-            validMoves = getValidPawnMoves();
-        }
-        else if (selectedBlock.getPiece().pieceName == "rook")
-        {
-            validMoves = getValidRookMoves();
-        }
-        else if (selectedBlock.getPiece().pieceName == "knight")
-        {
-            validMoves = getValidKnightMoves();
-        }
-        else if (selectedBlock.getPiece().pieceName == "bishop")
-        {
-            validMoves = getValidBishopMoves();
-        }
-        else if (selectedBlock.getPiece().pieceName == "queen")
-        {
-            validMoves = getValidQueenMoves();
-        }
-        else if (selectedBlock.getPiece().pieceName == "king")
-        {
-            validMoves = getValidKingMoves();
-        }
-        
-        return validMoves;
-    }
-    
-    private ArrayList<ChessBlock> getValidPawnMoves()
-    {
-        ArrayList<ChessBlock> validMoves = new ArrayList<>();
-        
-        if (selectedBlock.getPiece().color == Color.WHITE)
-        {
-            if (selectedBlock.y + 1 < 8)
-            {
-                if (!board[selectedBlock.x][selectedBlock.y + 1].hasPiece())
+                if (isPieceSelected())
                 {
-                    validMoves.add(board[selectedBlock.x][selectedBlock.y + 1]);
+                    if (chessBlock != selectedBlock)
+                    {
+                        if (possibleMoves.contains(chessBlock))
+                        {
+                            moveToBlock(chessBlock);
+                        }
+                    }
                 }
             }
-            
-            if (!selectedBlock.getPiece().hasMoved)
+        }
+    }
+    
+    private void selectBlock(ChessBlock chessBlock)
+    {
+        if (selectedBlock != null)
+        {
+            selectedBlock.setSelectedPieceButtonColor(false);
+        }
+        selectedBlock = chessBlock;
+        selectedBlock.setSelectedPieceButtonColor(true);
+        getPossibledMovesAndCaptures();
+    }
+    
+    private void moveToBlock(ChessBlock chessBlock)
+    {
+        clearPossibleMovesAndCaptures();
+        selectedBlock.getPiece().move(chessBlock);
+        selectedBlock.setSelectedPieceButtonColor(false);
+        selectedBlock = null;
+        switchTurn();
+    }
+    
+    private void capturePiece(ChessBlock chessBlock)
+    {
+        chessBlock.setPiece(null);
+        clearPossibleMovesAndCaptures();
+        selectedBlock.getPiece().move(chessBlock);
+        selectedBlock.setSelectedPieceButtonColor(false);
+        selectedBlock = null;
+        switchTurn();
+    }
+    
+    private void switchTurn()
+    {
+        if (turn == 1)
+        {
+            turn = 2;
+            findDangerousBlocksForBlack();
+            System.out.println("found dangerous for black");
+            if (dangerousBlocksForBlack.contains(blackKing.currentPosition))
             {
-                if (!board[selectedBlock.x][selectedBlock.y + 2].hasPiece())
+                System.out.println("black in check");
+                selectBlock(blackKing.currentPosition);
+                checkForWinner();
+            }
+        }
+        else
+        {
+            turn = 1;
+            findDangerousBlocksForWhite();
+            System.out.println("found dangerous for white");
+            if (dangerousBlocksForWhite.contains(whiteKing.currentPosition))
+            {
+                System.out.println("White in check");
+                selectBlock(whiteKing.currentPosition);
+                checkForWinner();
+            }        
+        }
+    }
+    
+    private void checkForWinner()
+    {
+        if (possibleMoves.isEmpty() && possibleCaptures.isEmpty())
+        {
+            gameOver = true;
+            for (int y = 0; y < 8; y++)
+            {
+                for (int x = 0; x < 8; x++)
                 {
-                    validMoves.add(board[selectedBlock.x][selectedBlock.y + 2]);
+                    board[x][y].setWinnerButtonColor(gameOver, selectedBlock.getPiece().color);
+                }
+            }
+        }
+    }
+    
+    private void findDangerousBlocksForWhite()
+    {
+        dangerousBlocksForWhite.forEach(block -> block.setDangerousButtonColor(false));
+        dangerousBlocksForWhite.clear();
+        ArrayList<ChessBlock> dangerousBlocks = new ArrayList<>();
+        for (int i = 0; i < blackPieces.size(); i++)
+        {
+            dangerousBlocks = findDangerousBlocks(blackPieces.get(i));
+            dangerousBlocks.forEach(block -> dangerousBlocksForWhite.add(block));
+            dangerousBlocks.clear();
+        }
+        // setting this to true or false determines if dangerous squares are highlighted
+        dangerousBlocksForWhite.forEach(block -> block.setDangerousButtonColor(false));
+    }
+    
+    private void findDangerousBlocksForBlack()
+    {
+        dangerousBlocksForWhite.forEach(block -> block.setDangerousButtonColor(false));
+        dangerousBlocksForBlack.clear();
+        ArrayList<ChessBlock> dangerousBlocks = new ArrayList<>();
+        for (int i = 0; i < whitePieces.size(); i++)
+        {
+            dangerousBlocks = findDangerousBlocks(whitePieces.get(i));
+            dangerousBlocks.forEach(block -> dangerousBlocksForBlack.add(block));
+            dangerousBlocks.clear();
+            // setting this to true or false determines if dangerous squares are highlighted
+            dangerousBlocksForWhite.forEach(block -> block.setDangerousButtonColor(false));
+        }
+    }
+    
+    private ArrayList<ChessBlock> findDangerousBlocks(Piece piece)
+    {
+        ArrayList<ChessBlock> dangerousBlocks = new ArrayList<>();
+        
+        if ("pawn".equals(piece.pieceName))
+        {
+            if (piece.color == Color.WHITE)
+            {
+                if (piece.currentPosition.y + 1 < 8)
+                {
+                    if (piece.currentPosition.x - 1 >= 0)
+                    {
+                        if (!board[piece.currentPosition.x - 1][piece.currentPosition.y + 1].hasPiece())
+                        {
+                            dangerousBlocks.add(board[piece.currentPosition.x - 1][piece.currentPosition.y + 1]);
+                        }
+                    }
+                    
+                    if (piece.currentPosition.x + 1 < 8)
+                    {
+                        if (!board[piece.currentPosition.x + 1][piece.currentPosition.y + 1].hasPiece())
+                        {
+                            dangerousBlocks.add(board[piece.currentPosition.x + 1][piece.currentPosition.y + 1]);
+                        }
+                    } 
+                }
+            }
+            else
+            {
+                if (piece.currentPosition.y - 1 >= 0)
+                {
+                    if (piece.currentPosition.x - 1 >= 0)
+                    {
+                        if (!board[piece.currentPosition.x - 1][piece.currentPosition.y - 1].hasPiece())
+                        {
+                            dangerousBlocks.add(board[piece.currentPosition.x - 1][piece.currentPosition.y - 1]);
+                        }
+                    }
+                    
+                    if (piece.currentPosition.x + 1 < 8)
+                    {
+                        if (!board[piece.currentPosition.x + 1][piece.currentPosition.y - 1].hasPiece())
+                        {
+                            dangerousBlocks.add(board[piece.currentPosition.x + 1][piece.currentPosition.y - 1]);
+                        }
+                    } 
+                }
+            }
+            return dangerousBlocks;
+        }
+        else if ("rook".equals(piece.pieceName))
+        {
+            getPossibleRookMovesAndCaptures(piece.currentPosition);
+            possibleMoves.forEach((block) -> { dangerousBlocks.add(block); });
+            possibleMoves.clear();
+            possibleCaptures.clear();
+            return dangerousBlocks;
+        }
+        else if ("knight".equals(piece.pieceName))
+        {
+            getPossibleKnightMovesAndCaptures(piece.currentPosition);
+            possibleMoves.forEach((block) -> { dangerousBlocks.add(block); });
+            possibleMoves.clear();
+            possibleCaptures.clear();
+            return dangerousBlocks;
+        }
+        else if ("bishop".equals(piece.pieceName))
+        {
+            getPossibleBishopMovesAndCaptures(piece.currentPosition);
+            possibleMoves.forEach((block) -> { dangerousBlocks.add(block); });
+            possibleMoves.clear();
+            possibleCaptures.clear();
+            return dangerousBlocks;
+        }
+        else if ("queen".equals(piece.pieceName))
+        {
+            getPossibleQueenMovesAndCaptures(piece.currentPosition);
+            possibleMoves.forEach((block) -> { dangerousBlocks.add(block); });
+            possibleMoves.clear();
+            possibleCaptures.clear();
+            return dangerousBlocks;
+        }
+        else if ("king".equals(piece.pieceName))
+        {
+            getPossibleKingMovesAndCaptures(piece.currentPosition);
+            possibleMoves.forEach((block) -> { dangerousBlocks.add(block); });
+            possibleMoves.clear();
+            possibleCaptures.clear();
+            return dangerousBlocks;
+        }
+        else
+        {
+            return dangerousBlocks;
+        }
+    }
+    
+    private void clearPossibleMovesAndCaptures()
+    {
+        possibleMoves.forEach(block -> block.setPossibleMoveButtonColor(false));
+        possibleMoves.clear();
+        possibleCaptures.forEach(block -> block.setPossibleCaptureButtonColor(false));
+        possibleCaptures.clear();
+    }
+    
+    private void getPossibledMovesAndCaptures()
+    {
+        clearPossibleMovesAndCaptures();
+        
+        if ("pawn".equals(selectedBlock.getPiece().pieceName))
+        {
+            getPossiblePawnMovesAndCaptures(selectedBlock);
+        }
+        else if ("rook".equals(selectedBlock.getPiece().pieceName))
+        {
+            getPossibleRookMovesAndCaptures(selectedBlock);
+        }
+        else if ("knight".equals(selectedBlock.getPiece().pieceName))
+        {
+            getPossibleKnightMovesAndCaptures(selectedBlock);
+        }
+        else if ("bishop".equals(selectedBlock.getPiece().pieceName))
+        {
+            getPossibleBishopMovesAndCaptures(selectedBlock);
+        }
+        else if ("queen".equals(selectedBlock.getPiece().pieceName))
+        {
+            getPossibleQueenMovesAndCaptures(selectedBlock);
+        }
+        else if ("king".equals(selectedBlock.getPiece().pieceName))
+        {
+            getPossibleKingMovesAndCaptures(selectedBlock);
+        }
+      
+        possibleMoves.forEach(block -> block.setPossibleMoveButtonColor(true));
+        possibleCaptures.forEach(block -> block.setPossibleCaptureButtonColor(true));
+    }
+        
+    private void getPossiblePawnMovesAndCaptures(ChessBlock block)
+    {
+        if (block.getPiece().color == Color.WHITE)
+        {
+            if (block.y + 1 < 8)
+            {
+                if (!board[block.x][block.y + 1].hasPiece())
+                {
+                    possibleMoves.add(board[block.x][block.y + 1]);
+                    
+                    if (!block.getPiece().hasMoved)
+                    {
+                        if (!board[block.x][block.y + 2].hasPiece())
+                        {
+                            possibleMoves.add(board[block.x][block.y + 2]);
+                        }
+                    }
+                }
+                
+                if (block.x + 1 < 8)
+                {
+                    if (board[block.x + 1][block.y + 1].hasPiece())
+                    {
+                        if (board[block.x + 1][block.y + 1].getPiece().color != block.getPiece().color)
+                        {
+                            possibleCaptures.add(board[block.x + 1][block.y + 1]);
+                        }
+                    }
+                }
+                
+                if (block.x - 1 >= 0)
+                {
+                    if (board[block.x - 1][block.y + 1].hasPiece())
+                    {
+                        if (board[block.x - 1][block.y + 1].getPiece().color != block.getPiece().color)
+                        {
+                            possibleCaptures.add(board[block.x - 1][block.y + 1]);
+                        }
+                    }
                 }
             }
         }
         else
         {
-            if (selectedBlock.y - 1 > 0)
+            if (block.y - 1 > 0)
             {
-                if (!board[selectedBlock.x][selectedBlock.y - 1].hasPiece())
+                if (!board[block.x][block.y - 1].hasPiece())
                 {
-                    validMoves.add(board[selectedBlock.x][selectedBlock.y - 1]);
+                    possibleMoves.add(board[block.x][block.y - 1]);
+                    
+                    if (!block.getPiece().hasMoved)
+                    {
+                        if (!board[block.x][block.y - 2].hasPiece())
+                        {
+                            possibleMoves.add(board[block.x][block.y - 2]);
+                        }
+                    }
+                }
+                
+                if (block.x + 1 < 8)
+                {
+                    if (board[block.x + 1][block.y - 1].hasPiece())
+                    {
+                        if (board[block.x + 1][block.y - 1].getPiece().color != block.getPiece().color)
+                        {
+                            possibleCaptures.add(board[block.x + 1][block.y - 1]);
+                        }
+                    }
+                }
+                
+                if (block.x - 1 >= 0)
+                {
+                    if (board[block.x - 1][block.y - 1].hasPiece())
+                    {
+                        if (board[block.x - 1][block.y - 1].getPiece().color != block.getPiece().color)
+                        {
+                            possibleCaptures.add(board[block.x - 1][block.y - 1]);
+                        }
+                    }
                 }
             }
-            
-            if (!selectedBlock.getPiece().hasMoved)
+        }
+    }
+    
+    private void getPossibleRookMovesAndCaptures(ChessBlock block)
+    {  
+        for (int y = block.y + 1; y < 8; y++)
+        {
+            if (board[block.x][y].hasPiece())
             {
-                if (!board[selectedBlock.x][selectedBlock.y - 2].hasPiece())
+                if (board[block.x][y].getPiece().color != block.getPiece().color)
                 {
-                    validMoves.add(board[selectedBlock.x][selectedBlock.y - 2]);
+                    possibleCaptures.add(board[block.x][y]);
+                }
+                break;
+            }
+            else
+            {
+                possibleMoves.add(board[block.x][y]);
+            }
+        }
+        
+        for (int y = block.y - 1; y >= 0; y--)
+        {
+            if (board[block.x][y].hasPiece())
+            {
+                if (board[block.x][y].getPiece().color != block.getPiece().color)
+                {
+                    possibleCaptures.add(board[block.x][y]);
+                }
+                break;
+            }
+            else
+            {
+                possibleMoves.add(board[block.x][y]);
+            }
+        }
+        
+        for (int x = block.x + 1; x < 8; x++)
+        {
+            if (board[x][block.y].hasPiece())
+            {
+                if (board[x][block.y].getPiece().color != block.getPiece().color)
+                {
+                    possibleCaptures.add(board[x][block.y]);
+                }
+                break;
+            }
+            else
+            {
+                possibleMoves.add(board[x][block.y]);
+            }
+        }
+        
+        for (int x = block.x - 1; x >= 0; x--)
+        {
+            if (board[x][block.y].hasPiece())
+            {
+                if (board[x][block.y].getPiece().color != block.getPiece().color)
+                {
+                    possibleCaptures.add(board[x][block.y]);
+                }
+                break;
+            }
+            else
+            {
+                possibleMoves.add(board[x][block.y]);
+            }
+        }
+    }
+    
+    private void getPossibleKnightMovesAndCaptures(ChessBlock block)
+    {
+        int[] x = { block.x - 2, block.x - 2, block.x + 2, block.x + 2,
+                    block.x - 1, block.x + 1, block.x - 1, block.x + 1 };
+        int[] y = { block.y - 1, block.y + 1, block.y - 1, block.y + 1,
+                    block.y - 2, block.y - 2, block.y + 2, block.y + 2 };
+
+        for (int i = 0; i < 8; i++)
+        {
+            if (x[i] >= 0 && x[i] < 8 && y[i] >= 0 && y[i] < 8)
+            {
+                if (!board[x[i]][y[i]].hasPiece())
+                {
+                    possibleMoves.add(board[x[i]][y[i]]);
+                }
+                else if (board[x[i]][y[i]].getPiece().color != block.getPiece().color)
+                {
+                    possibleCaptures.add(board[x[i]][y[i]]);
+                }
+            }
+        }
+    }
+    
+    private void getPossibleBishopMovesAndCaptures(ChessBlock block)
+    {
+        for (int i = 1; i < 8; i++)
+        {
+            if (block.x + i > 7 || block.y + i > 7)
+            {
+                break;
+            }
+            else
+            {
+                if (board[block.x + i][block.y + i].hasPiece())
+                {
+                    if (board[block.x + i][block.y + i].getPiece().color != block.getPiece().color)
+                    {
+                        possibleCaptures.add(board[block.x + i][block.y + i]);
+                    }
+                    break;
+                }
+                else
+                {
+                    possibleMoves.add(board[block.x + i][block.y + i]);
                 }
             }
         }
         
-        return validMoves;
-    }
-    
-    private ArrayList<ChessBlock> getValidRookMoves()
-    {
-        ArrayList<ChessBlock> validMoves = new ArrayList<>();
+        for (int i = 1; i < 8; i++)
+        {
+            if (block.x - i < 0 || block.y + i > 7)
+            {
+                break;
+            }
+            else
+            {
+                if (board[block.x - i][block.y + i].hasPiece())
+                {
+                    if (board[block.x - i][block.y + i].getPiece().color != block.getPiece().color)
+                    {
+                        possibleCaptures.add(board[block.x - i][block.y + i]);
+                    }
+                    break;
+                }
+                else
+                {
+                    possibleMoves.add(board[block.x - i][block.y + i]);
+                }
+            }
+        }
         
+        for (int i = 1; i < 8; i++)
+        {
+            if (block.x - i < 0 || block.y - i < 0)
+            {
+                break;
+            }
+            else
+            {
+                if (board[block.x - i][block.y - i].hasPiece())
+                {
+                    if (board[block.x - i][block.y - i].getPiece().color != block.getPiece().color)
+                    {
+                        possibleCaptures.add(board[block.x - i][block.y - i]);
+                    }
+                    break;
+                }
+                else
+                {
+                    possibleMoves.add(board[block.x - i][block.y - i]);
+                }
+            }
+        }
         
+        for (int i = 1; i < 8; i++)
+        {
+            if (block.x + i > 7 || block.y - i < 0)
+            {
+                break;
+            }
+            else
+            {
+                if (board[block.x + i][block.y - i].hasPiece())
+                {
+                    if (board[block.x + i][block.y - i].getPiece().color != block.getPiece().color)
+                    {
+                        possibleCaptures.add(board[block.x + i][block.y - i]);
+                    }
+                    break;
+                }
+                else
+                {
+                    possibleMoves.add(board[block.x + i][block.y - i]);
+                }
+            }
+        }
+    }
+    
+    private void getPossibleQueenMovesAndCaptures(ChessBlock block)
+    {
+        getPossibleRookMovesAndCaptures(block);
+        getPossibleBishopMovesAndCaptures(block);
+    }
+    
+    private void getPossibleKingMovesAndCaptures(ChessBlock block)
+    {
+        int[][] xy = { {block.x, block.y + 1},
+                       {block.x + 1, block.y + 1},
+                       {block.x + 1, block.y},
+                       {block.x + 1, block.y - 1},
+                       {block.x, block.y - 1},
+                       {block.x - 1, block.y - 1},
+                       {block.x - 1, block.y},
+                       {block.x - 1, block.y + 1} };
         
-        return validMoves;
-    }
-    
-    private ArrayList<ChessBlock> getValidKnightMoves()
-    {
-        ArrayList<ChessBlock> validMoves = new ArrayList<>();
-        return validMoves;
-    }
-    
-    private ArrayList<ChessBlock> getValidBishopMoves()
-    {
-        ArrayList<ChessBlock> validMoves = new ArrayList<>();
-        return validMoves;
-    }
-    
-    private ArrayList<ChessBlock> getValidQueenMoves()
-    {
-        ArrayList<ChessBlock> validMoves = new ArrayList<>();
-        return validMoves;
-    }
-    
-    private ArrayList<ChessBlock> getValidKingMoves()
-    {
-        ArrayList<ChessBlock> validMoves = new ArrayList<>();
-        return validMoves;
+        for (int i = 0; i < 8; i++)
+        {
+            if (xy[i][0] >= 0 && xy[i][0] < 8 && xy[i][1] >= 0 && xy[i][1] < 8)
+            {
+                if (!board[xy[i][0]][xy[i][1]].hasPiece())
+                {
+                    if (block.getPiece().color == Color.WHITE)
+                    {
+                        if (!dangerousBlocksForWhite.contains(board[xy[i][0]][xy[i][1]]))
+                        {
+                            possibleMoves.add(board[xy[i][0]][xy[i][1]]);
+                        }
+                    }
+                    else
+                    {
+                        if (!dangerousBlocksForBlack.contains(board[xy[i][0]][xy[i][1]]))
+                        {
+                            possibleMoves.add(board[xy[i][0]][xy[i][1]]);
+                        }
+                    }
+                }
+                else if (board[xy[i][0]][xy[i][1]].getPiece().color != block.getPiece().color)
+                {
+                    if (block.getPiece().color == Color.WHITE)
+                    {
+                        if (!dangerousBlocksForWhite.contains(board[xy[i][0]][xy[i][1]]))
+                        {
+                            possibleCaptures.add(board[xy[i][0]][xy[i][1]]);
+                        }
+                    }
+                    else
+                    {
+                        if (!dangerousBlocksForBlack.contains(board[xy[i][0]][xy[i][1]]))
+                        {
+                            possibleCaptures.add(board[xy[i][0]][xy[i][1]]);
+                        }
+                    }
+                }
+            }
+        }
     }
     
     public class MovePieceListener implements ActionListener

@@ -1,7 +1,6 @@
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
 
 public class Pawn extends Piece implements PiecesInterface 
 {    
@@ -9,22 +8,6 @@ public class Pawn extends Piece implements PiecesInterface
     {
         super(color, startingPosition);
         pieceName = "pawn";
-    }
-    
-    @Override
-    public boolean canAttack() 
-    {
-        if(true)
-            return true;
-        else
-            return false;
-    }
-    
-    @Override
-    public boolean inCheck() 
-    {
-        throw new UnsupportedOperationException("Not supported yet."); 
-        //To change body of generated methods, choose Tools | Templates.
     }
     
     public void promotion()
@@ -37,5 +20,18 @@ public class Pawn extends Piece implements PiecesInterface
     public void enpassent()
     {
         //pawn1 can capture pawn2 if pawn1 is in position to be side by side with pawn2
+    }
+
+    @Override
+    public ImageIcon getPieceIcon() 
+    {
+        if (color == Color.WHITE)
+        {
+            return new ImageIcon(getClass().getResource("resources/White_Pawn.png"));
+        }
+        else
+        {
+            return new ImageIcon(getClass().getResource("resources/Black_Pawn.png"));
+        }
     }
 }
