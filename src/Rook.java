@@ -8,6 +8,7 @@ public class Rook extends Piece implements PiecesInterface
     {
         super(color, startingPosition);
         pieceName = "rook";
+        value = 525;
     }
     
     public void castle()

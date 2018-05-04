@@ -2,6 +2,7 @@
     // black king picture on TitleScreen came from https://www.pinterest.com/haydenwhaling/chess/
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -104,12 +105,12 @@ public class Game extends Screen
             //ConnectionScreen screen = new ConnectionScreen();
             if(dialogResult == 0)
             {
-                PlayerWhite playerOne = new PlayerWhite();
+                ChessBoard chessBoard = new ChessBoard(new RealPlayer(Color.WHITE));
                 titleFrame.setVisible(false);
             } 
             else if(dialogResult == 1)
             {
-                PlayerBlack playerTwo = new PlayerBlack();
+                ChessBoard chessBoard = new ChessBoard(new RealPlayer(Color.BLACK));
                 titleFrame.setVisible(false);
             }
             /*for(int counter = 0, maxCounter = options.length; counter<maxCounter;

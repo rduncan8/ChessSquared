@@ -8,6 +8,7 @@ public class Queen extends Piece implements PiecesInterface
     {
         super(color, startingPosition);
         pieceName = "queen";
+        value = 1000;
     }
 
     @Override

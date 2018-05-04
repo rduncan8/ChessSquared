@@ -9,6 +9,7 @@ public class Piece
     protected final ChessBlock startingPosition;
     protected String pieceName;
     protected boolean hasMoved = false;
+    public int value = 0;
     
     public Piece(Color color, ChessBlock startingPosition)
     {

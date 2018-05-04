@@ -8,6 +8,7 @@ public class Bishop extends Piece implements PiecesInterface
     {
         super(color, startingPosition);
         pieceName = "bishop";
+        value = 350;
     }
 
     @Override

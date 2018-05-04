@@ -8,6 +8,7 @@ public class Pawn extends Piece implements PiecesInterface
     {
         super(color, startingPosition);
         pieceName = "pawn";
+        value = 100;
     }
     
     public void promotion()

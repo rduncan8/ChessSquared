@@ -8,6 +8,7 @@ public class Knight extends Piece implements PiecesInterface
     {
         super(color, startingPosition);
         pieceName = "knight";
+        value = 350;
     }
     
     @Override

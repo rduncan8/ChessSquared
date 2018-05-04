@@ -1,12 +1,18 @@
-import java.io.*;
-import java.net.*;
+
+import java.awt.Color;
+
 
 public class Player 
 {
-    int playerNum;
+    Color color;
     
-    public Player(int playerNum)
+    public Player(Color color)
     {
-        this.playerNum = playerNum;
+        this.color = color;
+    }
+    
+    public Color getColor()
+    {
+        return color;
     }
 }

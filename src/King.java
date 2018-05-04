@@ -10,6 +10,7 @@ public class King extends Piece implements PiecesInterface
     {
         super(color, startingPosition);
         pieceName = "king";
+        value = 10000;
     }  
     
     @Override

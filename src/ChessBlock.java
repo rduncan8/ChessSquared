@@ -9,6 +9,7 @@ public class ChessBlock
     private String blockDescription;
     public int x;
     public int y;
+    public int value;
     
     public ChessBlock(String blockDescription, JButton button, int x, int y, Color color)
     {
@@ -29,6 +30,14 @@ public class ChessBlock
     {
         this.piece = piece;
         udpateBlockImage();
+        if (this.piece == null)
+        {
+            value = 0;
+        }
+        else
+        {
+            value = piece.value;
+        }
     }
     
     private void udpateBlockImage()
@@ -60,8 +69,8 @@ public class ChessBlock
     {
         if (isActive)
         {
-            button.setBackground(Color.ORANGE);
-            button.setBorder(BorderFactory.createLineBorder(color, 5));
+            button.setBackground(color);
+            button.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 5));
             button.setBorderPainted(true);
         }
     }
