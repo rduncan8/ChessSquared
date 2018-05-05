@@ -2,12 +2,13 @@
 import java.awt.Color;
 import javax.swing.ImageIcon;
 
-public class Bishop extends Piece implements PiecesInterface 
+public class Bishop extends Piece
 {    
     public Bishop(Color color, ChessBlock startingPosition)
     {
         super(color, startingPosition);
         pieceName = "bishop";
+        value = 350;
     }
 
     @Override

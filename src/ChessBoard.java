@@ -8,8 +8,7 @@ import javax.swing.border.*;
 
 public class ChessBoard extends Screen
 {
-    public int player;
-    private int turn;
+    public int turn;
     private ChessBlock selectedBlock = null;
     private final Color white = Color.WHITE;
     private final Color black = Color.BLACK;
@@ -19,16 +18,18 @@ public class ChessBoard extends Screen
     private ArrayList<ChessBlock> possibleCaptures = new ArrayList<>();
     private ArrayList<ChessBlock> dangerousBlocksForWhite = new ArrayList<>();
     private ArrayList<ChessBlock> dangerousBlocksForBlack = new ArrayList<>();
+    private ArrayList<ArrayList<ChessBlock>> movesAndCaptures = new ArrayList<>();
     private boolean gameOver = false;
     
-    public PlayerWhite pWhite;
-    public PlayerBlack pBlack;
+    private PlayerAI ai = null;
+    private RealPlayer realPlayer;
     
-    private final JFrame frame = createFrame("Chess");
+    private static final JFrame frame = createFrame("Chess");
     private final JPanel gui = new JPanel(new BorderLayout(3,3));
     private final JButton[][] chessBoardSquares = new JButton[8][8];
     private JPanel theChessBoard;
-    private final JLabel message = new JLabel("Chess Champ is ready to play!");
+    private JToolBar tools;
+    private JLabel message = new JLabel("Let the games begin! When ready White go first.");
     private static final String wCOLS = "ABCDEFGH";
     private static final String bCOLS = "HGFEDCBA";
     private static final String ROWS = "12345678";
@@ -40,65 +41,82 @@ public class ChessBoard extends Screen
     private final Piece[] whiteKnights = new Knight[2];
     private final Piece[] whiteBishops = new Bishop[2];
     private Piece whiteQueen;
-    private Piece whiteKing;
-    private ArrayList<Piece> whitePieces = new ArrayList<>();
-    
+    public static Piece whiteKing;
+    public static ArrayList<Piece> whitePieces = new ArrayList<>();
     
     private final Piece[] blackPawns = new Pawn[8];
     private final Piece[] blackRooks = new Rook[2];
     private final Piece[] blackKnights = new Knight[2];
     private final Piece[] blackBishops = new Bishop[2];
     private Piece blackQueen;
-    private Piece blackKing;
-    private ArrayList<Piece> blackPieces = new ArrayList<>();
+    public static Piece blackKing;
+    public static ArrayList<Piece> blackPieces = new ArrayList<>();
     
-    public ChessBoard(int player) 
+    public static boolean isWhiteKingInCheck = false;
+    public static boolean isBlackKingInCheck = false;
+    
+    public static ArrayList<Piece> whitePawnPromotions = new ArrayList<>();
+    public static ArrayList<Piece> blackPawnPromotions = new ArrayList<>();
+    
+    public ChessBoard(RealPlayer realPlayer, boolean withAI) 
     {
-        this.player = player;
-        turn = player;
-        createGUI(player);
+        this.realPlayer = realPlayer;
+        createGUI(realPlayer.getColor());
         frame.add(gui);
+        turn = 1;
         frame.setVisible(true);
+        if (withAI)
+        {
+            if (realPlayer.getColor() == Color.WHITE)
+            {
+                ai = new PlayerAI(Color.BLACK);
+            }
+            else
+            {
+                ai = new PlayerAI(Color.WHITE);
+            }
+        }
+        dangerousBlocksForWhite = Logic.getDangerousBlocksForWhite(board);
+        dangerousBlocksForBlack = Logic.getDangerousBlocksForBlack(board);
+        
+        if (realPlayer.color == Color.BLACK)
+        {
+            switchTurn();
+        }
     }
     
-    public final void createGUI(int player)
+    public final void createGUI(Color color)
     {
         // set up the main GUI
         gui.setBorder(new EmptyBorder(5, 5, 5, 5));
-        JToolBar tools = new JToolBar();
+        tools = new JToolBar();
         tools.setFloatable(false);
         gui.add(tools, BorderLayout.PAGE_START);
-        JButton newButton;
-        JButton saveButton;
-        JButton restoreButton;
-        JButton resignButton;
-        tools.add(newButton = new JButton("New")); // TODO - add functionality!
-        newButton.addActionListener(new toolsListener());
-        newButton.setActionCommand("New");
-        tools.add(saveButton = new JButton("Save")); // TODO - add functionality!
-        saveButton.addActionListener(new toolsListener());
-        saveButton.setActionCommand("Save");
-        tools.add(restoreButton = new JButton("Restore")); // TODO - add functionality!
-        restoreButton.addActionListener(new toolsListener());
-        restoreButton.setActionCommand("Restore");
-        tools.addSeparator();
-        tools.add(resignButton = new JButton("Resign")); // TODO - add functionality!
-        resignButton.addActionListener(new toolsListener());
-        resignButton.setActionCommand("Resign");
-        tools.addSeparator();
-        tools.add(message);
+        
+        updateGUI();
         
         theChessBoard = new JPanel(new GridLayout(0, 9));
         theChessBoard.setBorder(new LineBorder(Color.BLACK));
         gui.add(theChessBoard);
         
-        setUpBoard(player);
-        setUpPieces(player);
+        setUpBoard(color);
+        setUpPieces(color);
     }
     
-    public void setUpBoard(int player)
+    public void updateGUI()
+    {
+        tools.add(createButton("Resign", new ResignListener()));
+        tools.addSeparator();
+        tools.add(createButton("Rules", new RulesListener()));
+        tools.addSeparator();
+        tools.add(createButton("Exit", new ExitListener()));
+        tools.addSeparator();
+        tools.add(message);
+    }
+    
+    public void setUpBoard(Color color)
     {    
-        if(player == 1)
+        if(color == Color.WHITE)
         {
             Insets buttonMargin = new Insets(0,0,0,0);
             for (int row = 7, actRow = 0; row >= 0; row--, actRow++)
@@ -152,7 +170,7 @@ public class ChessBoard extends Screen
             }
             
         }
-        else if(player == 2)
+        else if(color == Color.BLACK)
         {    
             Insets buttonMargin = new Insets(0,0,0,0);
             for (int row = 7, actRow = 0; row >= 0; row--, actRow++)
@@ -207,16 +225,16 @@ public class ChessBoard extends Screen
         }
     }
     
-    public void setUpPieces(int player)
+    public void setUpPieces(Color color)
     {    
-        createBlocks(player);
+        createBlocks(color);
         createPieces();
         putPiecesOnBlocks();
     }
     
-    public void createBlocks(int player)
+    public void createBlocks(Color color)
     {
-        if(player == 1){
+        if(color == Color.WHITE){
             board[0][0] = new ChessBlock("A1", chessBoardSquares[0][7], 0, 0, buttonColor1);
             board[1][0] = new ChessBlock("B1", chessBoardSquares[1][7], 1, 0, buttonColor2);
             board[2][0] = new ChessBlock("C1", chessBoardSquares[2][7], 2, 0, buttonColor1);
@@ -289,7 +307,7 @@ public class ChessBoard extends Screen
             board[6][7] = new ChessBlock("G8", chessBoardSquares[6][0], 6, 7, buttonColor2);
             board[7][7] = new ChessBlock("H8", chessBoardSquares[7][0], 7, 7, buttonColor1);
         }
-        else if(player == 2)
+        else
         {    
             board[0][0] = new ChessBlock("A1", chessBoardSquares[7][0], 0, 0, buttonColor1);
             board[1][0] = new ChessBlock("B1", chessBoardSquares[6][0], 1, 0, buttonColor2);
@@ -381,8 +399,8 @@ public class ChessBoard extends Screen
         whiteKnights[1] = new Knight(white, board[6][0]);
         whiteBishops[0] = new Bishop(white, board[2][0]); 
         whiteBishops[1] = new Bishop(white, board[5][0]);
-        whiteKing = new King(white, board[3][0]);
-        whiteQueen = new Queen(white, board[4][0]);
+        whiteKing = new King(white, board[4][0]);
+        whiteQueen = new Queen(white, board[3][0]);
         
         whitePieces.add(whitePawns[0]);
         whitePieces.add(whitePawns[1]);
@@ -415,8 +433,8 @@ public class ChessBoard extends Screen
         blackKnights[1] = new Knight(black, board[6][7]);
         blackBishops[0] = new Bishop(black, board[2][7]); 
         blackBishops[1] = new Bishop(black, board[5][7]);
-        blackKing = new King(black, board[3][7]);
-        blackQueen = new Queen(black, board[4][7]);
+        blackKing = new King(black, board[4][7]);
+        blackQueen = new Queen(black, board[3][7]);
         
         blackPieces.add(blackPawns[0]);
         blackPieces.add(blackPawns[1]);
@@ -441,8 +459,8 @@ public class ChessBoard extends Screen
         board[0][0].setPiece(whiteRooks[0]);
         board[1][0].setPiece(whiteKnights[0]);
         board[2][0].setPiece(whiteBishops[0]);
-        board[3][0].setPiece(whiteKing);
-        board[4][0].setPiece(whiteQueen);
+        board[3][0].setPiece(whiteQueen);
+        board[4][0].setPiece(whiteKing);
         board[5][0].setPiece(whiteBishops[1]);
         board[6][0].setPiece(whiteKnights[1]);
         board[7][0].setPiece(whiteRooks[1]);
@@ -468,29 +486,11 @@ public class ChessBoard extends Screen
         board[0][7].setPiece(blackRooks[0]);
         board[1][7].setPiece(blackKnights[0]);
         board[2][7].setPiece(blackBishops[0]);
-        board[3][7].setPiece(blackKing);
-        board[4][7].setPiece(blackQueen);
+        board[3][7].setPiece(blackQueen);
+        board[4][7].setPiece(blackKing);
         board[5][7].setPiece(blackBishops[1]);
         board[6][7].setPiece(blackKnights[1]);
         board[7][7].setPiece(blackRooks[1]);
-    }
-    
-    public class toolsListener implements ActionListener
-    {
-        @Override
-        public void actionPerformed(ActionEvent e){
-            //new save restore resign
-            if("new".equals(e.getActionCommand())){
-                Game.newGame();
-                frame.setVisible(false);
-            }else if("save".equals(e.getActionCommand())){
-                
-            }else if("restore".equals(e.getActionCommand())){
-                
-            }else if("resign".equals(e.getActionCommand())){
-                
-            }
-        }
     }
     
     private boolean isPieceSelected()
@@ -506,9 +506,11 @@ public class ChessBoard extends Screen
             {
                 if (isPieceSelected() && chessBlock != selectedBlock && possibleCaptures.contains(chessBlock))
                 {
-                    capturePiece(chessBlock);
+                    realPlayer.capturePiece(board, selectedBlock, chessBlock);
+                    clearPossibleMovesAndCaptures();
+                    switchTurn();
                 }
-                else if ((turn == 1 && chessBlock.getPiece().color == Color.WHITE) || (turn == 2 && chessBlock.getPiece().color == Color.BLACK))
+                else if ((realPlayer.getColor() == chessBlock.getPiece().color && turn == 1) || (realPlayer.getColor() != chessBlock.getPiece().color && turn == 2)) //(currentPlayer.getColor() == chessBlock.getPiece().color) DO NOT DELETE
                 {
                     selectBlock(chessBlock);
                 }
@@ -521,7 +523,16 @@ public class ChessBoard extends Screen
                     {
                         if (possibleMoves.contains(chessBlock))
                         {
-                            moveToBlock(chessBlock);
+                            realPlayer.moveToBlock(board, selectedBlock, chessBlock);
+                            clearPossibleMovesAndCaptures();
+                            switchTurn();
+                        }
+                        
+                        if (possibleCaptures.contains(chessBlock))
+                        {
+                            realPlayer.capturePiece(board, selectedBlock, chessBlock);
+                            clearPossibleMovesAndCaptures();
+                            switchTurn();
                         }
                     }
                 }
@@ -537,195 +548,266 @@ public class ChessBoard extends Screen
         }
         selectedBlock = chessBlock;
         selectedBlock.setSelectedPieceButtonColor(true);
-        getPossibledMovesAndCaptures();
+        getPossibleMovesAndCaptures(selectedBlock);
     }
     
-    private void moveToBlock(ChessBlock chessBlock)
+    private void promote(ChessBlock block)
     {
-        clearPossibleMovesAndCaptures();
-        selectedBlock.getPiece().move(chessBlock);
-        selectedBlock.setSelectedPieceButtonColor(false);
-        selectedBlock = null;
-        switchTurn();
-    }
-    
-    private void capturePiece(ChessBlock chessBlock)
-    {
-        chessBlock.setPiece(null);
-        clearPossibleMovesAndCaptures();
-        selectedBlock.getPiece().move(chessBlock);
-        selectedBlock.setSelectedPieceButtonColor(false);
-        selectedBlock = null;
-        switchTurn();
+        Object[] options = {"Queen", "Rook", "Knight", "Bishop"};
+        
+        int dialogResult = JOptionPane.showOptionDialog(null,
+                "Please selected a piece you would like to promote to ",
+                "Pick a piece.", JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                null, options, options[0]);
+        
+        if (block.getPiece().color == Color.WHITE)
+        {
+            if (dialogResult == 0 || dialogResult == JOptionPane.CLOSED_OPTION)
+            {
+                whitePieces.remove(block.getPiece());
+                block.setPiece(new Queen(Color.WHITE, block));
+                whitePieces.add(block.getPiece());
+            }
+            else if (dialogResult == 1)
+            {
+                whitePieces.remove(block.getPiece());
+                block.setPiece(new Rook(Color.WHITE, block));
+                whitePieces.add(block.getPiece());
+            }
+            else if (dialogResult == 2)
+            {
+                whitePieces.remove(block.getPiece());
+                block.setPiece(new Knight(Color.WHITE, block));
+                whitePieces.add(block.getPiece());
+            }
+            else if (dialogResult == 3)
+            {
+                whitePieces.remove(block.getPiece());
+                block.setPiece(new Bishop(Color.WHITE, block));
+                whitePieces.remove(block.getPiece());
+            }
+        }
+        else
+        {
+            if (dialogResult == 0 || dialogResult == JOptionPane.CLOSED_OPTION)
+            {
+                blackPieces.remove(block.getPiece());
+                block.setPiece(new Queen(Color.BLACK, block));
+                blackPieces.add(block.getPiece());
+            }
+            else if (dialogResult == 1)
+            {
+                blackPieces.remove(block.getPiece());
+                block.setPiece(new Rook(Color.BLACK, block));
+                blackPieces.add(block.getPiece());
+            }
+            else if (dialogResult == 2)
+            {
+                blackPieces.remove(block.getPiece());
+                block.setPiece(new Knight(Color.BLACK, block));
+                blackPieces.add(block.getPiece());
+            }
+            else if (dialogResult == 3)
+            {
+                blackPieces.remove(block.getPiece());
+                block.setPiece(new Bishop(Color.BLACK, block));
+                blackPieces.remove(block.getPiece());
+            }
+        }
     }
     
     private void switchTurn()
     {
+        dangerousBlocksForWhite.clear();
+        dangerousBlocksForBlack.clear();
+        dangerousBlocksForWhite = Logic.getDangerousBlocksForWhite(board);
+        dangerousBlocksForBlack = Logic.getDangerousBlocksForBlack(board);
+        
+        if (whitePawnPromotions.size() > 0)
+        {
+            promote(whitePawnPromotions.get(0).currentPosition);
+            whitePawnPromotions.clear();
+        }
+        
+        if (blackPawnPromotions.size() > 0)
+        {
+            promote(blackPawnPromotions.get(0).currentPosition);
+            blackPawnPromotions.clear();
+        }
+        
+        if (isWhiteKingInCheck)
+        {
+            isWhiteKingInCheck = false;
+        }
+        
+        if (isBlackKingInCheck)
+        {
+            isBlackKingInCheck = false;
+        }
+        
         if (turn == 1)
         {
             turn = 2;
-            findDangerousBlocksForBlack();
-            System.out.println("found dangerous for black");
-            if (dangerousBlocksForBlack.contains(blackKing.currentPosition))
+            
+            if (realPlayer.color == Color.WHITE)
             {
-                System.out.println("black in check");
-                selectBlock(blackKing.currentPosition);
-                checkForWinner();
+                if (dangerousBlocksForBlack.contains(blackKing.currentPosition))
+                {
+                    setBlackKingInCheck();
+                }
+                whitePieces.forEach(piece -> piece.enpassantCaptures.clear());
+            }
+            else
+            {
+                if (dangerousBlocksForWhite.contains(whiteKing.currentPosition))
+                {
+                    setWhiteKingInCheck();
+                }  
+                blackPieces.forEach(piece -> piece.enpassantCaptures.clear());
+            }
+            if (ai != null)
+            {
+                board = ai.makeMove(board, dangerousBlocksForWhite, dangerousBlocksForBlack);
+                switchTurn();
+                if (realPlayer.color == Color.WHITE)
+                {
+                    tools.removeAll();
+                    message = new JLabel("Player White's turn.                    "
+                            + "                                        ");
+                    updateGUI();
+                }
+                else
+                {
+                    tools.removeAll();
+                    message = new JLabel("Player Black's turn.                    "
+                            + "                                        ");
+                    updateGUI();
+                }
+            }
+            else
+            {
+                tools.removeAll();
+                message = new JLabel("Player Black's turn.                    "
+                        + "                                        ");
+                updateGUI();
             }
         }
         else
         {
             turn = 1;
-            findDangerousBlocksForWhite();
-            System.out.println("found dangerous for white");
-            if (dangerousBlocksForWhite.contains(whiteKing.currentPosition))
+            tools.removeAll();
+            message = new JLabel("Player White's turn.                    "
+                    + "                                        ");
+            updateGUI();
+            if (realPlayer.color == Color.WHITE)
             {
-                System.out.println("White in check");
-                selectBlock(whiteKing.currentPosition);
-                checkForWinner();
-            }        
+                if (dangerousBlocksForWhite.contains(whiteKing.currentPosition))
+                {
+                    setWhiteKingInCheck();
+                }
+                blackPieces.forEach(piece -> piece.enpassantCaptures.clear());
+            }
+            else
+            {
+                if (dangerousBlocksForBlack.contains(blackKing.currentPosition))
+                {
+                    setBlackKingInCheck();
+                }
+                whitePieces.forEach(piece -> piece.enpassantCaptures.clear());
+            }
         }
     }
     
-    private void checkForWinner()
+    private void setWhiteKingInCheck()
     {
-        if (possibleMoves.isEmpty() && possibleCaptures.isEmpty())
+        tools.removeAll();
+        message = new JLabel("Player White's turn. Check.");
+        updateGUI();
+        
+        isWhiteKingInCheck = true;
+        ArrayList<ArrayList<ChessBlock>> possibleWhiteMoves = new ArrayList<>();
+        
+        for (Piece piece : whitePieces)
         {
+            getPossibleMovesAndCaptures(piece.currentPosition);
+            
+            if (possibleMoves.size() > 0)
+            {
+                possibleWhiteMoves.add(possibleMoves);
+            }
+            
+            if (possibleCaptures.size() > 0)
+            {
+                possibleWhiteMoves.add(possibleCaptures);
+            }
+            
+            clearPossibleMovesAndCaptures();
+        }
+        
+        if (possibleWhiteMoves.size() == 0)
+        {
+            tools.removeAll();
+            message = new JLabel("White king is in Checkmate, Black wins!");
+            updateGUI();
+            
             gameOver = true;
             for (int y = 0; y < 8; y++)
             {
                 for (int x = 0; x < 8; x++)
                 {
-                    board[x][y].setWinnerButtonColor(gameOver, selectedBlock.getPiece().color);
+                    board[x][y].setWinnerButtonColor(gameOver, Color.BLACK);
                 }
             }
         }
     }
     
-    private void findDangerousBlocksForWhite()
+    private void setBlackKingInCheck()
     {
-        dangerousBlocksForWhite.forEach(block -> block.setDangerousButtonColor(false));
-        dangerousBlocksForWhite.clear();
-        ArrayList<ChessBlock> dangerousBlocks = new ArrayList<>();
-        for (int i = 0; i < blackPieces.size(); i++)
-        {
-            dangerousBlocks = findDangerousBlocks(blackPieces.get(i));
-            dangerousBlocks.forEach(block -> dangerousBlocksForWhite.add(block));
-            dangerousBlocks.clear();
-        }
-        // setting this to true or false determines if dangerous squares are highlighted
-        dangerousBlocksForWhite.forEach(block -> block.setDangerousButtonColor(false));
-    }
-    
-    private void findDangerousBlocksForBlack()
-    {
-        dangerousBlocksForWhite.forEach(block -> block.setDangerousButtonColor(false));
-        dangerousBlocksForBlack.clear();
-        ArrayList<ChessBlock> dangerousBlocks = new ArrayList<>();
-        for (int i = 0; i < whitePieces.size(); i++)
-        {
-            dangerousBlocks = findDangerousBlocks(whitePieces.get(i));
-            dangerousBlocks.forEach(block -> dangerousBlocksForBlack.add(block));
-            dangerousBlocks.clear();
-            // setting this to true or false determines if dangerous squares are highlighted
-            dangerousBlocksForWhite.forEach(block -> block.setDangerousButtonColor(false));
-        }
-    }
-    
-    private ArrayList<ChessBlock> findDangerousBlocks(Piece piece)
-    {
-        ArrayList<ChessBlock> dangerousBlocks = new ArrayList<>();
+        tools.removeAll();
+        message = new JLabel("Player Black's turn. Check.");
+        updateGUI();
         
-        if ("pawn".equals(piece.pieceName))
+        isBlackKingInCheck = true;
+        ArrayList<ArrayList<ChessBlock>> possibleBlackMoves = new ArrayList<>();
+        
+        for (Piece piece : blackPieces)
         {
-            if (piece.color == Color.WHITE)
+            getPossibleMovesAndCaptures(piece.currentPosition);
+            
+            if (possibleMoves.size() > 0)
             {
-                if (piece.currentPosition.y + 1 < 8)
+                possibleBlackMoves.add(possibleMoves);
+            }
+            
+            if (possibleCaptures.size() > 0)
+            {
+                possibleBlackMoves.add(possibleCaptures);
+            }
+            
+            clearPossibleMovesAndCaptures();
+        }
+        
+        if (possibleBlackMoves.size() == 0)
+        {
+            tools.removeAll();
+            message = new JLabel("Black king is in Checkmate, White wins!");
+            updateGUI();
+            
+            gameOver = true;
+            for (int y = 0; y < 8; y++)
+            {
+                for (int x = 0; x < 8; x++)
                 {
-                    if (piece.currentPosition.x - 1 >= 0)
-                    {
-                        if (!board[piece.currentPosition.x - 1][piece.currentPosition.y + 1].hasPiece())
-                        {
-                            dangerousBlocks.add(board[piece.currentPosition.x - 1][piece.currentPosition.y + 1]);
-                        }
-                    }
-                    
-                    if (piece.currentPosition.x + 1 < 8)
-                    {
-                        if (!board[piece.currentPosition.x + 1][piece.currentPosition.y + 1].hasPiece())
-                        {
-                            dangerousBlocks.add(board[piece.currentPosition.x + 1][piece.currentPosition.y + 1]);
-                        }
-                    } 
+                    board[x][y].setWinnerButtonColor(gameOver, Color.WHITE);
                 }
             }
-            else
-            {
-                if (piece.currentPosition.y - 1 >= 0)
-                {
-                    if (piece.currentPosition.x - 1 >= 0)
-                    {
-                        if (!board[piece.currentPosition.x - 1][piece.currentPosition.y - 1].hasPiece())
-                        {
-                            dangerousBlocks.add(board[piece.currentPosition.x - 1][piece.currentPosition.y - 1]);
-                        }
-                    }
-                    
-                    if (piece.currentPosition.x + 1 < 8)
-                    {
-                        if (!board[piece.currentPosition.x + 1][piece.currentPosition.y - 1].hasPiece())
-                        {
-                            dangerousBlocks.add(board[piece.currentPosition.x + 1][piece.currentPosition.y - 1]);
-                        }
-                    } 
-                }
-            }
-            return dangerousBlocks;
         }
-        else if ("rook".equals(piece.pieceName))
-        {
-            getPossibleRookMovesAndCaptures(piece.currentPosition);
-            possibleMoves.forEach((block) -> { dangerousBlocks.add(block); });
-            possibleMoves.clear();
-            possibleCaptures.clear();
-            return dangerousBlocks;
-        }
-        else if ("knight".equals(piece.pieceName))
-        {
-            getPossibleKnightMovesAndCaptures(piece.currentPosition);
-            possibleMoves.forEach((block) -> { dangerousBlocks.add(block); });
-            possibleMoves.clear();
-            possibleCaptures.clear();
-            return dangerousBlocks;
-        }
-        else if ("bishop".equals(piece.pieceName))
-        {
-            getPossibleBishopMovesAndCaptures(piece.currentPosition);
-            possibleMoves.forEach((block) -> { dangerousBlocks.add(block); });
-            possibleMoves.clear();
-            possibleCaptures.clear();
-            return dangerousBlocks;
-        }
-        else if ("queen".equals(piece.pieceName))
-        {
-            getPossibleQueenMovesAndCaptures(piece.currentPosition);
-            possibleMoves.forEach((block) -> { dangerousBlocks.add(block); });
-            possibleMoves.clear();
-            possibleCaptures.clear();
-            return dangerousBlocks;
-        }
-        else if ("king".equals(piece.pieceName))
-        {
-            getPossibleKingMovesAndCaptures(piece.currentPosition);
-            possibleMoves.forEach((block) -> { dangerousBlocks.add(block); });
-            possibleMoves.clear();
-            possibleCaptures.clear();
-            return dangerousBlocks;
-        }
-        else
-        {
-            return dangerousBlocks;
-        }
+    }
+    
+    public static boolean isKingInCheck()
+    {
+        return isWhiteKingInCheck || isBlackKingInCheck;
     }
     
     private void clearPossibleMovesAndCaptures()
@@ -736,365 +818,82 @@ public class ChessBoard extends Screen
         possibleCaptures.clear();
     }
     
-    private void getPossibledMovesAndCaptures()
+    private void getPossibleMovesAndCaptures(ChessBlock selectedBlock)
     {
         clearPossibleMovesAndCaptures();
         
-        if ("pawn".equals(selectedBlock.getPiece().pieceName))
-        {
-            getPossiblePawnMovesAndCaptures(selectedBlock);
-        }
-        else if ("rook".equals(selectedBlock.getPiece().pieceName))
-        {
-            getPossibleRookMovesAndCaptures(selectedBlock);
-        }
-        else if ("knight".equals(selectedBlock.getPiece().pieceName))
-        {
-            getPossibleKnightMovesAndCaptures(selectedBlock);
-        }
-        else if ("bishop".equals(selectedBlock.getPiece().pieceName))
-        {
-            getPossibleBishopMovesAndCaptures(selectedBlock);
-        }
-        else if ("queen".equals(selectedBlock.getPiece().pieceName))
-        {
-            getPossibleQueenMovesAndCaptures(selectedBlock);
-        }
-        else if ("king".equals(selectedBlock.getPiece().pieceName))
-        {
-            getPossibleKingMovesAndCaptures(selectedBlock);
-        }
-      
-        possibleMoves.forEach(block -> block.setPossibleMoveButtonColor(true));
-        possibleCaptures.forEach(block -> block.setPossibleCaptureButtonColor(true));
-    }
+        movesAndCaptures = Logic.getPossibleMovesAndCaptures(board, selectedBlock, dangerousBlocksForWhite, dangerousBlocksForBlack);
         
-    private void getPossiblePawnMovesAndCaptures(ChessBlock block)
-    {
-        if (block.getPiece().color == Color.WHITE)
+        if (movesAndCaptures.size() > 0)
         {
-            if (block.y + 1 < 8)
+            possibleMoves = movesAndCaptures.get(0);
+            possibleMoves.forEach(block -> block.setPossibleMoveButtonColor(true));
+        }
+        
+        if (movesAndCaptures.size() > 1)
+        {
+            possibleCaptures = movesAndCaptures.get(1);
+            possibleCaptures.forEach(block -> block.setPossibleCaptureButtonColor(true));
+        }
+    }
+    
+    public class ResignListener implements ActionListener
+    {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            int dialogResult = JOptionPane.showConfirmDialog(null,
+                    "Are you sure you want to resign?", "Resign", JOptionPane.YES_NO_OPTION);
+            
+            if(dialogResult == 0)
             {
-                if (!board[block.x][block.y + 1].hasPiece())
-                {
-                    possibleMoves.add(board[block.x][block.y + 1]);
-                    
-                    if (!block.getPiece().hasMoved)
-                    {
-                        if (!board[block.x][block.y + 2].hasPiece())
-                        {
-                            possibleMoves.add(board[block.x][block.y + 2]);
-                        }
-                    }
-                }
+                if (turn == 1)
+                    JOptionPane.showMessageDialog(frame, "Congratulations Black! You win!");
+                else if (turn == 2)
+                    JOptionPane.showMessageDialog(frame, "Congratulations White! You win!");
                 
-                if (block.x + 1 < 8)
-                {
-                    if (board[block.x + 1][block.y + 1].hasPiece())
-                    {
-                        if (board[block.x + 1][block.y + 1].getPiece().color != block.getPiece().color)
-                        {
-                            possibleCaptures.add(board[block.x + 1][block.y + 1]);
-                        }
-                    }
-                }
-                
-                if (block.x - 1 >= 0)
-                {
-                    if (board[block.x - 1][block.y + 1].hasPiece())
-                    {
-                        if (board[block.x - 1][block.y + 1].getPiece().color != block.getPiece().color)
-                        {
-                            possibleCaptures.add(board[block.x - 1][block.y + 1]);
-                        }
-                    }
-                }
+                System.exit(0);
             }
-        }
-        else
-        {
-            if (block.y - 1 > 0)
-            {
-                if (!board[block.x][block.y - 1].hasPiece())
-                {
-                    possibleMoves.add(board[block.x][block.y - 1]);
-                    
-                    if (!block.getPiece().hasMoved)
-                    {
-                        if (!board[block.x][block.y - 2].hasPiece())
-                        {
-                            possibleMoves.add(board[block.x][block.y - 2]);
-                        }
-                    }
-                }
-                
-                if (block.x + 1 < 8)
-                {
-                    if (board[block.x + 1][block.y - 1].hasPiece())
-                    {
-                        if (board[block.x + 1][block.y - 1].getPiece().color != block.getPiece().color)
-                        {
-                            possibleCaptures.add(board[block.x + 1][block.y - 1]);
-                        }
-                    }
-                }
-                
-                if (block.x - 1 >= 0)
-                {
-                    if (board[block.x - 1][block.y - 1].hasPiece())
-                    {
-                        if (board[block.x - 1][block.y - 1].getPiece().color != block.getPiece().color)
-                        {
-                            possibleCaptures.add(board[block.x - 1][block.y - 1]);
-                        }
-                    }
-                }
-            }
-        }
+        } 
     }
     
-    private void getPossibleRookMovesAndCaptures(ChessBlock block)
-    {  
-        for (int y = block.y + 1; y < 8; y++)
-        {
-            if (board[block.x][y].hasPiece())
-            {
-                if (board[block.x][y].getPiece().color != block.getPiece().color)
-                {
-                    possibleCaptures.add(board[block.x][y]);
-                }
-                break;
-            }
-            else
-            {
-                possibleMoves.add(board[block.x][y]);
-            }
-        }
-        
-        for (int y = block.y - 1; y >= 0; y--)
-        {
-            if (board[block.x][y].hasPiece())
-            {
-                if (board[block.x][y].getPiece().color != block.getPiece().color)
-                {
-                    possibleCaptures.add(board[block.x][y]);
-                }
-                break;
-            }
-            else
-            {
-                possibleMoves.add(board[block.x][y]);
-            }
-        }
-        
-        for (int x = block.x + 1; x < 8; x++)
-        {
-            if (board[x][block.y].hasPiece())
-            {
-                if (board[x][block.y].getPiece().color != block.getPiece().color)
-                {
-                    possibleCaptures.add(board[x][block.y]);
-                }
-                break;
-            }
-            else
-            {
-                possibleMoves.add(board[x][block.y]);
-            }
-        }
-        
-        for (int x = block.x - 1; x >= 0; x--)
-        {
-            if (board[x][block.y].hasPiece())
-            {
-                if (board[x][block.y].getPiece().color != block.getPiece().color)
-                {
-                    possibleCaptures.add(board[x][block.y]);
-                }
-                break;
-            }
-            else
-            {
-                possibleMoves.add(board[x][block.y]);
-            }
-        }
-    }
-    
-    private void getPossibleKnightMovesAndCaptures(ChessBlock block)
+    public static class RulesListener implements ActionListener
     {
-        int[] x = { block.x - 2, block.x - 2, block.x + 2, block.x + 2,
-                    block.x - 1, block.x + 1, block.x - 1, block.x + 1 };
-        int[] y = { block.y - 1, block.y + 1, block.y - 1, block.y + 1,
-                    block.y - 2, block.y - 2, block.y + 2, block.y + 2 };
-
-        for (int i = 0; i < 8; i++)
+        @Override
+        public void actionPerformed(ActionEvent e)
         {
-            if (x[i] >= 0 && x[i] < 8 && y[i] >= 0 && y[i] < 8)
-            {
-                if (!board[x[i]][y[i]].hasPiece())
-                {
-                    possibleMoves.add(board[x[i]][y[i]]);
-                }
-                else if (board[x[i]][y[i]].getPiece().color != block.getPiece().color)
-                {
-                    possibleCaptures.add(board[x[i]][y[i]]);
-                }
-            }
+            JOptionPane.showMessageDialog(frame, "The standard rules of Chess are as "
+                    + "follows:\n       • Eight white/black Pawns (a2-h2),"
+                    + " two white/black Bishops (c1 and f1),\n two white/black "
+                    + "Knights (b1 and g1), two white/black Rooks (a1 and h1), \n "
+                    + "one white/black Queen (d1), and one white/black King (e1).\n"
+                    + "       • Pawns move one block forward at a time, and cannot go backward "
+                    + "(on first move it can advance \n two spaces forward).\n       "
+                    + "• Bishops move back and forth diagonally.\n       • Knights move back "
+                    + "and forth in an “L” shape.\n       • Rooks move back and forth, "
+                    + "left and right, but not diagonally.\n       • Queens move back "
+                    + "and forth, left and right, and diagonally.\n       • Kings move back and "
+                    + "forth, left and right, and diagonally, but only one space "
+                    + "at a time.\n       • Whoever plays as White always go first. "
+                    + "\n       • To win, one player must put their opponent in “checkmate”."
+                    + "\n       • Checkmate occurs when one player puts the enemy"
+                    + "king in “check” and the player whose king is in check\ncannot avoid getting "
+                    + "their king out of “check” within the next move.\n       • Check happens when you "
+                    + "can capture the enemy king on your next turn with one of your pieces.");
         }
     }
     
-    private void getPossibleBishopMovesAndCaptures(ChessBlock block)
+    public class ExitListener implements ActionListener
     {
-        for (int i = 1; i < 8; i++)
+        @Override
+        public void actionPerformed(ActionEvent e)
         {
-            if (block.x + i > 7 || block.y + i > 7)
-            {
-                break;
-            }
-            else
-            {
-                if (board[block.x + i][block.y + i].hasPiece())
-                {
-                    if (board[block.x + i][block.y + i].getPiece().color != block.getPiece().color)
-                    {
-                        possibleCaptures.add(board[block.x + i][block.y + i]);
-                    }
-                    break;
-                }
-                else
-                {
-                    possibleMoves.add(board[block.x + i][block.y + i]);
-                }
-            }
-        }
-        
-        for (int i = 1; i < 8; i++)
-        {
-            if (block.x - i < 0 || block.y + i > 7)
-            {
-                break;
-            }
-            else
-            {
-                if (board[block.x - i][block.y + i].hasPiece())
-                {
-                    if (board[block.x - i][block.y + i].getPiece().color != block.getPiece().color)
-                    {
-                        possibleCaptures.add(board[block.x - i][block.y + i]);
-                    }
-                    break;
-                }
-                else
-                {
-                    possibleMoves.add(board[block.x - i][block.y + i]);
-                }
-            }
-        }
-        
-        for (int i = 1; i < 8; i++)
-        {
-            if (block.x - i < 0 || block.y - i < 0)
-            {
-                break;
-            }
-            else
-            {
-                if (board[block.x - i][block.y - i].hasPiece())
-                {
-                    if (board[block.x - i][block.y - i].getPiece().color != block.getPiece().color)
-                    {
-                        possibleCaptures.add(board[block.x - i][block.y - i]);
-                    }
-                    break;
-                }
-                else
-                {
-                    possibleMoves.add(board[block.x - i][block.y - i]);
-                }
-            }
-        }
-        
-        for (int i = 1; i < 8; i++)
-        {
-            if (block.x + i > 7 || block.y - i < 0)
-            {
-                break;
-            }
-            else
-            {
-                if (board[block.x + i][block.y - i].hasPiece())
-                {
-                    if (board[block.x + i][block.y - i].getPiece().color != block.getPiece().color)
-                    {
-                        possibleCaptures.add(board[block.x + i][block.y - i]);
-                    }
-                    break;
-                }
-                else
-                {
-                    possibleMoves.add(board[block.x + i][block.y - i]);
-                }
-            }
-        }
-    }
-    
-    private void getPossibleQueenMovesAndCaptures(ChessBlock block)
-    {
-        getPossibleRookMovesAndCaptures(block);
-        getPossibleBishopMovesAndCaptures(block);
-    }
-    
-    private void getPossibleKingMovesAndCaptures(ChessBlock block)
-    {
-        int[][] xy = { {block.x, block.y + 1},
-                       {block.x + 1, block.y + 1},
-                       {block.x + 1, block.y},
-                       {block.x + 1, block.y - 1},
-                       {block.x, block.y - 1},
-                       {block.x - 1, block.y - 1},
-                       {block.x - 1, block.y},
-                       {block.x - 1, block.y + 1} };
-        
-        for (int i = 0; i < 8; i++)
-        {
-            if (xy[i][0] >= 0 && xy[i][0] < 8 && xy[i][1] >= 0 && xy[i][1] < 8)
-            {
-                if (!board[xy[i][0]][xy[i][1]].hasPiece())
-                {
-                    if (block.getPiece().color == Color.WHITE)
-                    {
-                        if (!dangerousBlocksForWhite.contains(board[xy[i][0]][xy[i][1]]))
-                        {
-                            possibleMoves.add(board[xy[i][0]][xy[i][1]]);
-                        }
-                    }
-                    else
-                    {
-                        if (!dangerousBlocksForBlack.contains(board[xy[i][0]][xy[i][1]]))
-                        {
-                            possibleMoves.add(board[xy[i][0]][xy[i][1]]);
-                        }
-                    }
-                }
-                else if (board[xy[i][0]][xy[i][1]].getPiece().color != block.getPiece().color)
-                {
-                    if (block.getPiece().color == Color.WHITE)
-                    {
-                        if (!dangerousBlocksForWhite.contains(board[xy[i][0]][xy[i][1]]))
-                        {
-                            possibleCaptures.add(board[xy[i][0]][xy[i][1]]);
-                        }
-                    }
-                    else
-                    {
-                        if (!dangerousBlocksForBlack.contains(board[xy[i][0]][xy[i][1]]))
-                        {
-                            possibleCaptures.add(board[xy[i][0]][xy[i][1]]);
-                        }
-                    }
-                }
-            }
-        }
+            int dialogResult = JOptionPane.showConfirmDialog(null,
+                    "Are you sure you want to exit the game?", "Exit Game", JOptionPane.YES_NO_OPTION);
+            
+            if(dialogResult == 0)
+                System.exit(0);
+        }  
     }
     
     public class MovePieceListener implements ActionListener
@@ -1102,7 +901,7 @@ public class ChessBoard extends Screen
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            if (player == 1){
+            if (realPlayer.getColor() == Color.WHITE){
                 if("00".equals(e.getActionCommand())){
                     blockClicked(board[0][0]);
                 }else if("01".equals(e.getActionCommand())){
@@ -1232,7 +1031,7 @@ public class ChessBoard extends Screen
                 }else if("77".equals(e.getActionCommand())){
                     blockClicked(board[7][7]);
                 }
-            }else if (player == 2){
+            }else// if (player == 2){
                 
                 if("77".equals(e.getActionCommand())){
                     blockClicked(board[0][0]);
@@ -1365,5 +1164,4 @@ public class ChessBoard extends Screen
                 }
             }
         }
-    }
 }
