@@ -51,6 +51,7 @@ class RecieveThread implements Runnable
 {
     Socket socket = null;
     BufferedReader recieve = null;
+    private boolean hasGameStarted = false;
 	
     public RecieveThread()
     {
@@ -70,8 +71,11 @@ class RecieveThread implements Runnable
                 
                 if (msgRecieved.equals("1"))
                 {
-                    ChessBoard chessBoard = new ChessBoard(new RealPlayer(Color.BLACK), false);
-                    break;
+                    if (!hasGameStarted)
+                    {
+                        ChessBoard chessBoard = new ChessBoard(new RealPlayer(Color.BLACK), false);
+                        hasGameStarted = true;
+                    }
                 }
             }
         }
