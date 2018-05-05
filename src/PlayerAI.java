@@ -103,7 +103,6 @@ public class PlayerAI extends Player
         for (int i = 0; i < movesAndCaptures.get(1).size(); i++)
         {
             possibleMoves.add(movesAndCaptures.get(1).get(i));
-            possibleMoves.clear();
         }
         
         return possibleMoves;
@@ -111,22 +110,23 @@ public class PlayerAI extends Player
     
     private int getMoveCost(ChessBlock selectedBlock, ChessBlock possibleMove)
     {
-        int moveCost = possibleMove.value;
-        if (dangerousBlocks.contains(possibleMove))
+        int moveCost = 0;
+        
+        if (possibleMove.hasPiece() && possibleMove.getPiece().color != color)
         {
-            dangerousBlocks.forEach(block -> System.out.println(block.getBlockDescription()));
-            //System.out.println("DANGER");
-            moveCost -= selectedBlock.value;
+            moveCost -= possibleMove.value;
         }
         
-        //System.out.println(selectedBlock.getBlockDescription() + " -> " + possibleMove.getBlockDescription());
-        //System.out.println(moveCost + "\r\n");
+        if (dangerousBlocks.contains(possibleMove))
+        {
+            moveCost += selectedBlock.value;
+        }
+                
         return moveCost;
     }
     
     private void capturePiece(ChessBlock selectedBlock, ChessBlock chessBlock)
     {
-        //System.out.println("CAPTURE");
         if (chessBlock.getPiece().color == Color.WHITE)
         {
             ChessBoard.whitePieces.remove(chessBlock.getPiece());
@@ -143,7 +143,6 @@ public class PlayerAI extends Player
     
     private void moveToBlock(ChessBlock selectedBlock, ChessBlock chessBlock)
     {
-        //System.out.println("MOVE");
         selectedBlock.getPiece().move(chessBlock);
         selectedBlock = null;
     }
