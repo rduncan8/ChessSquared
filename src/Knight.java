@@ -2,7 +2,7 @@
 import java.awt.Color;
 import javax.swing.ImageIcon;
 
-public class Knight extends Piece implements PiecesInterface 
+public class Knight extends Piece
 {    
     public Knight(Color color, ChessBlock startingPosition)
     {

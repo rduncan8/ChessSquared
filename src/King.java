@@ -2,7 +2,7 @@
 import java.awt.Color;
 import javax.swing.ImageIcon;
 
-public class King extends Piece implements PiecesInterface 
+public class King extends Piece
 {
     public boolean isInCheck = false;
     

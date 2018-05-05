@@ -95,8 +95,6 @@ public class PlayerAI extends Player
         ArrayList<ArrayList<ChessBlock>> movesAndCaptures = Logic.getPossibleMovesAndCaptures(board, selectedBlock, dangerousBlocksForWhite, dangerousBlocksForBlack);
         ArrayList<ChessBlock> possibleMoves = new ArrayList<>();
         
-        System.out.println(selectedBlock.getBlockDescription());
-        
         for (int i = 0; i < movesAndCaptures.get(0).size(); i++)
         {
             possibleMoves.add(movesAndCaptures.get(0).get(i));
@@ -106,10 +104,7 @@ public class PlayerAI extends Player
         {
             possibleMoves.add(movesAndCaptures.get(1).get(i));
             possibleMoves.clear();
-            System.out.println(movesAndCaptures.get(1).get(i).getBlockDescription());
         }
-        
-        System.out.println();
         
         return possibleMoves;
     }

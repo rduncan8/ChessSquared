@@ -1,5 +1,7 @@
+// artwork for pieces made using piskelapp.com
 
 import java.awt.Color;
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
 public class Piece
@@ -10,6 +12,7 @@ public class Piece
     protected String pieceName;
     protected boolean hasMoved = false;
     public int value = 0;
+    public ArrayList<Piece> enpassantCaptures = new ArrayList<>();
     
     public Piece(Color color, ChessBlock startingPosition)
     {

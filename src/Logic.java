@@ -8,82 +8,32 @@ public class Logic
     {
         ArrayList<ArrayList<ChessBlock>> movesAndCaptures = new ArrayList<>();
         
-        if (!ChessBoard.isKingInCheck())
+        if ("pawn".equals(block.getPiece().pieceName)) 
         {
-            if(!willKingBeInCheckIfPieceIsMoved(board, block))
-            {
-                if ("pawn".equals(block.getPiece().pieceName)) 
-                {
-                    movesAndCaptures = getPossiblePawnMovesAndCaptures(board, block, false);
-                }
-                else if ("rook".equals(block.getPiece().pieceName))
-                {
-                    movesAndCaptures = getPossibleRookMovesAndCaptures(board, block, false);
-                }
-                else if ("knight".equals(block.getPiece().pieceName))
-                {
-                    movesAndCaptures = getPossibleKnightMovesAndCaptures(board, block, false);
-                }
-                else if ("bishop".equals(block.getPiece().pieceName))
-                {
-                    movesAndCaptures = getPossibleBishopMovesAndCaptures(board, block, false);
-                }
-                else if ("queen".equals(block.getPiece().pieceName))
-                {
-                    movesAndCaptures = getPossibleQueenMovesAndCaptures(board, block, false);
-                }
-                else if ("king".equals(block.getPiece().pieceName))
-                {
-                    movesAndCaptures = getPossibleKingMovesAndCaptures(board, block, dangerousBlocksForWhite, dangerousBlocksForBlack, false);
-                }
-            }
+            movesAndCaptures = getPossiblePawnMovesAndCaptures(board, block);
         }
-        else
+        else if ("rook".equals(block.getPiece().pieceName))
         {
-            if ("pawn".equals(block.getPiece().pieceName)) 
-            {
-                movesAndCaptures = getPossiblePawnMovesAndCaptures(board, block, true);
-            }
-            else if ("rook".equals(block.getPiece().pieceName))
-            {
-                movesAndCaptures = getPossibleRookMovesAndCaptures(board, block, true);
-            }
-            else if ("knight".equals(block.getPiece().pieceName))
-            {
-                movesAndCaptures = getPossibleKnightMovesAndCaptures(board, block, true);
-            }
-            else if ("bishop".equals(block.getPiece().pieceName))
-            {
-                movesAndCaptures = getPossibleBishopMovesAndCaptures(board, block, true);
-            }
-            else if ("queen".equals(block.getPiece().pieceName))
-            {
-                movesAndCaptures = getPossibleQueenMovesAndCaptures(board, block, true);
-            }
-            else if ("king".equals(block.getPiece().pieceName))
-            {
-                movesAndCaptures = getPossibleKingMovesAndCaptures(board, block, dangerousBlocksForWhite, dangerousBlocksForBlack, true);
-            }
+            movesAndCaptures = getPossibleRookMovesAndCaptures(board, block);
+        }
+        else if ("knight".equals(block.getPiece().pieceName))
+        {
+            movesAndCaptures = getPossibleKnightMovesAndCaptures(board, block);
+        }
+        else if ("bishop".equals(block.getPiece().pieceName))
+        {
+            movesAndCaptures = getPossibleBishopMovesAndCaptures(board, block);
+        }
+        else if ("queen".equals(block.getPiece().pieceName))
+        {
+            movesAndCaptures = getPossibleQueenMovesAndCaptures(board, block);
+        }
+        else if ("king".equals(block.getPiece().pieceName))
+        {
+            movesAndCaptures = getPossibleKingMovesAndCaptures(board, block, dangerousBlocksForWhite, dangerousBlocksForBlack);
         }
         
         return movesAndCaptures;
-    }
-    
-    private static boolean willKingBeInCheckIfPieceIsMoved(ChessBlock[][] board, ChessBlock block)
-    {
-        Piece tempPiece = block.getPiece();
-        boolean willKingBeInCheck = false;
-        block.setPiece(null);
-        if (tempPiece.color == Color.WHITE)
-        {
-            willKingBeInCheck = getDangerousBlocksForWhite(board).contains(ChessBoard.whiteKing.currentPosition);
-        }
-        else
-        {
-            willKingBeInCheck = getDangerousBlocksForBlack(board).contains(ChessBoard.blackKing.currentPosition);
-        }
-        block.setPiece(tempPiece);
-        return willKingBeInCheck;
     }
     
     private static boolean willKingBeInCheckAfterMove(ChessBlock[][] board, ChessBlock block, ChessBlock moveToBlock)
@@ -136,7 +86,7 @@ public class Logic
         return willKingBeInCheck;
     }
     
-    private static ArrayList<ArrayList<ChessBlock>> getPossiblePawnMovesAndCaptures(ChessBlock[][] board, ChessBlock block, boolean isKingInCheck)
+    private static ArrayList<ArrayList<ChessBlock>> getPossiblePawnMovesAndCaptures(ChessBlock[][] board, ChessBlock block)
     {
         ArrayList<ChessBlock> possibleMoves = new ArrayList<>();
         ArrayList<ChessBlock> possibleCaptures = new ArrayList<>();
@@ -148,14 +98,7 @@ public class Logic
             {
                 if (!board[block.x][block.y + 1].hasPiece())
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[block.x][block.y + 1]))
-                        {
-                            possibleMoves.add(board[block.x][block.y + 1]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[block.x][block.y + 1]))
                     {
                         possibleMoves.add(board[block.x][block.y + 1]);
                     }
@@ -164,14 +107,7 @@ public class Logic
                     {
                         if (!board[block.x][block.y + 2].hasPiece())
                         {
-                            if (isKingInCheck)
-                            {
-                                if (!willKingBeInCheckAfterMove(board, block, board[block.x][block.y + 2]))
-                                {
-                                    possibleMoves.add(board[block.x][block.y + 2]);
-                                }
-                            }
-                            else
+                            if (!willKingBeInCheckAfterMove(board, block, board[block.x][block.y + 2]))
                             {
                                 possibleMoves.add(board[block.x][block.y + 2]);
                             }
@@ -185,14 +121,7 @@ public class Logic
                     {
                         if (board[block.x + 1][block.y + 1].getPiece().color != block.getPiece().color)
                         {
-                            if (isKingInCheck)
-                            {
-                                if (!willKingBeInCheckAfterMove(board, block, board[block.x + 1][block.y + 1]))
-                                {
-                                    possibleCaptures.add(board[block.x + 1][block.y + 1]);
-                                }
-                            }
-                            else
+                            if (!willKingBeInCheckAfterMove(board, block, board[block.x + 1][block.y + 1]))
                             {
                                 possibleCaptures.add(board[block.x + 1][block.y + 1]);
                             }
@@ -206,19 +135,20 @@ public class Logic
                     {
                         if (board[block.x - 1][block.y + 1].getPiece().color != block.getPiece().color)
                         {
-                            if (isKingInCheck)
-                            {
-                                if (!willKingBeInCheckAfterMove(board, block, board[block.x - 1][block.y + 1]))
-                                {
-                                    possibleCaptures.add(board[block.x - 1][block.y + 1]);
-                                }
-                            }
-                            else
+                            if (!willKingBeInCheckAfterMove(board, block, board[block.x - 1][block.y + 1]))
                             {
                                 possibleCaptures.add(board[block.x - 1][block.y + 1]);
                             }
                         }
                     }
+                }
+            }
+            
+            for (Piece piece : block.getPiece().enpassantCaptures)
+            {
+                if (!willKingBeInCheckAfterMove(board, block, board[piece.currentPosition.x][piece.currentPosition.y + 1]))
+                {
+                    possibleCaptures.add(board[piece.currentPosition.x][piece.currentPosition.y + 1]);
                 }
             }
         }
@@ -228,14 +158,7 @@ public class Logic
             {
                 if (!board[block.x][block.y - 1].hasPiece())
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[block.x][block.y - 1]))
-                        {
-                            possibleMoves.add(board[block.x][block.y - 1]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[block.x][block.y - 1]))
                     {
                         possibleMoves.add(board[block.x][block.y - 1]);
                     }
@@ -244,14 +167,7 @@ public class Logic
                     {
                         if (!board[block.x][block.y - 2].hasPiece())
                         {
-                            if (isKingInCheck)
-                            {
-                                if (!willKingBeInCheckAfterMove(board, block, board[block.x][block.y - 2]))
-                                {
-                                    possibleMoves.add(board[block.x][block.y - 2]);
-                                }
-                            }
-                            else
+                            if (!willKingBeInCheckAfterMove(board, block, board[block.x][block.y - 2]))
                             {
                                 possibleMoves.add(board[block.x][block.y - 2]);
                             }
@@ -265,14 +181,7 @@ public class Logic
                     {
                         if (board[block.x + 1][block.y - 1].getPiece().color != block.getPiece().color)
                         {
-                            if (isKingInCheck)
-                            {
-                                if (!willKingBeInCheckAfterMove(board, block, board[block.x + 1][block.y - 1]))
-                                {
-                                    possibleCaptures.add(board[block.x + 1][block.y - 1]);
-                                }
-                            }
-                            else
+                            if (!willKingBeInCheckAfterMove(board, block, board[block.x + 1][block.y - 1]))
                             {
                                 possibleCaptures.add(board[block.x + 1][block.y - 1]);
                             }
@@ -286,14 +195,7 @@ public class Logic
                     {
                         if (board[block.x - 1][block.y - 1].getPiece().color != block.getPiece().color)
                         {
-                            if (isKingInCheck)
-                            {
-                                if (!willKingBeInCheckAfterMove(board, block, board[block.x - 1][block.y - 1]))
-                                {
-                                    possibleCaptures.add(board[block.x - 1][block.y - 1]);
-                                }
-                            }
-                            else
+                            if (!willKingBeInCheckAfterMove(board, block, board[block.x - 1][block.y - 1]))
                             {
                                 possibleCaptures.add(board[block.x - 1][block.y - 1]);
                             }
@@ -301,14 +203,23 @@ public class Logic
                     }
                 }
             }
+            
+            for (Piece piece : block.getPiece().enpassantCaptures)
+            {
+                if (!willKingBeInCheckAfterMove(board, block, board[piece.currentPosition.x][piece.currentPosition.y - 1]))
+                {
+                    possibleCaptures.add(board[piece.currentPosition.x][piece.currentPosition.y - 1]);
+                }
+            }
         }
+        
         
         movesAndCaptures.add(possibleMoves);
         movesAndCaptures.add(possibleCaptures);
         return movesAndCaptures;
     }
     
-    private static ArrayList<ArrayList<ChessBlock>> getPossibleRookMovesAndCaptures(ChessBlock[][] board, ChessBlock block, boolean isKingInCheck)
+    private static ArrayList<ArrayList<ChessBlock>> getPossibleRookMovesAndCaptures(ChessBlock[][] board, ChessBlock block)
     {  
         ArrayList<ChessBlock> possibleMoves = new ArrayList<>();
         ArrayList<ChessBlock> possibleCaptures = new ArrayList<>();
@@ -320,14 +231,7 @@ public class Logic
             {
                 if (board[block.x][y].getPiece().color != block.getPiece().color)
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[block.x][y]))
-                        {
-                            possibleCaptures.add(board[block.x][y]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[block.x][y]))
                     {
                         possibleCaptures.add(board[block.x][y]);
                     }
@@ -336,14 +240,7 @@ public class Logic
             }
             else
             {
-                if (isKingInCheck)
-                {
-                    if (!willKingBeInCheckAfterMove(board, block, board[block.x][y]))
-                    {
-                        possibleMoves.add(board[block.x][y]);
-                    }
-                }
-                else
+                if (!willKingBeInCheckAfterMove(board, block, board[block.x][y]))
                 {
                     possibleMoves.add(board[block.x][y]);
                 }
@@ -356,14 +253,7 @@ public class Logic
             {
                 if (board[block.x][y].getPiece().color != block.getPiece().color)
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[block.x][y]))
-                        {
-                            possibleCaptures.add(board[block.x][y]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[block.x][y]))
                     {
                         possibleCaptures.add(board[block.x][y]);
                     }
@@ -372,14 +262,7 @@ public class Logic
             }
             else
             {
-                if (isKingInCheck)
-                {
-                    if (!willKingBeInCheckAfterMove(board, block, board[block.x][y]))
-                    {
-                        possibleMoves.add(board[block.x][y]);
-                    }
-                }
-                else
+                if (!willKingBeInCheckAfterMove(board, block, board[block.x][y]))
                 {
                     possibleMoves.add(board[block.x][y]);
                 }
@@ -392,14 +275,7 @@ public class Logic
             {
                 if (board[x][block.y].getPiece().color != block.getPiece().color)
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[x][block.y]))
-                        {
-                            possibleCaptures.add(board[x][block.y]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[x][block.y]))
                     {
                         possibleCaptures.add(board[x][block.y]);
                     }
@@ -408,14 +284,7 @@ public class Logic
             }
             else
             {
-                if (isKingInCheck)
-                {
-                    if (!willKingBeInCheckAfterMove(board, block, board[x][block.y]))
-                    {
-                        possibleMoves.add(board[x][block.y]);
-                    }
-                }
-                else
+                if (!willKingBeInCheckAfterMove(board, block, board[x][block.y]))
                 {
                     possibleMoves.add(board[x][block.y]);
                 }
@@ -428,14 +297,7 @@ public class Logic
             {
                 if (board[x][block.y].getPiece().color != block.getPiece().color)
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[x][block.y]))
-                        {
-                            possibleCaptures.add(board[x][block.y]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[x][block.y]))
                     {
                         possibleCaptures.add(board[x][block.y]);
                     }
@@ -444,14 +306,7 @@ public class Logic
             }
             else
             {
-                if (isKingInCheck)
-                {
-                    if (!willKingBeInCheckAfterMove(board, block, board[x][block.y]))
-                    {
-                        possibleMoves.add(board[x][block.y]);
-                    }
-                }
-                else
+                if (!willKingBeInCheckAfterMove(board, block, board[x][block.y]))
                 {
                     possibleMoves.add(board[x][block.y]);
                 }
@@ -463,7 +318,7 @@ public class Logic
         return movesAndCaptures;
     }
     
-    private static ArrayList<ArrayList<ChessBlock>> getPossibleKnightMovesAndCaptures(ChessBlock[][] board, ChessBlock block, boolean isKingInCheck)
+    private static ArrayList<ArrayList<ChessBlock>> getPossibleKnightMovesAndCaptures(ChessBlock[][] board, ChessBlock block)
     {
         ArrayList<ChessBlock> possibleMoves = new ArrayList<>();
         ArrayList<ChessBlock> possibleCaptures = new ArrayList<>();
@@ -480,28 +335,14 @@ public class Logic
             {
                 if (!board[x[i]][y[i]].hasPiece())
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[x[i]][y[i]]))
-                        {
-                            possibleMoves.add(board[x[i]][y[i]]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[x[i]][y[i]]))
                     {
                         possibleMoves.add(board[x[i]][y[i]]);
                     }
                 }
                 else if (board[x[i]][y[i]].getPiece().color != block.getPiece().color)
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[x[i]][y[i]]))
-                        {
-                            possibleCaptures.add(board[x[i]][y[i]]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[x[i]][y[i]]))
                     {
                         possibleCaptures.add(board[x[i]][y[i]]);
                     }
@@ -514,7 +355,7 @@ public class Logic
         return movesAndCaptures;
     }
     
-    private static ArrayList<ArrayList<ChessBlock>> getPossibleBishopMovesAndCaptures(ChessBlock[][] board, ChessBlock block, boolean isKingInCheck)
+    private static ArrayList<ArrayList<ChessBlock>> getPossibleBishopMovesAndCaptures(ChessBlock[][] board, ChessBlock block)
     {
         ArrayList<ChessBlock> possibleMoves = new ArrayList<>();
         ArrayList<ChessBlock> possibleCaptures = new ArrayList<>();
@@ -532,14 +373,7 @@ public class Logic
                 {
                     if (board[block.x + i][block.y + i].getPiece().color != block.getPiece().color)
                     {
-                        if (isKingInCheck)
-                        {
-                            if (!willKingBeInCheckAfterMove(board, block, board[block.x + i][block.y + i]))
-                            {
-                                possibleCaptures.add(board[block.x + i][block.y + i]);
-                            }
-                        }
-                        else
+                        if (!willKingBeInCheckAfterMove(board, block, board[block.x + i][block.y + i]))
                         {
                             possibleCaptures.add(board[block.x + i][block.y + i]);
                         }
@@ -548,14 +382,7 @@ public class Logic
                 }
                 else
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[block.x + i][block.y + i]))
-                        {
-                            possibleMoves.add(board[block.x + i][block.y + i]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[block.x + i][block.y + i]))
                     {
                         possibleMoves.add(board[block.x + i][block.y + i]);
                     }
@@ -575,14 +402,7 @@ public class Logic
                 {
                     if (board[block.x - i][block.y + i].getPiece().color != block.getPiece().color)
                     {
-                        if (isKingInCheck)
-                        {
-                            if (!willKingBeInCheckAfterMove(board, block, board[block.x - i][block.y + i]))
-                            {
-                                possibleCaptures.add(board[block.x - i][block.y + i]);
-                            }
-                        }
-                        else
+                        if (!willKingBeInCheckAfterMove(board, block, board[block.x - i][block.y + i]))
                         {
                             possibleCaptures.add(board[block.x - i][block.y + i]);
                         }
@@ -591,14 +411,7 @@ public class Logic
                 }
                 else
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[block.x - i][block.y + i]))
-                        {
-                            possibleMoves.add(board[block.x - i][block.y + i]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[block.x - i][block.y + i]))
                     {
                         possibleMoves.add(board[block.x - i][block.y + i]);
                     }
@@ -618,14 +431,7 @@ public class Logic
                 {
                     if (board[block.x - i][block.y - i].getPiece().color != block.getPiece().color)
                     {
-                        if (isKingInCheck)
-                        {
-                            if (!willKingBeInCheckAfterMove(board, block, board[block.x - i][block.y - i]))
-                            {
-                                possibleCaptures.add(board[block.x - i][block.y - i]);
-                            }
-                        }
-                        else
+                        if (!willKingBeInCheckAfterMove(board, block, board[block.x - i][block.y - i]))
                         {
                             possibleCaptures.add(board[block.x - i][block.y - i]);
                         }
@@ -634,14 +440,7 @@ public class Logic
                 }
                 else
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[block.x - i][block.y - i]))
-                        {
-                            possibleMoves.add(board[block.x - i][block.y - i]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[block.x - i][block.y - i]))
                     {
                         possibleMoves.add(board[block.x - i][block.y - i]);
                     }
@@ -661,14 +460,7 @@ public class Logic
                 {
                     if (board[block.x + i][block.y - i].getPiece().color != block.getPiece().color)
                     {
-                        if (isKingInCheck)
-                        {
-                            if (!willKingBeInCheckAfterMove(board, block, board[block.x + i][block.y - i]))
-                            {
-                                possibleCaptures.add(board[block.x + i][block.y - i]);
-                            }
-                        }
-                        else
+                        if (!willKingBeInCheckAfterMove(board, block, board[block.x + i][block.y - i]))
                         {
                             possibleCaptures.add(board[block.x + i][block.y - i]);
                         }
@@ -677,14 +469,7 @@ public class Logic
                 }
                 else
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[block.x + i][block.y - i]))
-                        {
-                            possibleMoves.add(board[block.x + i][block.y - i]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[block.x + i][block.y - i]))
                     {
                         possibleMoves.add(board[block.x + i][block.y - i]);
                     }
@@ -697,7 +482,7 @@ public class Logic
         return movesAndCaptures;
     }
     
-    private static ArrayList<ArrayList<ChessBlock>> getPossibleQueenMovesAndCaptures(ChessBlock[][] board, ChessBlock block, boolean isKingInCheck)
+    private static ArrayList<ArrayList<ChessBlock>> getPossibleQueenMovesAndCaptures(ChessBlock[][] board, ChessBlock block)
     {
         ArrayList<ChessBlock> possibleMoves = new ArrayList<>();
         ArrayList<ChessBlock> possibleCaptures = new ArrayList<>();
@@ -709,14 +494,7 @@ public class Logic
             {
                 if (board[block.x][y].getPiece().color != block.getPiece().color)
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[block.x][y]))
-                        {
-                            possibleCaptures.add(board[block.x][y]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[block.x][y]))
                     {
                         possibleCaptures.add(board[block.x][y]);
                     }
@@ -725,14 +503,7 @@ public class Logic
             }
             else
             {
-                if (isKingInCheck)
-                {
-                    if (!willKingBeInCheckAfterMove(board, block, board[block.x][y]))
-                    {
-                        possibleMoves.add(board[block.x][y]);
-                    }
-                }
-                else
+                if (!willKingBeInCheckAfterMove(board, block, board[block.x][y]))
                 {
                     possibleMoves.add(board[block.x][y]);
                 }
@@ -745,14 +516,7 @@ public class Logic
             {
                 if (board[block.x][y].getPiece().color != block.getPiece().color)
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[block.x][y]))
-                        {
-                            possibleCaptures.add(board[block.x][y]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[block.x][y]))
                     {
                         possibleCaptures.add(board[block.x][y]);
                     }
@@ -761,14 +525,7 @@ public class Logic
             }
             else
             {
-                if (isKingInCheck)
-                {
-                    if (!willKingBeInCheckAfterMove(board, block, board[block.x][y]))
-                    {
-                        possibleMoves.add(board[block.x][y]);
-                    }
-                }
-                else
+                if (!willKingBeInCheckAfterMove(board, block, board[block.x][y]))
                 {
                     possibleMoves.add(board[block.x][y]);
                 }
@@ -781,14 +538,7 @@ public class Logic
             {
                 if (board[x][block.y].getPiece().color != block.getPiece().color)
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[x][block.y]))
-                        {
-                            possibleCaptures.add(board[x][block.y]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[x][block.y]))
                     {
                         possibleCaptures.add(board[x][block.y]);
                     }
@@ -797,14 +547,7 @@ public class Logic
             }
             else
             {
-                if (isKingInCheck)
-                {
-                    if (!willKingBeInCheckAfterMove(board, block, board[x][block.y]))
-                    {
-                        possibleMoves.add(board[x][block.y]);
-                    }
-                }
-                else
+                if (!willKingBeInCheckAfterMove(board, block, board[x][block.y]))
                 {
                     possibleMoves.add(board[x][block.y]);
                 }
@@ -817,14 +560,7 @@ public class Logic
             {
                 if (board[x][block.y].getPiece().color != block.getPiece().color)
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[x][block.y]))
-                        {
-                            possibleCaptures.add(board[x][block.y]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[x][block.y]))
                     {
                         possibleCaptures.add(board[x][block.y]);
                     }
@@ -833,14 +569,7 @@ public class Logic
             }
             else
             {
-                if (isKingInCheck)
-                {
-                    if (!willKingBeInCheckAfterMove(board, block, board[x][block.y]))
-                    {
-                        possibleMoves.add(board[x][block.y]);
-                    }
-                }
-                else
+                if (!willKingBeInCheckAfterMove(board, block, board[x][block.y]))
                 {
                     possibleMoves.add(board[x][block.y]);
                 }
@@ -859,14 +588,7 @@ public class Logic
                 {
                     if (board[block.x + i][block.y + i].getPiece().color != block.getPiece().color)
                     {
-                        if (isKingInCheck)
-                        {
-                            if (!willKingBeInCheckAfterMove(board, block, board[block.x + i][block.y + i]))
-                            {
-                                possibleCaptures.add(board[block.x + i][block.y + i]);
-                            }
-                        }
-                        else
+                        if (!willKingBeInCheckAfterMove(board, block, board[block.x + i][block.y + i]))
                         {
                             possibleCaptures.add(board[block.x + i][block.y + i]);
                         }
@@ -875,14 +597,7 @@ public class Logic
                 }
                 else
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[block.x + i][block.y + i]))
-                        {
-                            possibleMoves.add(board[block.x + i][block.y + i]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[block.x + i][block.y + i]))
                     {
                         possibleMoves.add(board[block.x + i][block.y + i]);
                     }
@@ -902,14 +617,7 @@ public class Logic
                 {
                     if (board[block.x - i][block.y + i].getPiece().color != block.getPiece().color)
                     {
-                        if (isKingInCheck)
-                        {
-                            if (!willKingBeInCheckAfterMove(board, block, board[block.x - i][block.y + i]))
-                            {
-                                possibleCaptures.add(board[block.x - i][block.y + i]);
-                            }
-                        }
-                        else
+                        if (!willKingBeInCheckAfterMove(board, block, board[block.x - i][block.y + i]))
                         {
                             possibleCaptures.add(board[block.x - i][block.y + i]);
                         }
@@ -918,14 +626,7 @@ public class Logic
                 }
                 else
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[block.x - i][block.y + i]))
-                        {
-                            possibleMoves.add(board[block.x - i][block.y + i]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[block.x - i][block.y + i]))
                     {
                         possibleMoves.add(board[block.x - i][block.y + i]);
                     }
@@ -945,14 +646,7 @@ public class Logic
                 {
                     if (board[block.x - i][block.y - i].getPiece().color != block.getPiece().color)
                     {
-                        if (isKingInCheck)
-                        {
-                            if (!willKingBeInCheckAfterMove(board, block, board[block.x - i][block.y - i]))
-                            {
-                                possibleCaptures.add(board[block.x - i][block.y - i]);
-                            }
-                        }
-                        else
+                        if (!willKingBeInCheckAfterMove(board, block, board[block.x - i][block.y - i]))
                         {
                             possibleCaptures.add(board[block.x - i][block.y - i]);
                         }
@@ -961,14 +655,7 @@ public class Logic
                 }
                 else
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[block.x - i][block.y - i]))
-                        {
-                            possibleMoves.add(board[block.x - i][block.y - i]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[block.x - i][block.y - i]))
                     {
                         possibleMoves.add(board[block.x - i][block.y - i]);
                     }
@@ -988,14 +675,7 @@ public class Logic
                 {
                     if (board[block.x + i][block.y - i].getPiece().color != block.getPiece().color)
                     {
-                        if (isKingInCheck)
-                        {
-                            if (!willKingBeInCheckAfterMove(board, block, board[block.x + i][block.y - i]))
-                            {
-                                possibleCaptures.add(board[block.x + i][block.y - i]);
-                            }
-                        }
-                        else
+                        if (!willKingBeInCheckAfterMove(board, block, board[block.x + i][block.y - i]))
                         {
                             possibleCaptures.add(board[block.x + i][block.y - i]);
                         }
@@ -1004,14 +684,7 @@ public class Logic
                 }
                 else
                 {
-                    if (isKingInCheck)
-                    {
-                        if (!willKingBeInCheckAfterMove(board, block, board[block.x + i][block.y - i]))
-                        {
-                            possibleMoves.add(board[block.x + i][block.y - i]);
-                        }
-                    }
-                    else
+                    if (!willKingBeInCheckAfterMove(board, block, board[block.x + i][block.y - i]))
                     {
                         possibleMoves.add(board[block.x + i][block.y - i]);
                     }
@@ -1024,7 +697,7 @@ public class Logic
         return movesAndCaptures;
     }
     
-    private static ArrayList<ArrayList<ChessBlock>> getPossibleKingMovesAndCaptures(ChessBlock[][] board, ChessBlock block, ArrayList<ChessBlock> dangerousBlocksForWhite, ArrayList<ChessBlock> dangerousBlocksForBlack, boolean isKingInCheck)
+    private static ArrayList<ArrayList<ChessBlock>> getPossibleKingMovesAndCaptures(ChessBlock[][] board, ChessBlock block, ArrayList<ChessBlock> dangerousBlocksForWhite, ArrayList<ChessBlock> dangerousBlocksForBlack)
     {
         ArrayList<ChessBlock> possibleMoves = new ArrayList<>();
         ArrayList<ChessBlock> possibleCaptures = new ArrayList<>();
@@ -1049,14 +722,7 @@ public class Logic
                     {
                         if (!dangerousBlocksForWhite.contains(board[xy[i][0]][xy[i][1]]))
                         {
-                            if (isKingInCheck)
-                            {
-                                if (!willKingBeInCheckAfterMove(board, block, board[xy[i][0]][xy[i][1]]))
-                                {
-                                    possibleMoves.add(board[xy[i][0]][xy[i][1]]);
-                                }
-                            }
-                            else
+                            if (!willKingBeInCheckAfterMove(board, block, board[xy[i][0]][xy[i][1]]))
                             {
                                 possibleMoves.add(board[xy[i][0]][xy[i][1]]);
                             }
@@ -1066,14 +732,7 @@ public class Logic
                     {
                         if (!dangerousBlocksForBlack.contains(board[xy[i][0]][xy[i][1]]))
                         {
-                            if (isKingInCheck)
-                            {
-                                if (!willKingBeInCheckAfterMove(board, block, board[xy[i][0]][xy[i][1]]))
-                                {
-                                    possibleMoves.add(board[xy[i][0]][xy[i][1]]);
-                                }
-                            }
-                            else
+                            if (!willKingBeInCheckAfterMove(board, block, board[xy[i][0]][xy[i][1]]))
                             {
                                 possibleMoves.add(board[xy[i][0]][xy[i][1]]);
                             }
@@ -1086,14 +745,7 @@ public class Logic
                     {
                         if (!dangerousBlocksForWhite.contains(board[xy[i][0]][xy[i][1]]))
                         {
-                            if (isKingInCheck)
-                            {
-                                if (!willKingBeInCheckAfterMove(board, block, board[xy[i][0]][xy[i][1]]))
-                                {
-                                    possibleCaptures.add(board[xy[i][0]][xy[i][1]]);
-                                }
-                            }
-                            else
+                            if (!willKingBeInCheckAfterMove(board, block, board[xy[i][0]][xy[i][1]]))
                             {
                                 possibleCaptures.add(board[xy[i][0]][xy[i][1]]);
                             }
@@ -1103,18 +755,67 @@ public class Logic
                     {
                         if (!dangerousBlocksForBlack.contains(board[xy[i][0]][xy[i][1]]))
                         {
-                            if (isKingInCheck)
-                            {
-                                if (!willKingBeInCheckAfterMove(board, block, board[xy[i][0]][xy[i][1]]))
-                                {
-                                    possibleCaptures.add(board[xy[i][0]][xy[i][1]]);
-                                }
-                            }
-                            else
+                            if (!willKingBeInCheckAfterMove(board, block, board[xy[i][0]][xy[i][1]]))
                             {
                                 possibleCaptures.add(board[xy[i][0]][xy[i][1]]);
                             }
                         }
+                    }
+                }
+            }
+        }
+        
+        if (!block.getPiece().hasMoved)
+        {
+            if (block.getPiece().color == Color.WHITE)
+            {
+                if (!ChessBoard.isWhiteKingInCheck)
+                {
+                    if (!board[block.x + 1][block.y].hasPiece() && 
+                        !board[block.x + 2][block.y].hasPiece() && 
+                        !dangerousBlocksForWhite.contains(board[block.x + 1][block.y]) && 
+                        !dangerousBlocksForWhite.contains(board[block.x + 2][block.y]) &&
+                        !board[block.x + 3][block.y].getPiece().hasMoved)
+                    {
+                        possibleMoves.add(board[block.x + 2][block.y]);
+                        board[block.x + 2][block.y].castleMove = true;
+                    }
+                    
+                    if (!board[block.x - 1][block.y].hasPiece() && 
+                        !board[block.x - 2][block.y].hasPiece() &&
+                        !board[block.x - 3][block.y].hasPiece() &&
+                        !dangerousBlocksForWhite.contains(board[block.x - 1][block.y]) && 
+                        !dangerousBlocksForWhite.contains(board[block.x - 2][block.y]) &&
+                        !board[block.x - 4][block.y].getPiece().hasMoved)
+                    {
+                        possibleMoves.add(board[block.x - 2][block.y]);
+                        board[block.x - 2][block.y].castleMove = true;
+                    }
+                }
+            }
+            else 
+            {
+                if (!ChessBoard.isBlackKingInCheck)
+                {
+                    if (!board[block.x + 1][block.y].hasPiece() && 
+                        !board[block.x + 2][block.y].hasPiece() && 
+                        !dangerousBlocksForBlack.contains(board[block.x + 1][block.y]) && 
+                        !dangerousBlocksForBlack.contains(board[block.x + 2][block.y]) &&
+                        !board[block.x + 3][block.y].getPiece().hasMoved)
+                    {
+                        possibleMoves.add(board[block.x + 2][block.y]);
+                        board[block.x + 2][block.y].castleMove = true;
+                    }
+                    
+                    if (!board[block.x - 1][block.y].hasPiece() && 
+                        !board[block.x - 2][block.y].hasPiece() &&
+                        !board[block.x - 3][block.y].hasPiece() &&
+                        !dangerousBlocksForBlack.contains(board[block.x - 1][block.y]) && 
+                        !dangerousBlocksForBlack.contains(board[block.x - 2][block.y]) &&
+                        !board[block.x - 4][block.y].getPiece().hasMoved)
+                    {
+                        possibleMoves.add(board[block.x - 2][block.y]);
+                        board[block.x - 2][block.y].castleMove = true;
                     }
                 }
             }

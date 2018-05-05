@@ -10,6 +10,8 @@ public class ChessBlock
     public int x;
     public int y;
     public int value;
+    public boolean castleMove = false;
+    public boolean castleRook = false;
     
     public ChessBlock(String blockDescription, JButton button, int x, int y, Color color)
     {
