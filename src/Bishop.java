@@ -16,11 +16,11 @@ public class Bishop extends Piece
     {
         if (color == Color.WHITE)
         {
-            return new ImageIcon(getClass().getResource("resources/White_Bishop.png"));
+            return new ImageIcon("White_Bishop.png");
         }
         else
         {
-            return new ImageIcon(getClass().getResource("resources/Black_Bishop.png"));
+            return new ImageIcon("resources/Black_Bishop.png");
         }
     }
 }

@@ -1,6 +1,8 @@
 
 import java.awt.Color;
+import java.net.URL;
 import javax.swing.ImageIcon;
+import javax.annotation.Resources;
 
 public class Rook extends Piece
 {    
@@ -16,11 +18,11 @@ public class Rook extends Piece
     {
         if (color == Color.WHITE)
         {
-            return new ImageIcon(getClass().getResource("resources/White_Rook.png"));
+            return new ImageIcon("White_Rook.png");
         }
         else
         {
-            return new ImageIcon(getClass().getResource("resources/Black_Rook.png"));
+            return new ImageIcon("Black_Rook.png");
         }
     }
 }
