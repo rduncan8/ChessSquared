@@ -20,7 +20,7 @@ public class Bishop extends Piece
         }
         else
         {
-            return new ImageIcon("resources/Black_Bishop.png");
+            return new ImageIcon("Black_Bishop.png");
         }
     }
 }

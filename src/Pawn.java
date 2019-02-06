@@ -16,7 +16,7 @@ public class Pawn extends Piece
     {
         if (color == Color.WHITE)
         {
-            return new ImageIcon("Black_Pawn.png");
+            return new ImageIcon("White_Pawn.png");
         }
         else
         {
