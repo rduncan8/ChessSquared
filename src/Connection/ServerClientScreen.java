@@ -1,3 +1,11 @@
+package Connection;
+
+import Title.Screen;
+import Players.RealPlayer;
+import Connection.SendToClientThread;
+import Connection.ChessServer;
+import Connection.ChessClient;
+import Board.ChessBoard;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;

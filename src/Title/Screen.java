@@ -1,3 +1,5 @@
+package Title;
+
 // generic screen class; every frame or screen will follow similar rules of size, buttons, layouts, etc.
 
 import java.awt.BorderLayout;

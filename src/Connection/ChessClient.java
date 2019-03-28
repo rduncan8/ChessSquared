@@ -1,5 +1,9 @@
+package Connection;
+
 // borrowed some code from this website: https://www.daniweb.com/programming/software-development/code/448361/multithreaded-simple-client-server-chat-console-program
 
+import Players.RealPlayer;
+import Board.ChessBoard;
 import java.awt.Color;
 import java.io.*;
 import java.net.*;

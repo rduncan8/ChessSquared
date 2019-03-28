@@ -1,4 +1,8 @@
+package Players;
 
+
+import Board.ChessBoard;
+import Board.ChessBlock;
 import java.awt.Color;
 import java.util.ArrayList;
 

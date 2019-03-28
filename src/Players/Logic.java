@@ -1,10 +1,18 @@
+package Players;
 
+
+import Board.ChessBoard;
+import Board.ChessBlock;
+import Pieces.Piece;
 import java.awt.Color;
 import java.util.ArrayList;
 
 public class Logic 
 {
-    public static ArrayList<ArrayList<ChessBlock>> getPossibleMovesAndCaptures(ChessBlock[][] board, ChessBlock block, ArrayList<ChessBlock> dangerousBlocksForWhite, ArrayList<ChessBlock> dangerousBlocksForBlack)
+    public static ArrayList<ArrayList<ChessBlock>> getPossibleMovesAndCaptures(
+            ChessBlock[][] board, ChessBlock block,
+            ArrayList<ChessBlock> dangerousBlocksForWhite,
+            ArrayList<ChessBlock> dangerousBlocksForBlack)
     {
         ArrayList<ArrayList<ChessBlock>> movesAndCaptures = new ArrayList<>();
         
@@ -36,7 +44,8 @@ public class Logic
         return movesAndCaptures;
     }
     
-    private static boolean willKingBeInCheckAfterMove(ChessBlock[][] board, ChessBlock block, ChessBlock moveToBlock)
+    private static boolean willKingBeInCheckAfterMove(ChessBlock[][] board,
+            ChessBlock block, ChessBlock moveToBlock)
     {
         boolean willKingBeInCheck = false;
         Piece tempPiece = null;

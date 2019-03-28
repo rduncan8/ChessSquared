@@ -1,6 +1,11 @@
+package Title;
+
 // white king picture on TitleScreen came from http://pictures-and-images.com/content/white-chess-king.html
 // black king picture on TitleScreen came from https://www.pinterest.com/haydenwhaling/chess/
 
+import Connection.ServerClientScreen;
+import Players.RealPlayer;
+import Board.ChessBoard;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;

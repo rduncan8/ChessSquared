@@ -1,3 +1,5 @@
+package Connection;
+
 // borrowed some code from this website: https://www.daniweb.com/programming/software-development/code/448361/multithreaded-simple-client-server-chat-console-program
 
 import java.io.*;

@@ -1,16 +1,19 @@
+package Pieces;
+
 // artwork for pieces made using piskelapp.com
 
+import Board.ChessBlock;
 import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
 public class Piece
 {
-    protected final Color color;
-    protected ChessBlock currentPosition;
-    protected final ChessBlock startingPosition;
-    protected String pieceName;
-    protected boolean hasMoved = false;
+    public final Color color;
+    public ChessBlock currentPosition;
+    public final ChessBlock startingPosition;
+    public String pieceName;
+    public boolean hasMoved = false;
     public int value = 0;
     public ArrayList<Piece> enpassantCaptures = new ArrayList<>();
     

@@ -1,10 +1,12 @@
+package Players;
+
 
 import java.awt.Color;
 
 
 public class Player 
 {
-    Color color;
+    public Color color;
     
     public Player(Color color)
     {

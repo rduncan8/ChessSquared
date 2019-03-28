@@ -1,3 +1,16 @@
+package Board;
+
+import Title.Screen;
+import Players.Logic;
+import Players.RealPlayer;
+import Players.PlayerAI;
+import Pieces.Queen;
+import Pieces.King;
+import Pieces.Knight;
+import Pieces.Piece;
+import Pieces.Pawn;
+import Pieces.Bishop;
+import Pieces.Rook;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

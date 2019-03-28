@@ -1,4 +1,7 @@
+package Pieces;
 
+
+import Board.ChessBlock;
 import java.awt.Color;
 import javax.swing.ImageIcon;
 
@@ -16,11 +19,11 @@ public class Pawn extends Piece
     {
         if (color == Color.WHITE)
         {
-            return new ImageIcon(getClass().getResource("resources/White_Pawn.png"));
+            return new ImageIcon("White_Pawn.png");
         }
         else
         {
-            return new ImageIcon(getClass().getResource("resources/Black_Pawn.png"));
+            return new ImageIcon("Black_Pawn.png");
         }
     }
 }

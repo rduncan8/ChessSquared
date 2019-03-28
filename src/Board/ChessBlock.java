@@ -1,3 +1,6 @@
+package Board;
+
+import Pieces.Piece;
 import java.awt.Color;
 import javax.swing.*;
 
