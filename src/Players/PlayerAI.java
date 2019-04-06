@@ -42,7 +42,11 @@ public class PlayerAI extends Player
             dangerousBlocks = dangerousBlocksForWhite;
         }
         
-        int x = random.nextInt(pieces.size() - 1);
+        int x = 0;
+        
+        if(pieces.size()>1)
+            x = random.nextInt(pieces.size() - 1);
+        
         int i = x + 1;
         
         while (i != x)

@@ -11,6 +11,8 @@ import Pieces.Piece;
 import Pieces.Pawn;
 import Pieces.Bishop;
 import Pieces.Rook;
+import static Title.TitleScreen.startMultiplayerGame;
+import static Title.TitleScreen.startSingleplayerGame;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -118,6 +120,8 @@ public class ChessBoard extends Screen
     
     public void updateGUI()
     {
+        tools.add(createButton("New Game", new newGameListener()));
+        tools.addSeparator();
         tools.add(createButton("Resign", new ResignListener()));
         tools.addSeparator();
         tools.add(createButton("Rules", new RulesListener()));
@@ -847,6 +851,43 @@ public class ChessBoard extends Screen
         {
             possibleCaptures = movesAndCaptures.get(1);
             possibleCaptures.forEach(block -> block.setPossibleCaptureButtonColor(true));
+        }
+    }
+    
+    public class newGameListener implements ActionListener
+    {
+        
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            int dialogResult = JOptionPane.showConfirmDialog(null, 
+                    "Are you sure you want to start a new game?", "New Game", JOptionPane.YES_NO_OPTION);
+            
+            if (dialogResult == 0)
+            {
+                Object[] gameOptions = {"Singleplayer", "Multiplayer", "Cancel"};
+                Object[] playerOptions = {"Player", "Computer", "Cancel"};
+                Object[] colorOptions = {"White", "Black", "Cancel"};
+            
+                int gameDialogResult = JOptionPane.showOptionDialog(null,
+                    "Would you like to play singlerplayer or multiplayer?",
+                    "Single or Multiplayer", JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.YES_NO_CANCEL_OPTION, null, gameOptions, gameOptions[0]);
+                
+                int colorDialogResult;
+                
+                if (gameDialogResult == 0){
+                    colorDialogResult = JOptionPane.showOptionDialog(null, 
+                        "Would you like to play White or Black?",
+                        "Pick a color", JOptionPane.YES_NO_CANCEL_OPTION,
+                        JOptionPane.YES_NO_CANCEL_OPTION, null, colorOptions, colorOptions[0]);
+                    if (colorDialogResult == 0){
+                        
+                    }
+                }
+                else if (gameDialogResult == 1)
+                    startMultiplayerGame();
+            }
         }
     }
     

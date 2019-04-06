@@ -780,25 +780,29 @@ public class Logic
             {
                 if (!ChessBoard.isWhiteKingInCheck)
                 {
-                    if (!board[block.x + 1][block.y].hasPiece() && 
-                        !board[block.x + 2][block.y].hasPiece() && 
-                        !dangerousBlocksForWhite.contains(board[block.x + 1][block.y]) && 
-                        !dangerousBlocksForWhite.contains(board[block.x + 2][block.y]) &&
-                        !board[block.x + 3][block.y].getPiece().hasMoved)
-                    {
-                        possibleMoves.add(board[block.x + 2][block.y]);
-                        board[block.x + 2][block.y].castleMove = true;
+                    if(board[block.x + 3][block.y].hasPiece()){
+                        if (!board[block.x + 1][block.y].hasPiece() && 
+                            !board[block.x + 2][block.y].hasPiece() && 
+                            !dangerousBlocksForWhite.contains(board[block.x + 1][block.y]) && 
+                            !dangerousBlocksForWhite.contains(board[block.x + 2][block.y]) &&
+                            !board[block.x + 3][block.y].getPiece().hasMoved)
+                        {
+                            possibleMoves.add(board[block.x + 2][block.y]);
+                            board[block.x + 2][block.y].castleMove = true;
+                        }
                     }
                     
-                    if (!board[block.x - 1][block.y].hasPiece() && 
-                        !board[block.x - 2][block.y].hasPiece() &&
-                        !board[block.x - 3][block.y].hasPiece() &&
-                        !dangerousBlocksForWhite.contains(board[block.x - 1][block.y]) && 
-                        !dangerousBlocksForWhite.contains(board[block.x - 2][block.y]) &&
-                        !board[block.x - 4][block.y].getPiece().hasMoved)
-                    {
-                        possibleMoves.add(board[block.x - 2][block.y]);
-                        board[block.x - 2][block.y].castleMove = true;
+                    if(board[block.x - 4][block.y].hasPiece()){
+                        if (!board[block.x - 1][block.y].hasPiece() && 
+                            !board[block.x - 2][block.y].hasPiece() &&
+                            !board[block.x - 3][block.y].hasPiece() &&
+                            !dangerousBlocksForWhite.contains(board[block.x - 1][block.y]) && 
+                            !dangerousBlocksForWhite.contains(board[block.x - 2][block.y]) &&
+                            !board[block.x - 4][block.y].getPiece().hasMoved)
+                        {
+                            possibleMoves.add(board[block.x - 2][block.y]);
+                            board[block.x - 2][block.y].castleMove = true;
+                        }
                     }
                 }
             }
@@ -806,25 +810,29 @@ public class Logic
             {
                 if (!ChessBoard.isBlackKingInCheck)
                 {
-                    if (!board[block.x + 1][block.y].hasPiece() && 
-                        !board[block.x + 2][block.y].hasPiece() && 
-                        !dangerousBlocksForBlack.contains(board[block.x + 1][block.y]) && 
-                        !dangerousBlocksForBlack.contains(board[block.x + 2][block.y]) &&
-                        !board[block.x + 3][block.y].getPiece().hasMoved)
-                    {
-                        possibleMoves.add(board[block.x + 2][block.y]);
-                        board[block.x + 2][block.y].castleMove = true;
+                    if (board[block.x + 3][block.y].hasPiece()){
+                        if (!board[block.x + 1][block.y].hasPiece() && 
+                            !board[block.x + 2][block.y].hasPiece() && 
+                            !dangerousBlocksForBlack.contains(board[block.x + 1][block.y]) && 
+                            !dangerousBlocksForBlack.contains(board[block.x + 2][block.y]) &&
+                            !board[block.x + 3][block.y].getPiece().hasMoved)
+                        {
+                            possibleMoves.add(board[block.x + 2][block.y]);
+                            board[block.x + 2][block.y].castleMove = true;
+                        }
                     }
                     
-                    if (!board[block.x - 1][block.y].hasPiece() && 
-                        !board[block.x - 2][block.y].hasPiece() &&
-                        !board[block.x - 3][block.y].hasPiece() &&
-                        !dangerousBlocksForBlack.contains(board[block.x - 1][block.y]) && 
-                        !dangerousBlocksForBlack.contains(board[block.x - 2][block.y]) &&
-                        !board[block.x - 4][block.y].getPiece().hasMoved)
-                    {
-                        possibleMoves.add(board[block.x - 2][block.y]);
-                        board[block.x - 2][block.y].castleMove = true;
+                    if (board[block.x - 4][block.y].hasPiece()){
+                        if (!board[block.x - 1][block.y].hasPiece() && 
+                            !board[block.x - 2][block.y].hasPiece() &&
+                            !board[block.x - 3][block.y].hasPiece() &&
+                            !dangerousBlocksForBlack.contains(board[block.x - 1][block.y]) && 
+                            !dangerousBlocksForBlack.contains(board[block.x - 2][block.y]) &&
+                            !board[block.x - 4][block.y].getPiece().hasMoved)
+                        {
+                            possibleMoves.add(board[block.x - 2][block.y]);
+                            board[block.x - 2][block.y].castleMove = true;
+                        }
                     }
                 }
             }
