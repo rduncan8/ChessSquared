@@ -49,7 +49,7 @@ public class PlayerAI extends Player
         
         int i = x + 1;
         
-        while (i != x)
+        while (i != x && pieces.size()>1)
         {
             selectedBlock = pieces.get(i).currentPosition;
             possibleMoves = getPossibleMoves(selectedBlock, dangerousBlocksForWhite, dangerousBlocksForBlack);
@@ -74,7 +74,11 @@ public class PlayerAI extends Player
             }
         }
         
-        selectedBlock = pieces.get(i).currentPosition;
+        if(pieces.size()>1){
+            selectedBlock = pieces.get(i).currentPosition;
+        }
+        else
+            selectedBlock = pieces.get(0).currentPosition;
         possibleMoves = getPossibleMoves(selectedBlock, dangerousBlocksForWhite, dangerousBlocksForBlack);
         
         for (ChessBlock possibleMove : possibleMoves)

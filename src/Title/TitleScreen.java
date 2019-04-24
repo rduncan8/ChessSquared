@@ -94,51 +94,53 @@ public class TitleScreen extends Screen
     
     public static void startSingleplayerGame()
     {
-        Object[] playOptions = {"Computer", "Player", "Cancel"};
         Object[] pieceOptions = {"White", "Black", "Cancel"};
-            
-        int playDialogResult = JOptionPane.showOptionDialog(null,
-                "Do you wish to play against the computer or a player?",
-                "Pick an opponent.", JOptionPane.YES_NO_CANCEL_OPTION,
+        
+        int pieceDialogResult = JOptionPane.showOptionDialog(null,
+                "Do you wish to play white or Black?",
+                "Pick a side.", JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.YES_NO_CANCEL_OPTION,
-                null, playOptions, playOptions[0]);
-            
-        if(playDialogResult == 0) // play against computer
+                null, pieceOptions, pieceOptions[0]);
+
+        if(pieceDialogResult == 0) // play as white
         {
-            int pieceDialogResult = JOptionPane.showOptionDialog(null,
-                    "Do you wish to play white or Black?",
-                    "Pick a side.", JOptionPane.YES_NO_CANCEL_OPTION,
-                    JOptionPane.YES_NO_CANCEL_OPTION,
-                    null, pieceOptions, pieceOptions[0]);
-                            
-            if(pieceDialogResult == 0) // play as white
-            {
-                ChessBoard chessBoard = new ChessBoard(new RealPlayer(Color.WHITE), true);
-                titleFrame.setVisible(false);
-            } 
-            else if(pieceDialogResult == 1) // play as black
-            {
-                ChessBoard chessBoard = new ChessBoard(new RealPlayer(Color.BLACK), true);
-                titleFrame.setVisible(false);
-            }
+            ChessBoard chessBoard = new ChessBoard(new RealPlayer(Color.WHITE), true);
+            titleFrame.setVisible(false);
         } 
-        else if(playDialogResult == 1) // play against player
+        else if(pieceDialogResult == 1) // play as black
         {
-            ChessBoard chessBoard = new ChessBoard(new RealPlayer(Color.WHITE), false);
+            ChessBoard chessBoard = new ChessBoard(new RealPlayer(Color.BLACK), true);
             titleFrame.setVisible(false);
         }
+        
     }
     
     public static void startMultiplayerGame()
     {
-        try
+        Object[] playOptions = {"Local", "Network", "Cancel"};
+        
+        int playDialogResult = JOptionPane.showOptionDialog(null,
+                "Do you wish to play Local or Network?",
+                "Local or Network?", JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                null, playOptions, playOptions[0]);
+        
+        if(playDialogResult == 0) // play on this machine
         {
-            ServerClientScreen screen = new ServerClientScreen();
+            ChessBoard chessBoard = new ChessBoard(new RealPlayer(Color.WHITE), false);
             titleFrame.setVisible(false);
         }
-        catch (UnknownHostException ex)
+        else if(playDialogResult == 1) // play on network
         {
-            System.out.println(ex.getMessage());
+            try
+            {
+                ServerClientScreen screen = new ServerClientScreen();
+                titleFrame.setVisible(false);
+            }
+            catch (UnknownHostException ex)
+            {
+                System.out.println(ex.getMessage());
+            }
         }
     }
     
@@ -161,8 +163,9 @@ public class TitleScreen extends Screen
             
             if (gameDialogResult == 0)
                 startSingleplayerGame();
-            else if (gameDialogResult == 1)
+            else if (gameDialogResult == 1){
                 startMultiplayerGame();
+            }
         }
     }
     

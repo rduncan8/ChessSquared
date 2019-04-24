@@ -11,8 +11,6 @@ import Pieces.Piece;
 import Pieces.Pawn;
 import Pieces.Bishop;
 import Pieces.Rook;
-import static Title.TitleScreen.startMultiplayerGame;
-import static Title.TitleScreen.startSingleplayerGame;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,7 +45,8 @@ public class ChessBoard extends Screen
     private JLabel message = new JLabel("Let the games begin! When ready White go first.");
     private static final String wCOLS = "ABCDEFGH";
     private static final String bCOLS = "HGFEDCBA";
-    private static final String ROWS = "12345678";
+    private static JLabel[] COLS = new JLabel[8];
+    private static JLabel[] ROWS = new JLabel[8];
     
     public static ChessBlock[][] board = new ChessBlock[8][8];
     
@@ -133,6 +132,8 @@ public class ChessBoard extends Screen
     
     public void setUpBoard(Color color)
     {    
+        
+        
         if(color == Color.WHITE)
         {
             Insets buttonMargin = new Insets(0,0,0,0);
@@ -161,16 +162,19 @@ public class ChessBoard extends Screen
                     chessBoardSquares[col][row] = button;
                 }
             }
+            
+            for (int i = 8; i > 0; i--){
+                ROWS[8-i] = new JLabel("" + (i), SwingConstants.CENTER);
+            }
 
-            for (int row = 0, actRow = 8; row < 8; row++, actRow--)
+            for (int row = 0; row < 8; row++)
             {
                 for (int col = 0; col < 8; col++)
                 {
                     switch (col)
                     {
                         case 0:
-                            theChessBoard.add(new JLabel("" + (actRow),
-                                    SwingConstants.CENTER));
+                            theChessBoard.add(ROWS[row]);
                         default:
                             theChessBoard.add(chessBoardSquares[col][row]);
                     }
@@ -178,12 +182,11 @@ public class ChessBoard extends Screen
             }
 
             theChessBoard.add(new JLabel(""));
-
+            
             for (int letter = 0; letter < 8; letter++)
             {
-                theChessBoard.add(
-                    new JLabel(wCOLS.substring(letter, letter + 1),
-                    SwingConstants.CENTER));
+                COLS[letter] = new JLabel(wCOLS.substring(letter, letter + 1), SwingConstants.CENTER);
+                theChessBoard.add(COLS[letter]);
             }
             
         }
@@ -215,6 +218,10 @@ public class ChessBoard extends Screen
                     chessBoardSquares[col][row] = button;
                 }
             }
+            
+            for (int i = 0; i < 8; i++){
+                ROWS[i] = new JLabel("" + (i+1), SwingConstants.CENTER);
+            }
 
             for (int row = 0; row < 8; row++)
             {
@@ -223,8 +230,7 @@ public class ChessBoard extends Screen
                     switch (col)
                     {
                         case 0:
-                            theChessBoard.add(new JLabel("" + (row+1),
-                                    SwingConstants.CENTER));
+                            theChessBoard.add(ROWS[row]);
                         default:
                             theChessBoard.add(chessBoardSquares[col][row]);
                     }
@@ -235,9 +241,8 @@ public class ChessBoard extends Screen
 
             for (int letter = 0; letter < 8; letter++)
             {
-                theChessBoard.add(
-                    new JLabel(bCOLS.substring(letter, letter+1),
-                    SwingConstants.CENTER));
+                COLS[letter] = new JLabel(bCOLS.substring(letter, letter + 1), SwingConstants.CENTER);
+                theChessBoard.add(COLS[letter]);
             }
         }
     }
@@ -734,6 +739,24 @@ public class ChessBoard extends Screen
                 whitePieces.forEach(piece -> piece.enpassantCaptures.clear());
             }
         }
+        checkIfDraw();
+    }
+    
+    private void checkIfDraw(){
+        if (whitePieces.size() == 1 && blackPieces.size() == 1){
+            tools.removeAll();
+            message = new JLabel("The Game is a Draw");
+            updateGUI();
+            
+            gameOver = true;
+            for (int y = 0; y < 8; y++)
+            {
+                for (int x = 0; x < 8; x++)
+                {
+                    board[x][y].setWinnerButtonColor(gameOver, Color.GREEN);
+                }
+            }
+        }
     }
     
     private void setWhiteKingInCheck()
@@ -856,7 +879,6 @@ public class ChessBoard extends Screen
     
     public class newGameListener implements ActionListener
     {
-        
         @Override
         public void actionPerformed(ActionEvent e)
         {
@@ -866,28 +888,76 @@ public class ChessBoard extends Screen
             if (dialogResult == 0)
             {
                 Object[] gameOptions = {"Singleplayer", "Multiplayer", "Cancel"};
-                Object[] playerOptions = {"Player", "Computer", "Cancel"};
+                Object[] playerOptions = {"Local", "Network", "Cancel"};
                 Object[] colorOptions = {"White", "Black", "Cancel"};
-            
+                
+                //Select new game Single(0) or Multiplayer(1)
                 int gameDialogResult = JOptionPane.showOptionDialog(null,
                     "Would you like to play singlerplayer or multiplayer?",
                     "Single or Multiplayer", JOptionPane.YES_NO_CANCEL_OPTION,
                     JOptionPane.YES_NO_CANCEL_OPTION, null, gameOptions, gameOptions[0]);
                 
-                int colorDialogResult;
-                
                 if (gameDialogResult == 0){
-                    colorDialogResult = JOptionPane.showOptionDialog(null, 
+                    
+                    //Single Player play as White(0) or Black(1)
+                    int colorDialogResult = JOptionPane.showOptionDialog(null, 
                         "Would you like to play White or Black?",
                         "Pick a color", JOptionPane.YES_NO_CANCEL_OPTION,
                         JOptionPane.YES_NO_CANCEL_OPTION, null, colorOptions, colorOptions[0]);
+                    
                     if (colorDialogResult == 0){
-                        
+                        resetBoard(new RealPlayer(Color.WHITE), true);
+                    }
+                    if (colorDialogResult == 1){
+                        resetBoard(new RealPlayer(Color.BLACK), true);
                     }
                 }
-                else if (gameDialogResult == 1)
-                    startMultiplayerGame();
+                
+                else if (gameDialogResult == 1){
+                    
+                    //Multiplayer This computer(0) or Network(1)**
+                    //**network doesn't work at the moment
+                    int playerDialogResult = JOptionPane.showOptionDialog(null,
+                        "Would you like to play Local or Network?",
+                        "Local or Network?", JOptionPane.YES_NO_CANCEL_OPTION,
+                        JOptionPane.YES_NO_CANCEL_OPTION, null, playerOptions, playerOptions[0]);
+                    
+                    if(playerDialogResult == 0){
+                        resetBoard(new RealPlayer(Color.WHITE), false);
+                    }
+                    
+                    if(playerDialogResult == 1){
+                        //startMultiplayerGame();
+                    }
+                }
             }
+        }
+    }
+    
+    public void resetBoard(RealPlayer rp, boolean ai){
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                board[i][j].setPiece(null);
+            }
+        }
+        theChessBoard.removeAll();
+        setUpBoard(rp.color);
+        realPlayer = rp;
+        this.ai = null;
+        if(ai){
+            if(rp.color == Color.WHITE)
+                this.ai = new PlayerAI(Color.BLACK);
+            else
+                this.ai = new PlayerAI(Color.WHITE);
+        }
+        tools.removeAll();
+        message = new JLabel("Player White's Turn");
+        updateGUI();
+        whitePieces.clear();
+        blackPieces.clear();
+        setUpPieces(rp.color);
+        if(rp.color == Color.BLACK){
+            switchTurn();
         }
     }
     
